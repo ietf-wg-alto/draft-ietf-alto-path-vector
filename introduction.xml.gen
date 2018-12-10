@@ -1,0 +1,134 @@
+<!-- This document was prepared using Pandoc2rfc, https://github.com/miekg/pandoc2rfc -->
+
+  
+<section title="Introduction" anchor="introduction">
+  
+  <t>
+    The base ALTO protocol <xref target="RFC7285"/> is designed
+    to expose network information through services such as cost map and
+    endpoint cost service. These services use an extreme
+    "single-node" network view abstraction, which
+    represents the whole network with a single node and hosts with
+    "endpoint groups" directly connected to the node.
+  </t>
+  <t>
+    Although the "single-node" network view abstraction
+    works well in many settings, it lacks the ability to support
+    emerging use cases, such as applications requiring large bandwidth
+    or latency sensitivity
+    <xref target="I-D.bernstein-alto-topo"/>, and
+    inter-datacenter data transfers
+    <xref target="I-D.lee-alto-app-net-info-exchange"/>. For
+    these use cases, applications require a more powerful network view
+    abstraction beyond the "single-node" abstraction to
+    support application capabilities, in particular, the ability
+    multi-flow scheduling.
+  </t>
+  
+  <t>
+    To support capabilities like multi-flow scheduling, this document
+    uses a "path vector" abstraction to represent more
+    detailed network graph information like capacity regions. The path
+    vector abstraction uses path vectors with abstract network elements
+    to provide network graph view for applications. A path vector
+    consists of a sequence of abstract network elements (ANEs) that
+    end-to-end traffic goes through. ANEs can be links, switches,
+    middleboxes, their aggregations, etc.; they have properties like
+    "bandwidth", "delay", etc. These
+    information may help the application avoid network congestion and
+    achieve better application performance.
+    
+  </t>
+  <t>
+    Providing path vector abstraction using ALTO introduces the
+    following additional requirements (ARs):
+  </t>
+  <t><list style="hanging">
+    <t hangText="AR-1:">
+        
+          The ALTO protocol SHOULD include the support for encoding
+          array-like cost values rather than scalar cost values in cost
+          maps or endpoint cost maps.
+        
+        <vspace blankLines="1"/>
+          The ALTO server providing path vector abstraction SHOULD
+          convey sequences of ANEs between sources and destinations the
+          ALTO client requests. Theses information cannot be encoded by
+          the scalar types (numerical or ordinal) which the base ALTO
+          protocol supports. A new cost type is required to encode path
+          vectors as costs.
+        
+      </t>
+  </list></t>
+  
+  <t><list style="hanging">
+    <t hangText="AR-2:">
+        
+          The ALTO protocol SHOULD include the support for encoding
+          properties of ANEs.
+        
+        <vspace blankLines="1"/>
+          Only the sequences of ANEs are not enough for most use cases
+          mentioned previously. The properties of ANEs like
+          "bandwidth" and "delay" are
+          required by applications to build the capacity region or
+          realize the latency sensitivity.
+        
+      </t>
+  </list></t>
+  
+  
+  
+  
+  <t><list style="hanging">
+    <t hangText="AR-3:">
+        
+          The ALTO server SHOULD allow the ALTO client to query path
+          vectors and the properties of abstract network elements
+          consistently.
+        
+        <vspace blankLines="1"/>
+          Path vectors and the properties of abstract network elements
+          are correlated information, but can be separated into
+          different ALTO information resources. A mechanism to query
+          both of them consistently is necessary.
+        
+      </t>
+  </list></t>
+  
+  <t>
+    This document proposes the path vector extension which satisfies
+    these additional requirements to the ALTO protocol. Specifically,
+    the ALTO protocol encodes the array of ANEs over an end-to-end path
+    using a new cost type, and conveys the properties of ANEs using
+    unified property map
+    <xref target="I-D.ietf-alto-unified-props-new"/>. We also
+    provide an optional solution to query separated path vectors and
+    properties of ANEs in a consistent way. But querying general
+    separated resources consistently is not the scope in this document.
+  </t>
+  
+  
+  
+  
+  
+  <t>
+    The rest of this document is organized as follows.
+    <xref target="SecMF"/> gives an example of multi-flow
+    scheduling and illustrates the limitations of the base ALTO protocol
+    in such a use case. <xref target="SecOverview"/> gives an
+    overview of the path vector extension.
+    <xref target="SecCostType"/> introduces a new cost type.
+    <xref target="SecANEDomain"/> registers a new domain in
+    Domain Registry. <xref target="SecProtoExt"/> extends
+    Filtered Cost Map and Endpoint Cost Service to support the compound
+    resource query. <xref target="SecExample"/> presents several
+    examples. <xref target="SecComp"/> and
+    <xref target="SecDisc"/> discusses compatibility issues with
+    other existing ALTO extensions and design decisions.
+    <xref target="SecSCons"/> and <xref target="SecIANA"/>
+    review the security and IANA considerations.
+  </t>
+  
+</section>
+

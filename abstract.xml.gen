@@ -1,0 +1,18 @@
+<!-- This document was prepared using Pandoc2rfc, https://github.com/miekg/pandoc2rfc -->
+
+  
+<t>
+  The Application-Layer Traffic Optimization (ALTO) protocol
+  <xref target="RFC7285"/> has defined cost maps and endpoint
+  cost maps to provide basic network information. However, they provide
+  only scalar (numerical or ordinal) cost mode values, which are
+  insufficient to satisfy the demands of solving more complex network
+  optimization problems. This document introduces an extension to the
+  base ALTO protocol, namely the path-vector extension, which allows
+  ALTO clients to query information such as capacity regions for a given
+  set of flows. A non-normative example called multi-flow scheduling is
+  presented to illustrate the limitations of existing ALTO endpoint cost
+  maps. After that, details of the extension are defined.
+</t>
+
+

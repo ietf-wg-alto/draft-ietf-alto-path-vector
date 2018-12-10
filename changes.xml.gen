@@ -1,0 +1,28 @@
+<!-- This document was prepared using Pandoc2rfc, https://github.com/miekg/pandoc2rfc -->
+
+  
+<section title="Changes Since Version -04" anchor="changes-since-version--04">
+  
+  <t><list style="symbols">
+    <t>
+      
+        Define "ane" as the only cost metrics of the cost mode
+        "path-vector".
+      
+    </t>
+    <t>
+      
+        Add a new attribute in IRDResourceEntry for the reference of the
+        property map.
+      
+    </t>
+    <t>
+      
+        Put forward the concept of query-specific to correlate the
+        response of (Filtered) Cost Map/Endpoint Cost Service and the
+        query of Network Element Property Map.
+      
+    </t>
+  </list></t>
+</section>
+

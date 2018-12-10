@@ -1,0 +1,284 @@
+<!-- This document was prepared using Pandoc2rfc, https://github.com/miekg/pandoc2rfc -->
+
+  
+<section title="The Outline of the Draft" anchor="the-outline-of-the-draft">
+  
+  
+  <t><list style="empty">
+    <t>
+      COMMENT: Abstract is not a part of the content.
+    </t>
+  </list></t>
+  <t><list style="empty">
+    <t>
+      COMMENT: Abstract should always be written in the last.
+    </t>
+  </list></t>
+</section>
+<section title="Introduction" anchor="introduction">
+  
+  <t>
+  </t>
+</section>
+<section title="Terminology" anchor="terminology">
+  
+  <t>
+  </t>
+</section>
+<section title="Use Case" anchor="use-case">
+  
+  <t>
+  </t>
+</section>
+<section title="Overview of Approach" anchor="overview-of-approach">
+  
+  <t><list style="symbols">
+    <t>
+      
+        Introduce new cost-mode and cost-metric
+      
+      <list style="symbols">
+        <t>
+          
+            cost-mode=path-vector, cost-metric=ne, ane...
+          
+        </t>
+        <t>
+          
+            cost-mode=nep, cost-metric=availbw, delay...
+          
+        </t>
+      </list>
+    </t>
+    <t>
+      
+        Introduce new property service (nep-map)
+      
+      <list style="symbols">
+        <t>
+          
+            Use unified property service
+          
+        </t>
+        <t>
+          
+            Register network element domains
+          
+        </t>
+        <t>
+          
+            Register properties for network elements
+          
+        </t>
+      </list>
+    </t>
+    <t>
+      
+        Augment the query schema
+      
+      <list style="symbols">
+        <t>
+          
+            pids vs. pid-flows
+          
+        </t>
+        <t>
+          
+            endpoints vs. endpoint-flows
+          
+        </t>
+      </list>
+    </t>
+    <t>
+      
+        Augment the grammar of filter constraints
+      
+      <list style="symbols">
+        <t>
+          
+            testable-cost-types
+          
+        </t>
+        <t>
+          
+            filter constraints
+          
+        </t>
+      </list>
+    </t>
+    <t>
+      
+        Extend Response of (Filtered) Cost Map and Endpoint Cost Map
+      
+    </t>
+    <t>
+      
+        Define the error conditions and which error code (in RFC7285) to
+        be returned. aints
+      
+    </t>
+    <t>
+      
+        Define the error conditions and which error code (in RFC7285) to
+        be returned.
+      
+    </t>
+  </list></t>
+</section>
+<section title="Changes Since Version -04" anchor="changes-since-version--04">
+  
+  <t>
+  </t>
+</section>
+<section title="Motivation" anchor="motivation">
+  
+  <t>
+  </t>
+</section>
+<section title="Filtered Property Map" anchor="filtered-property-map">
+  
+  <t>
+    No need to define the schema, but we need to introduce new domains
+    and entities and extend the shceme of ReqFilteredPropertyMap.
+  </t>
+</section>
+<section title="Protocol Extensions" anchor="protocol-extensions">
+  
+  <section title="Cost Map Extensions" anchor="cost-map-extensions">
+    
+    <section title="Uses" anchor="uses">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Response" anchor="response">
+      
+      <t>
+      </t>
+    </section>
+  </section>
+  <section title="Filtered Cost Map Extensions" anchor="filtered-cost-map-extensions">
+    
+    <section title="Accept Input parameters" anchor="accept-input-parameters">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Uses" anchor="uses-1">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Capabilities" anchor="capabilities">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Response" anchor="response-1">
+      
+      <t>
+      </t>
+    </section>
+  </section>
+  <section title="Endpoint Cost Service Extensions" anchor="endpoint-cost-service-extensions">
+    
+    <section title="Accept Input Parameters" anchor="accept-input-parameters-1">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Uses" anchor="uses-2">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Capabilities" anchor="capabilities-1">
+      
+      <t>
+      </t>
+    </section>
+    <section title="Response" anchor="response-2">
+      
+      <t>
+      </t>
+    </section>
+  </section>
+</section>
+<section title="Examples" anchor="examples">
+  
+  <section title="IRD" anchor="ird">
+    
+    <t>
+    </t>
+  </section>
+  <section title="Filtered Property Map Example" anchor="filtered-property-map-example">
+    
+    <t>
+      Query filtered property map (ne, availbw, delay).
+    </t>
+  </section>
+  <section title="Filtered Cost Map" anchor="filtered-cost-map">
+    
+    <t>
+      (pv, ne, constraints)
+    </t>
+  </section>
+  <section title="Endpoint Cost Map Example #1" anchor="endpoint-cost-map-example-1">
+    
+    <t>
+      (pv, ne, constraints)
+    </t>
+  </section>
+  <section title="Endpoint Cost Map Example #2" anchor="endpoint-cost-map-example-2">
+    
+    <t>
+      (pv, ane, link-constraints)
+    </t>
+  </section>
+</section>
+<section title="Compatibility" anchor="compatibility">
+  
+  <section title="Compatibility with Multi-Cost Extensions" anchor="compatibility-with-multi-cost-extensions">
+    
+    <t>
+    </t>
+  </section>
+  <section title="Compatibility with Cost Calendar" anchor="compatibility-with-cost-calendar">
+    
+    <t>
+    </t>
+  </section>
+  <section title="Compatibility with Incremental Update" anchor="compatibility-with-incremental-update">
+    
+    <t>
+    </t>
+  </section>
+</section>
+<section title="Miscellaneous Considerations" anchor="miscellaneous-considerations">
+  
+  <section title="Error Handling" anchor="error-handling">
+    
+    
+  </section>
+  <section title="Fine-Grained Routing" anchor="fine-grained-routing">
+    
+    <t>
+    </t>
+  </section>
+</section>
+<section title="Security Considerations" anchor="security-considerations">
+  
+  <t>
+  </t>
+</section>
+<section title="IANA Considerations" anchor="iana-considerations">
+  
+  <t>
+  </t>
+</section>
+<section title="Acknowledgments" anchor="acknowledgments">
+  
+  <t>
+  </t>
+</section>
+

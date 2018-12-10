@@ -1,0 +1,420 @@
+<!-- This document was prepared using Pandoc2rfc, https://github.com/miekg/pandoc2rfc -->
+
+  
+<section title="Cost Type" anchor="SecCostType">
+  
+  
+  <t>
+    This document extends the cost types defined in Section 6.1 of
+    <xref target="RFC7285"/> by introducing a new cost mode
+    "array" and a new cost metric "ane-path". In the
+    rest content, this document uses "path-vector" to
+    indicate the combination cost type of the cost mode
+    "array" and the cost metric
+    "ane-path".
+  </t>
+  <section title="Cost Mode: array" anchor="mode-spec">
+    
+    
+    <t>
+      This document extends the CostMode defined in Section 10.5 of
+      <xref target="RFC7285"/> with a new cost mode:
+      "array". This cost mode indicates that every cost
+      value in a cost map represents an array rather than a simple
+      value. The values are arrays of JSONValue. The specific type of
+      each element in the array depends on the cost metric.
+    </t>
+    
+    
+  </section>
+  <section title="Cost Metric: ane-path" anchor="metric-spec">
+    
+    <t>
+      This document specifies a new cost metric:
+      "ane-path". This cost metric indicates that the
+      cost value is a list of ANEs which the path from a source to a
+      destination goes across. The values are arrays of ANE names which
+      are defined in <xref target="entity-address"/>.
+    </t>
+    <t>
+      The cost metric "ane-path" SHOULD NOT be used
+      when the cost mode is not "array" unless it is
+      explicitly specified by a future extension. If an ALTO client send
+      queries with the cost metric "ane-path" and a non
+      "array" cost mode, the ALTO server SHOULD return
+      an error with the error code
+      "E_INVALID_FIELD_VALUE"; If an ALTO server
+      declares the support of a cost type with the cost metric
+      "ane-path" and a non "array"
+      cost mode, the ALTO client SHOULD assume such a cost type is
+      invalid and ignore it.
+    </t>
+  </section>
+  <section title="Path Vector Cost Type Semantics" anchor="path-vector-cost-type-semantics">
+    
+    <t>
+      The new cost type follows the convention of the cost types in the
+      base ALTO protocol. <xref target="tbl:cost-type"/> lists
+      some of the current defined cost types and their semantics.
+    </t>
+    <texttable anchor="tbl:cost-type" align="center" title="Cost Types and Their Semantics">
+      
+        
+        
+        
+        
+          
+            <ttcol align="left">
+              Cost Mode
+            </ttcol>
+            <ttcol align="left">
+              Cost Metric
+            </ttcol>
+            <ttcol align="left">
+              Semantics
+            </ttcol>
+          
+        
+        
+          
+            <c>
+              numerical
+            </c>
+            <c>
+              routingcost
+            </c>
+            <c>
+              a number representing the routing cost
+            </c>
+          
+          
+            <c>
+              numerical
+            </c>
+            <c>
+              hopcount
+            </c>
+            <c>
+              a number representing the hop count
+            </c>
+          
+          
+            <c>
+              ordinal
+            </c>
+            <c>
+              routingcost
+            </c>
+            <c>
+              a ranking representing the routing cost
+            </c>
+          
+          
+            <c>
+              ordinal
+            </c>
+            <c>
+              hopcount
+            </c>
+            <c>
+              a ranking representing the hop count
+            </c>
+          
+          
+            <c>
+              array
+            </c>
+            <c>
+              ane-path
+            </c>
+            <c>
+              a list representing the ane path
+            </c>
+          
+        
+      
+    </texttable>
+    <t>
+      
+    </t>
+    <t>
+      The "routingcost" and "hopcount"
+      can encoded in "numerical" or
+      "ordinal", however, the cost metric
+      "ane-path" can only be applied to the cost mode
+      "array" defined in this document to convey path
+      vector information. The cost metric "ane-path"
+      can not be used in "numerical" or
+      "ordinal" unless it is defined in future
+      extensions. If the ALTO server declares that it support cost type
+      with cost metric being "ane-path" and cost mode
+      not being "array", the ALTO client SHOULD ignore
+      them.
+    </t>
+  </section>
+</section>
+<section title="ANE Domain" anchor="SecANEDomain">
+  
+  <t>
+    This document specifies a new ALTO entity domain called
+    "ane" in addition to the ones in
+    <xref target="I-D.ietf-alto-unified-props-new"/>. The ANE
+    domain associates property values with the ANEs in a network. The
+    entity in ANE domain is often used in the path vector by cost maps
+    or endpoint cost resources. Accordingly, the ANE domain always
+    depends on a cost map or an endpoint cost map.
+  </t>
+  
+  <section title="Domain Name" anchor="domain-name">
+    
+    <t>
+      ane
+    </t>
+  </section>
+  <section title="Domain-Specific Entity Addresses" anchor="entity-address">
+    
+    <t>
+      The entity address of ane domain is encoded as a JSON string. The
+      string MUST be no more than 64 characters, and it MUST NOT contain
+      characters other than US-ASCII alphanumeric characters
+      (U+0030-U+0039, U+0041-U+005A, and U+0061-U+007A), the hyphen
+      ("-", U+002D), the colon (":",
+      U+003A), the at sign ("@", code point U+0040),
+      the low line ("_", U+005F), or the
+      "." separator (U+002E). The "."
+      separator is reserved for future use and MUST NOT be used unless
+      specifically indicated in this document, or an extension document.
+    </t>
+    <t>
+      To simplify the description, we use "ANE name" to
+      indicate the address of an entity in ANE domain in this document.
+    </t>
+    <t>
+      The ANE name is usually unrelated to the physical device
+      information. It is usually generated by the ALTO server on demand
+      and used to distinguish from other ANEs in its dependent cost map
+      or endpoint cost map.
+    </t>
+  </section>
+  <section title="Hierarchy and Inheritance" anchor="hierarchy-and-inheritance">
+    
+    <t>
+      There is no hierarchy or inheritance for properties associated
+      with ANEs.
+    </t>
+    
+  </section>
+</section>
+<section title="Protocol Extensions for Path Vector" anchor="SecProtoExt">
+  
+  <t>
+    To make the ALTO client query the path vectors and properties of
+    ANEs efficiently and consistently, this document extends the
+    Filtered Cost Map and Endpoint Cost Service.
+  </t>
+  <section title="Filtered Cost Map Extensions" anchor="filtered-cost-map-extensions">
+    
+    <t>
+      This document extends Filtered Cost Map, as defined in Section
+      11.3.2 of <xref target="RFC7285"/>, by adding new input
+      parameters and capabilities, and by augmenting the property map
+      into the data entry of the response.
+    </t>
+    <t>
+      The "media type", "HTTP method", and
+      "uses" specifications (described in Sections 11.3.2.1,
+      11.3.2.2, and 11.3.2.5 of <xref target="RFC7285"/>,
+      respectively) remain the same.
+    </t>
+    <section title="Accept Input Parameters" anchor="fcm-input">
+      
+      <t>
+        The ReqFilteredCostMap object in Section 11.3.2.3 of
+        <xref target="RFC7285"/> is extended as follows:
+      </t>
+      <figure><artwork>
+  object {
+    [PropertyName compound-properties&lt;1..*&gt;;]
+  } ReqPVFilteredCostMap : ReqFilteredCostMap;
+</artwork></figure>
+      <t><list style="hanging">
+        <t hangText="compound-properties:">
+            
+              If the capability
+              "allow-compound-response" is false, the
+              ALTO client MUST NOT specify this field, and the ALTO
+              server MUST reject the request and return
+              "E_INVALID_FILED_VALUE" error when it
+              receives a request including this field. If this field is
+              specified and accepted, the ALTO server MUST augment the
+              dependent property map with the properties in this field
+              into the response automatically.
+            
+          </t>
+      </list></t>
+    </section>
+    <section title="Capabilities" anchor="fcm-cap">
+      
+      <t>
+        The Filtered Cost Map capabilities are extended with two new
+        members:
+      </t>
+      <t><list style="symbols">
+        <t>
+          
+            dependent-property-map
+          
+        </t>
+        <t>
+          
+            allow-compound-response
+          
+        </t>
+      </list></t>
+      <t>
+        The capability "dependent-property-map"
+        indicates which property map this resource depends on, and the
+        capability "allow-compound-response" indicates
+        whether the ALTO server supports the resource to compound the
+        property map with its own response data. With these two
+        additional members, the FilteredCostMapCapabilities object in
+        Section 11.3.2.4 of <xref target="RFC7285"/> is extended
+        as follows:
+      </t>
+      <figure><artwork>
+  object {
+    [ResourceID dependent-property-map;]
+    [JSONBool   allow-compound-response;]
+  } PVFCMCapabilities : FilteredCostMapCapabilities;
+</artwork></figure>
+      <t><list style="hanging">
+        <t hangText="dependent-property-map:">
+            
+              This field MUST be specified when the
+              "cost-type-names" includes a cost type
+              name indicating a "ane-path" metric. Its
+              value MUST be a resource id indicating a property map
+              including "ane" domain. If not, the ALTO
+              client SHOULD consider this resource is invalid.
+            
+          </t>
+        <t hangText="allow-compound-response:">
+            
+              If present, the true value means the ALTO client can
+              request the resource to augment its dependent property map
+              into the response automatically; the false value means the
+              ALTO client cannot request the compound response. If
+              omitted, the default value is false;
+            
+          </t>
+      </list></t>
+      <t>
+        To be noticed that the capability
+        "cost-constraints" is unexpected for the
+        "array" cost mode. The syntax and semantics of
+        constraint tests on the "array" cost mode
+        depends on the implementation and can be defined in the future
+        documents. But it is not in the scope of this document.
+      </t>
+    </section>
+    <section title="Response" anchor="response">
+      
+      <t>
+        If the ALTO client specifies the "cost-type"
+        input parameter with "ane-path" metric, the
+        "dependent-vtags" field in the
+        "meta" field of the response MUST include the
+        version tag of its dependent property map following its
+        dependent network map.
+      </t>
+      <t>
+        If the ALTO client specifies the
+        "compound-properties" input parameter which is
+        accepted by the ALTO server, the response MUST include a
+        "property-map" field following the
+        "cost-map" field, and its value MUST be a
+        PropertyMapData object. This PropertyMapData object MUST be
+        equivalent to the result when query the dependent property map
+        resource using the following request: the
+        "entities" field includes all the ANE names
+        appearing in the cost values of the "cost-map"
+        field, the "properties" field has the same
+        value as the "compound-properties" field does.
+        The properties shown in the
+        "compound-properties" input parameter but are
+        not supported by the dependent property map SHOULD be omitted
+        from the response.
+      </t>
+    </section>
+  </section>
+  <section title="Endpoint Cost Service Extensions" anchor="endpoint-cost-service-extensions">
+    
+    <t>
+      This document extends the Endpoint Cost Service, as defined in
+      Section 11.5.1 of <xref target="RFC7285"/>, by adding new
+      input parameters and capabilities and by augmenting the property
+      map into the data entry of the response.
+    </t>
+    <t>
+      The media type, HTTP method, and "uses" specifications
+      (described in Sections 11.5.1.1, 11.5.1.2, and 11.5.1.5 of
+      <xref target="RFC7285"/>, respectively) are unchanged.
+    </t>
+    <section title="Accept Input Parameters" anchor="accept-input-parameters">
+      
+      <t>
+        The ReqEndpointCostMap object in Section 11.5.1.3 of
+        <xref target="RFC7285"/> is extended as follows:
+      </t>
+      <figure><artwork>
+  object {
+    [PropertyName compound-properties&lt;1..*&gt;;]
+  } ReqPVEndpointCostMap : ReqEndpointCostMap;
+</artwork></figure>
+      <t>
+        The "compound-properties" has the same
+        interpretation as defined in <xref target="fcm-input"/>.
+      </t>
+    </section>
+    <section title="Capabilities" anchor="capabilities">
+      
+      <t>
+        The extensions to the Endpoint Cost Service capabilities are
+        identical to the extensions to the Filtered Cost Map (see
+        <xref target="fcm-cap"/>).
+      </t>
+    </section>
+    <section title="Response" anchor="response-1">
+      
+      <t>
+        If the ALTO client specifies the "cost-type"
+        input parameter with "ane-path" metric, the
+        response MUST include the "meta" field with the
+        "dependent-vtags" in it, and the
+        "dependent-vtags" field MUST include the
+        version tag of its dependent property map.
+      </t>
+      
+      <t>
+        If the ALTO client specifies the
+        "compound-properties" input parameter which is
+        accepted by the ALTO server, the response MUST include a
+        "property-map" field following the
+        "endpoint-cost-map" field, and its value MUST
+        be a PropertyMapData object. This PropertyMapData object MUST be
+        equivalent to the result when query the dependent property map
+        resource using the following request: the
+        "entities" field includes all the ANE names
+        appearing in the cost values of the
+        "endpoint-cost-map" field, the
+        "properties" field has the same value as the
+        "compound-properties" field does. The
+        properties shown in the "compound-properties"
+        input parameter but are not supported by the dependent property
+        map SHOULD be omitted from the response.
+      </t>
+      
+    </section>
+  </section>
+</section>
+

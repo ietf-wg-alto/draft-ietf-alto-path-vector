@@ -1,0 +1,600 @@
+<!-- This document was prepared using Pandoc2rfc, https://github.com/miekg/pandoc2rfc -->
+
+  
+<section title="Protocol Extensions" anchor="SecPE">
+  
+  <t>
+    This section formally specifies the path-vector extension which
+    includes the following components: a new cost type, a new entity
+    domain, extensions of (Filtered) Cost Map and Endpoint Cost Map.
+    Below we specify each component in details.
+  </t>
+  <section title="Cost Type" anchor="cost-type-def">
+    
+    <t>
+      The path-vector extension defined in this document enriches the
+      cost types defined in Section 6.1 of
+      <xref target="RFC7285"/>.
+    </t>
+    <section title="Cost Metric" anchor="metric-spec">
+      
+      <t>
+        This document specifies a new cost metric: "ane". It
+        is of type CostMetric as defined in Section 10.6 of
+        <xref target="RFC7285"/>. The cost metric "ane"
+        MUST NOT be used when the cost mode is not
+        "path-vector" unless it is explicitly specified in a
+        future extension. Meanwhile, an ALTO server with path-vector
+        extension MUST support the cost metric "ane".
+      </t>
+      <t><list style="hanging">
+        <t hangText="Cost metric &quot;ane&quot;:">
+            
+              This cost metric MUST be encoded as the JSONString
+              "ane". When cost metric is "ane",
+              Network Element Names contained in the path vectors MUST
+              be query-specific.
+              
+            
+          </t>
+      </list></t>
+    </section>
+    <section title="Cost Mode: Path Vector" anchor="cost-mode-path-vector">
+      
+      <t>
+        This document specifies a new cost mode:
+        "path-vector". The path-vector cost mode is of type
+        CostMode as defined in Section 6.1.2 of
+        <xref target="RFC7285"/> and is encoded as the JSONString
+        "path-vector".
+      </t>
+      <t>
+        A (Filtered) Cost Map resource or Endpoint Cost Service, when
+        queried with this cost mode, MUST return a CostMapData or
+        EndpointCostMapData whose cost value is a JSONArray of type
+        NetworkElementName as specified in <xref target="nen"/>.
+      </t>
+      <t>
+        This cost mode MUST be used with the cost metric "ane"
+        unless it is explicitly specified by a future extension.
+      </t>
+    </section>
+  </section>
+  <section title="Version Tag" anchor="vtag">
+    
+    <t>
+      To support the concept of query specific, a new field named
+      "query-id" is introduced to correlate the query
+      information between the (Filtered) Cost Map/Endpoint Cost Service
+      response and the corresponding property map query. The object
+      VersionTag as defined in Section 10.3 of
+      <xref target="RFC7285"/> is extended as follows:
+    </t>
+    <figure><artwork>
+  object {
+    ResourceID   resource-id;
+    JSONString   tag;
+    [JSONString  query-id;]
+  } VersionTag;
+</artwork></figure>
+    <t><list style="hanging">
+      <t hangText="resource-id, tag:">
+          
+            As defined in Section 10.3 of
+            <xref target="RFC7285"/>.
+          
+        </t>
+      <t hangText="query-id:">
+          
+            A string used to uniquely identify the abstract network
+            elements in the property map.
+          
+        </t>
+    </list></t>
+  </section>
+  <section title="Network Element Name" anchor="nen">
+    
+    <t>
+      This document also extends <xref target="RFC7285"/> with a
+      new basic data type: NetworkElementName. A NetworkElementName is
+      of type EntityAddr as defined in Section 2.3 of
+      <xref target="I-D.roome-alto-unified-props"/> and is
+      encoded as a JSONString. A NetworkElementName MUST be an
+      EntityAddr of the ANE domain.
+    </t>
+  </section>
+  <section title="ANE Domain" anchor="ane-domain">
+    
+    <t>
+      This document specifies a new domain in addition to the ones in
+      <xref target="I-D.roome-alto-unified-props"/>.
+    </t>
+    <section title="Domain Name" anchor="domain-name">
+      
+      <t>
+        ane
+      </t>
+    </section>
+    <section title="Domain-Specific Entity Addresses" anchor="entity-ane-spec">
+      
+      <t>
+        The entity address of ane domain is encoded as a JSON string.
+        The string MUST be no more than 64 characters, and it MUST NOT
+        contain characters other than US-ASCII alphanumeric characters
+        (U+0030-U+0039, U+0041-U+005A, and U+0061-U+007A), the hyphen
+        (’-’, U+002D), the colon (’:’, U+003A), the at sign (’@’, code
+        point U+0040), the low line (’_’, U+005F), or the ’.’ separator
+        (U+002E). The ’.’ separator is reserved for future use and MUST
+        NOT be used unless specifically indicated in this document, or
+        an extension document.
+      </t>
+    </section>
+  </section>
+  <section title="Filtered Network Element Property Map" anchor="SecNEPMap">
+    
+    <t>
+      A Filtered Network Element Property Map MUST be a Filtered
+      Property Map as defined in Section 5 of
+      <xref target="I-D.roome-alto-unified-props"/>.
+    </t>
+    <section title="Accept Input Parameters" anchor="accept-input-parameters">
+      
+      <t>
+        This document extends ReqFilteredPropertyMap defined in Section
+        5.3 of <xref target="I-D.roome-alto-unified-props"/> by
+        introducing an optional field named "query-id". The
+        ReqFilteredPropertyMap is extended as follows:
+      </t>
+      <figure><artwork>
+  object {
+    EntityAddr     entities&lt;1..*&gt;
+    PropertyName   properties&lt;1..*&gt;;
+    [JSONString    query-id;]
+  } ReqFilteredPropertyMap;
+</artwork></figure>
+      <t><list style="hanging">
+        <t hangText="entities, properties:">
+            
+              The same as defined in Section 5.3 of
+              <xref target="I-D.roome-alto-unified-props"/>.
+            
+          </t>
+        <t hangText="query-id:">
+            
+              Like the "query-id" defined in
+              <xref target="vtag"/>, the "query-id"
+              here is also a string used to uniquely identify the
+              abstract network elements in the property map.
+            
+          </t>
+      </list></t>
+    </section>
+    <section title="Capabilities" anchor="capabilities">
+      
+      <t>
+        A Network Element Property Map MUST have capabilities
+        "domain-types" and "prop-types" as defined
+        in Section 4.4 of
+        <xref target="I-D.roome-alto-unified-props"/>. The
+        "domain-types" capability MUST contain domain
+        "ane". And the "prop-types" capability MUST
+        be a subset of property types which are registered with the
+        "ALTO Network Element Property Type Registry" defined
+        in <xref target="id-nep-type-reg"/> of this document.
+      </t>
+      
+    </section>
+    <section title="Response" anchor="response">
+      
+      <t>
+        The response is the same as for the Property Map, as defined in
+        Section 4.6 of
+        <xref target="I-D.roome-alto-unified-props"/>, except
+        that only the requested entities and properties are returned for
+        Filtered Network Element Map. Examples can be found in
+        <xref target="id-example-nepmap-availbw"/> and
+        <xref target="id-example-nepmap-delay"/>.
+      </t>
+    </section>
+  </section>
+  <section title="IRD Extensions" anchor="ird-extensions">
+    
+    <t>
+      This document extends IRDResourceEntry defined in Section 9.2.2 of
+      <xref target="RFC7285"/> by introducing a new entry named
+      "propertymap". The IRDResourceEntry object is extended
+      as follows:
+    </t>
+    <figure><artwork>
+  object {
+    JSONString uri;
+    JSONString media-type;
+    [JSONString accepts;]
+    [Capabilities capabilities;]
+    [ResourceID uses&lt;0..*&gt;;]
+    [ResourceID propertymap&lt;0..*&gt;;]
+  } IRDResourceEntry;
+</artwork></figure>
+    <t><list style="hanging">
+      <t hangText="uri, media-type, accepts, capabilities, uses:">
+          
+            The same as defined in Section 9.2.2 of
+            <xref target="RFC7285"/>.
+          
+        </t>
+      <t hangText="propertymap:">
+          
+            A list of resource IDs, defined in the same IRD, that
+            indicates where the specific properties of the returned
+            abstract network elements can be retrieved.
+          
+        </t>
+    </list></t>
+  </section>
+  <section title="Cost Map Extensions" anchor="cost-map-extensions">
+    
+    <t>
+      This document extends Cost Map defined in Section 11.2.3 of
+      <xref target="RFC7285"/> by returning JSONArray instead of
+      JSONNumber as the cost value, including "vtag" in
+      "meta" field in the response, and adding a new field
+      referencing to the Network Element Property Map.
+    </t>
+    <t>
+      The media type, HTTP method, capabilities, accept input parameter
+      and uses specifications are unchanged.
+    </t>
+    <section title="Propertymap" anchor="propertymap">
+      
+      <t>
+        If the Cost Map supports the path-vector extension, the field
+        "propertymap" provides a list of resource ids of
+        Network Element Property Map. Each network element property map
+        resource provides properties for the dynamically generated
+        abstract network elements.
+      </t>
+    </section>
+    <section title="Response" anchor="id-cm-response">
+      
+      <t>
+        The response is the same as defined in Section 11.2.3.6 of
+        <xref target="RFC7285"/> except the follows:
+      </t>
+      <t><list style="symbols">
+        <t>
+          
+            If the cost mode is "path-vector", the cost is a
+            JSONArray of Network Element Names.
+          
+        </t>
+        <t>
+          
+            If the query sent by the client includes cost type path
+            vector, the "vtag" filed defined in
+            <xref target="vtag"/> has to be included in the
+            response. And the "query-id" information in
+            "vtag" MUST be provided to clients.
+          
+        </t>
+      </list></t>
+    </section>
+  </section>
+  <section title="Filtered Cost Map Extensions" anchor="filtered-cost-map-extensions">
+    
+    <t>
+      This document extends the Filtered Cost Map defined in Section 4.1
+      of <xref target="I-D.ietf-alto-multi-cost"/> by specifying
+      details on capabilities, returning JSONArray instead of JSONNumber
+      as the cost value, including "vtag" in "meta"
+      field in the response, and adding a new field referencing to the
+      Network Element Property Map.
+    </t>
+    <t>
+      The media type, HTTP method and uses specifications are unchanged.
+    </t>
+    <section title="Capabilities" anchor="id-fcm-capabilities">
+      
+      <t>
+        The FilteredCostMapCapabilities object is the same as defined in
+        Section 4.1.1 of
+        <xref target="I-D.ietf-alto-multi-cost"/> expect the
+        follow:
+      </t>
+      
+      <t><list style="hanging">
+        <t hangText="testable-cost-type-names:">
+            
+              Cost type "path-vector" MUST NOT appear in the
+              "testable-cost-type-names" field.
+            
+          </t>
+      </list></t>
+    </section>
+    <section title="Accept Input Parameters" anchor="fcm-input">
+      
+      <t>
+        The ReqFilteredCostMap defined in Section 4.1.2 of
+        <xref target="I-D.ietf-alto-multi-cost"/> is extended,
+        the meanings and the constraints of some fields are also
+        extended.
+      </t>
+      <figure><artwork>
+  object {
+    [CostType cost-type;]
+    [CostType multi-cost-types&lt;1..*&gt;;]
+    [CostType testable-cost-types&lt;1..*&gt;;]
+    [JSONString constraints&lt;0..*&gt;;]
+    [JSONString or-constraints&lt;1..*&gt;&lt;1..*&gt;;]
+    [PIDFilter pids;]
+    [PIDFlowFilter pid-flows&lt;1..*&gt;;]
+  } ReqFilteredCostMap;
+
+  object {
+    PIDName src;
+    PIDName dst;
+  } PIDFlowFilter;
+</artwork></figure>
+      <t><list style="hanging">
+        <t hangText="cost-type:">
+            
+              If the cost type is path-vector and neither the
+              "testable-cost-type-names" field is provided by
+              the server nor the "testable-cost-types" field
+              is provided by the client, the "constraints"
+              field and the "or-constraints" field SHOULD NOT
+              appear. If not, the ALTO server MUST return an error with
+              error code E_INVALID_FIELD_VALUE. The server MAY include
+              an optional field named "field" in the
+              "meta" field of the response, the value of
+              "field" is "constraints" or
+              "or-constraints". The server MAY also include an
+              optional field named "value" in the
+              "meta" field, the value of "value" is
+              "path-vector". If the "value" field is
+              specified, the "field" field MUST be specified.
+            
+          </t>
+        <t hangText="multi-cost-types:">
+            
+              If "multi-cost-types" includes cost type
+              path-vector, meanwhile, neither the
+              "testable-cost-type-names" field is provided by
+              the server nor the "testable-cost-types" field
+              is provided by the client, the cost type index of
+              path-vector MUST NOT appear in the "constraints"
+              field or the "or-constraints" field. If not, the
+              ALTO server MUST return an error with error code
+              E_INVALID_FIELD_VALUE. The server MAY include an optional
+              field named "field" in the "meta"
+              field of the response, the value of "field" is
+              "constraints" or "or-constraints". The
+              server MAY also include an optional field named
+              "value" in the "meta" field, the value
+              of "value" is "path-vector". If the
+              "value" field is specified, the
+              "field" field MUST be specified.
+              
+            
+          </t>
+        <t hangText="testable-cost-types:">
+            
+              "testable-cost-types" SHOULD NOT include
+              path-vector cost type. If "testable-cost-types"
+              contains path-vector cost type, the ALTO server MUST
+              return an error with error code E_INVALID_FIELD_VALUE. The
+              server MAY include an optional field named
+              "field" in the "meta" field of the
+              response, the value of "filed" is
+              "testable-cost-types/cost-mode". The server MAY
+              also include an optional field named "value" in
+              the "meta" field, the value of "value"
+              is "path-vector". If the "value" field
+              is specified, the "field" field MUST be
+              specified.
+            
+          </t>
+        <t hangText="pid-flows:">
+            
+              A list of PID src to PID dst for which path costs are to
+              be returned.
+            
+          </t>
+      </list></t>
+      <t>
+        Additional requirement is that the Client MUST specify either
+        "pids" or "pid-flows", but MUST NOT specify
+        both.
+      </t>
+    </section>
+    <section title="Propertymap" anchor="propertymap-1">
+      
+      <t>
+        If the Filtered Cost Map supports the path-vector extension, the
+        field "propertymap" provides a list of resource ids of
+        Network Element Property Map. Each network element property map
+        resource provides properties for the dynamically generated
+        abstract network elements.
+      </t>
+    </section>
+    <section title="Response" anchor="response-1">
+      
+      <t>
+        The response is the same as defined in Section 4.1.3 of
+        <xref target="I-D.ietf-alto-multi-cost"/> except the
+        follows:
+      </t>
+      <t><list style="symbols">
+        <t>
+          
+            Whether the "cost-type" field or the
+            "multi-cost-types" field includes cost type
+            path-vector, the cost is a JSONArray of Network Element
+            Names.
+          
+        </t>
+        <t>
+          
+            If the query sent by the client includes cost type path
+            vector, the "vtag" filed defined in
+            <xref target="vtag"/> has to be included in the
+            response. And the "query-id" information in
+            "vtag" MUST be provided to clients.
+          
+        </t>
+      </list></t>
+    </section>
+  </section>
+  <section title="Endpoint Cost Service Extensions" anchor="endpoint-cost-service-extensions">
+    
+    <t>
+      This document extends the Endpoint Cost Service defined in Section
+      4.2 in <xref target="I-D.ietf-alto-multi-cost"/> by
+      specifying details on capabilities, returning JSONArray instead of
+      JSONNumber as the cost value, including "vtag" in
+      "meta" field in the response, and adding a new field
+      referencing to the Network Element Property Map.
+    </t>
+    <t>
+      The media type, HTTP method and uses specifications are unchanged.
+    </t>
+    <section title="Capabilities" anchor="capabilities-1">
+      
+      <t>
+        The same as defined in
+        <xref target="id-fcm-capabilities"/>.
+      </t>
+    </section>
+    <section title="Accept Input Parameters" anchor="accept-input-parameters-1">
+      
+      
+      <t>
+        The ReqFilteredCostMap defined in Section 4.1.2 of
+        <xref target="I-D.ietf-alto-multi-cost"/> is extended,
+        the meanings and the constraints of some fields are also
+        extended.
+      </t>
+      <t>
+        ``` object { [CostType cost-type;][CostType
+        multi-cost-types&lt;1..*&gt;;] [CostType
+        testable-cost-types&lt;1..*&gt;;][JSONString
+        constraints&lt;0..*&gt;;] [JSONString
+        or-constraints&lt;1..<spanx style="emph">&gt;&lt;1..</spanx>&gt;;][EndpointFilter
+        endpoints;] [EndpointFlowFilter endpoint-flows&lt;1..*&gt;;] }
+        ReqEndpointCostMap;
+      </t>
+      <t>
+        object { TypedEndpointAddr src; TypedEndpointAddr dst; }
+        EndpointFlowFilter; ```
+      </t>
+      <t><list style="hanging">
+        <t hangText="cost-type:">
+            
+              If the cost type is path-vector and neither the
+              "testable-cost-type-names" field is provided by
+              the server nor the "testable-cost-types" field
+              is provided by the client, the "constraints"
+              field and the "or-constraints" field SHOULD NOT
+              appear. If not, the ALTO server MUST return an error with
+              error code E_INVALID_FIELD_VALUE. The server MAY include
+              an optional field named "field" in the
+              "meta" field of the response, the value of
+              "field" is "constraints" or
+              "or-constraints". The server MAY also include an
+              optional field named "value" in the
+              "meta" field, the value of "value" is
+              "path-vector". If the "value" field is
+              specified, the "field" field MUST be specified.
+            
+          </t>
+        <t hangText="multi-cost-types:">
+            
+              If "multi-cost-types" includes cost type
+              path-vector, meanwhile, neither the
+              "testable-cost-type-names" field is provided by
+              the server nor the "testable-cost-types" field
+              is provided by the client, the cost type index of
+              path-vector MUST NOT appear in the "constraints"
+              field or the "or-constraints" field. If not, the
+              ALTO server MUST return an error with error code
+              E_INVALID_FIELD_VALUE. The server MAY include an optional
+              field named "field" in the "meta"
+              field of the response, the value of "field" is
+              "constraints" or "or-constraints". The
+              server MAY also include an optional field named
+              "value" in the "meta" field, the value
+              of "value" is "path-vector". If the
+              "value" field is specified, the
+              "field" field MUST be specified.
+              
+            
+          </t>
+        <t hangText="testable-cost-types:">
+            
+              "testable-cost-types" SHOULD NOT include
+              path-vector cost type. If "testable-cost-types"
+              contains path-vector cost type, the ALTO server MUST
+              return an error with error code E_INVALID_FIELD_VALUE. The
+              server MAY include an optional field named
+              "field" in the "meta" field of the
+              response, the value of "filed" is
+              "testable-cost-types/cost-mode". The server MAY
+              also include an optional field named "value" in
+              the "meta" field, the value of "value"
+              is "path-vector". If the "value" field
+              is specified, the "field" field MUST be
+              specified.
+            
+          </t>
+        <t hangText="endpoint-flows:">
+            
+              A list of endpoint src to endpoint dst for which path
+              costs are to be returned.
+            
+          </t>
+      </list></t>
+      <t>
+        Additional requirement is that the Client MUST specify either
+        "endpoints" or "endpoint-flows", but MUST
+        NOT specify both.
+      </t>
+    </section>
+    <section title="Propertymap" anchor="propertymap-2">
+      
+      <t>
+        If the Endpoint Cost Service supports the path-vector extension,
+        the field "propertymap" provides a list of resource
+        ids of Network Element Property Map. Each network element
+        property map resource provides properties for the dynamically
+        generated abstract network elements.
+      </t>
+    </section>
+    <section title="Response" anchor="response-2">
+      
+      <t>
+        The response is the same as defined in Section 4.2.3 of
+        <xref target="I-D.ietf-alto-multi-cost"/> except the
+        follows:
+      </t>
+      <t><list style="symbols">
+        <t>
+          
+            Whether the "cost-type" field or the
+            "multi-cost-types" field includes cost type
+            path-vector, the cost is a JSONArray of Network Element
+            Names.
+          
+        </t>
+        <t>
+          
+            If the query sent by the client includes cost type path
+            vector, the "vtag" filed defined in
+            <xref target="vtag"/> has to be included in the
+            response. And the "query-id" information in
+            "vtag" MUST be provided to clients.
+          
+        </t>
+      </list></t>
+    </section>
+  </section>
+</section>
+
