@@ -34,14 +34,15 @@ A cost mode as defined in Section 6.1.2 of [](#RFC7285), a cost mode is either "
 
 ## New ALTO Entity Domain to Provide ANE Properties ## {#nep-map}
 
-The path vector can only represent the route between the source and the
-destination. Although the application can find the shared ANEs among different
-paths, it is not enough for most use cases, which requires the bandwidth or
-delay information of the ANEs. So this document adopts the property map defined
+A path vector can represent only the route between a source and a
+destination. Although an application can find shared ANEs of different
+paths from their path vectors, it is not enough for most use cases, which 
+requires the bandwidth or delay information of the ANEs. Hence, this design
+adopts the property map defined
 in [](#I-D.ietf-alto-unified-props-new) to provide the general properties of
-ANEs. The document registers a new entity domain called `ane` to represent the
-ANE. The address of the ANE entity is just the ANE name used by the path vector.
-By requesting the property map of entities in the `ane` domain, the client can
+ANEs, by registering a new entity domain called `ane` to represent the
+ANEs. The address of the ANE entity is just the ANE name in path vectors.
+By requesting the property map of entities in the `ane` domain, a client can
 retrieve the properties of ANEs in path vectors.
 
 <!--
@@ -65,18 +66,16 @@ document.
 
 ## Extended Cost Map/Endpoint Cost Service for Compound Resources ## {#ext-cm-ecs}
 
-Providing the path vector information and the ANE properties by
-separated resources have several known benefits: (1) can be better compatible
-with the base ALTO protocol; (2) can make different property map resources reuse
-the same cost map or endpoint cost resource. However, it conducts two issues:
+Providing path vectors and ANE properties in
+separated resources has several benefits: (1) it can be better compatible
+with the base ALTO protocol; (2) it allows different property map resources to reuse
+the same cost map or endpoint cost resource. However, it introduces two issues:
 
-- Efficiency: The separated resources will require the ALTO client to invoke
-  multiple requests/responses to collect all needed information. It increases
-  the communication overhead.
-- Consistency: The path vectors and properties of ANEs are correlated. So
-  querying them one by one may conduct consistency issue. Once the path vector
-  changes during the client requests the ANE properties, the ANE properties may
-  be inconsistent with the previous path vector.
+- Efficiency: Two separate resources may lead to the ALTO client invoking
+  multiple requests/responses to collect all needed information. This may increase
+  communication overhead.
+- Consistency: Path vectors and properties of ANEs are correlated, and
+  querying them separately may lead to consistency issues.
 
 To solve these issues, this document introduces an extension to cost map and
 endpoint cost service, which allows the ALTO server to attach a property map in

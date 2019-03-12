@@ -1,4 +1,4 @@
-# Use Case: Capacity Region for Multi-Flow Scheduling # {#SecMF}
+# Use Case: Capacity Region for Co-Flow Scheduling # {#SecMF}
 
 <!-- Consider the case that routing is given. Then what application-layer traffic optimization will focus on is traffic scheduling among application-layer paths. -->
 
@@ -9,7 +9,7 @@ Assume that an application has control over a set of flows, which may go through
 shared links or switches and share a bottleneck. The application hopes to
 schedule the traffic among multiple flows to get better performance. The
 capacity region information for those flows will benefit the scheduling.
-However, existing cost maps can not reveal such information.
+However, existing cost maps cannot reveal such information.
 
 Specifically, consider a network as shown in [](#MFUseCase). The network has 7
 switches (sw1 to sw7) forming a dumb-bell topology. Switches sw1/sw3 provide
@@ -77,14 +77,14 @@ needs to provide more details. In particular:
 <!-- , it needs to provide the following new capabilities: -->
 
 - The network needs to expose more detailed routing information to show the
-  shared bottlenecks.
+  shared bottlenecks;
 - The network needs to provide the necessary abstraction to hide the real
   topology information while providing enough information to applications.
 <!-- as possible. -->
 
 <!-- The path-vector extension defined in this document will satisfy all the requirements. -->
-The path vector extension defined in this document propose a solution to provide
-these details.
+The path vector extension defined in this document provides a solution to address
+the preceding issue.
 
 See [](#I-D.bernstein-alto-topo) for a more comprehensive survey of use cases
 where extended network topology information is needed.

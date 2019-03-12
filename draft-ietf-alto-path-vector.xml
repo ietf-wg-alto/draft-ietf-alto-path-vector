@@ -4,13 +4,14 @@
   <!ENTITY rfc7285 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7285.xml">
   <!ENTITY rfc8189 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8189.xml">
 
-  <!ENTITY draft-amante-i2rs-topology-use-cases SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-amante-i2rs-topology-use-cases-01.xml">
-  <!ENTITY  draft-lee-alto-app-net-info-exchange SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-lee-alto-app-net-info-exchange-04.xml">
+  <!-- <!ENTITY draft-amante-i2rs-topology-use-cases SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-amante-i2rs-topology-use-cases-01.xml"> -->
+
+  <!-- <!ENTITY  draft-lee-alto-app-net-info-exchange SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-lee-alto-app-net-info-exchange-04.xml"> -->
+
   <!ENTITY  draft-clemm-i2rs-yang-network-topo SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-clemm-i2rs-yang-network-topo-01.xml">
   <!ENTITY  draft-bernstein-alto-topo SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-bernstein-alto-topo-00.xml">
-  <!ENTITY  draft-yang-alto-topology SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-yang-alto-topology-06.xml">
   <!ENTITY  draft-ietf-alto-cost-calendar SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-cost-calendar-01.xml">
-  <!ENTITY  draft-ietf-alto-incr-update-sse SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-incr-update-sse-08.xml">
+  <!ENTITY  draft-ietf-alto-incr-update-sse SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-incr-update-sse-15.xml">
   <!ENTITY  draft-ietf-alto-unified-props SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-unified-props-new-01.xml">
   <!ENTITY  draft-gao-alto-fcs SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-gao-alto-fcs-01.xml">
 
@@ -41,12 +42,13 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std"
-     docName="draft-ietf-alto-path-vector-04"
+     docName="draft-ietf-alto-path-vector-05"
      ipr="trust200902">
 
   <front>
     <title abbrev="ALTO Extension: Path Vector ">ALTO Extension: Path Vector Cost Type</title>
 
+    <!--
     <author fullname="Greg Bernstein" initials="G." surname="Bernstein">
       <organization>Grotto Networking</organization>
       <address>
@@ -59,21 +61,7 @@
         <email>gregb@grotto-networking.com</email>
       </address>
     </author>
-
-    <author fullname="Shiwei Dawn Chen" initials="S. D." surname="Chen">
-      <organization>Tongji University</organization>
-
-      <address>
-        <postal>
-          <street>4800 Caoan Road</street>
-          <city>Shanghai</city>
-          <code>201804</code>
-          <country>China</country>
-        </postal>
-
-        <email>dawn_chen_f@hotmail.com</email>
-      </address>
-    </author>
+    -->
 
     <author fullname="Kai Gao" initials="K." surname="Gao">
       <organization>Tsinghua University</organization>
@@ -101,6 +89,20 @@
       </address>
     </author>
 
+    <author fullname="Sabine Randriamasy" initials="S." surname="Randriamasy">
+      <organization>Nokia Bell Labs</organization>
+      <address>
+        <postal>
+          <street>Route de Villejust</street>
+          <city>NOZAY</city>
+          <code>91460</code>
+          <country>FRANCE</country>
+        </postal>
+        <email>Sabine.Randriamasy@nokia-bell-labs.com</email>
+      </address>
+    </author>
+
+    <!--
     <author initials="W." surname="Roome" fullname="Wendy Roome">
       <organization abbrev="Nokia">
         Nokia/Bell Labs (Retired)
@@ -117,11 +119,11 @@
         <email>wendy@wdroome.com</email>
       </address>
     </author>
+    -->
 
+    <!--
     <author fullname="Michael Scharf" initials="M." surname="Scharf">
-      <organization abbrev="Nokia">
-        Nokia
-      </organization>
+      <organization abbrev="Nokia">Nokia</organization>
       <address>
         <postal>
         <street></street>
@@ -132,7 +134,8 @@
         <email>michael.scharf@nokia.com</email>
       </address>
     </author>
-
+    -->
+    
     <author fullname="Y. Richard Yang" initials="Y." surname="Yang">
       <organization>Yale University</organization>
       <address>
@@ -202,12 +205,11 @@
       &rfc8189;
       &draft-ietf-alto-unified-props;
       &draft-bernstein-alto-topo;
-      &draft-yang-alto-topology;
       &draft-ietf-alto-cost-calendar;
       &draft-ietf-alto-incr-update-sse;
       <!-- &draft-gao-alto-fcs; -->
-      &draft-amante-i2rs-topology-use-cases;
-      &draft-lee-alto-app-net-info-exchange;
+      <!-- &draft-amante-i2rs-topology-use-cases; -->
+      <!-- &draft-lee-alto-app-net-info-exchange; -->
       <!-- &draft-ietf-i2rs-yang-network-topo; -->
     </references>
 

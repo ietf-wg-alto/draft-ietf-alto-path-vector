@@ -1,53 +1,45 @@
 # Introduction #
 
 The base ALTO protocol [](#RFC7285) is designed to expose network information
-through services such as cost map and endpoint cost service. These services use
-an extreme `single-node` network view abstraction, which represents the whole
-network with a single node and hosts with `endpoint groups` directly connected
+through services such as cost maps and endpoint cost service. These services use
+an extreme `single-node` network abstraction, which represents a whole
+network as a single node and hosts as `endpoint groups` directly connected
 to the node.
 
-Although the `single-node` network view abstraction works well in many settings,
-it lacks the ability to support emerging use cases, such as applications
-requiring large bandwidth or latency sensitivity [](#I-D.bernstein-alto-topo),
-and inter-datacenter data transfers [](#I-D.lee-alto-app-net-info-exchange). For
-these use cases, applications require a more powerful network view abstraction
-beyond the `single-node` abstraction to support application capabilities, in
-particular, the ability multi-flow scheduling.
+Although the `single-node` abstraction works well in many settings,
+it lacks the ability to support emerging use cases, such as
+co-flow scheduling for large-scale data analytics. For such a use case, applications 
+require a more powerful network view abstraction beyond the `single-node` abstraction.
 
-<!-- FIXED: [I-D.yang-alto-topology] only propose the "node-link schema" which is
-distinguished from "path vector" representation. Need to fix the description.
--->
-
-To support capabilities like multi-flow scheduling, this document uses a `path
+To support capabilities like co-flow scheduling, this document uses a `path
 vector` abstraction to represent more detailed network graph information like
 capacity regions. The path vector abstraction uses path vectors with abstract
 network elements to provide network graph view for applications. A path vector
 consists of a sequence of abstract network elements (ANEs) that end-to-end
-traffic goes through. ANEs can be links, switches, middleboxes, their
-aggregations, etc.; they have properties like `bandwidth`, `delay`, etc. These
-information may help the application avoid network congestion and achieve better
-application performance.
+traffic goes through. Example ANEs include links, switches, middleboxes, and their
+aggregations. An ANE can have properties such as `bandwidth`, `delay`. Providing 
+such information can help both applications to achieve better
+application performance and networks to avoid network congestion.
 <!--to provide information on the shared bottlenecks of multiple flows.-->
 
 Providing path vector abstraction using ALTO introduces the following additional
 requirements (ARs):
 
 AR-1:
-~ The ALTO protocol SHOULD include the support for encoding array-like cost
+~ The path vector abstraction requires the encoding of array-like cost
 values rather than scalar cost values in cost maps or endpoint cost maps.
-~ The ALTO server providing path vector abstraction SHOULD convey sequences of
-ANEs between sources and destinations the ALTO client requests. Theses
-information cannot be encoded by the scalar types (numerical or ordinal) which
-the base ALTO protocol supports. A new cost type is required to encode path
-vectors as costs.
+~ Specifically, the path vector abstraction requires the specification of the 
+sequence of ANEs between sources and destinations. Such a sequence, however,
+cannot be encoded by the scalar types (numerical or ordinal) which
+the base ALTO protocol supports. 
 
 <!--A path vector exposes the abstract network elements (e.g., links, switches, middleboxes and their aggregations) that end-to-end traffic goes through, allowing applications to discover the correlations of traffic with different source/destination endpoints. The properties can be `bandwidth` for links and `delay` between neighboring switches. These information may help the application avoid network congestion, achieving better application performance.-->
 
 AR-2:
-~ The ALTO protocol SHOULD include the support for encoding properties of ANEs.
-~ Only the sequences of ANEs are not enough for most use cases mentioned
-previously. The properties of ANEs like `bandwidth` and `delay` are required by
-applications to build the capacity region or realize the latency sensitivity.
+~ The path vector abstraction requires the encoding of the properties of aforementioned ANEs.
+~ Specifically, only the sequences of ANEs are not enough for existing use cases. Properties 
+of ANEs such as `bandwidth` and `delay` are needed by
+applications to properly construct capacity regions.
 
 <!-- ~ Unified property map [](#I-D.ietf-alto-unified-props-new) defines an extensible schema to provide properties of general entities; it cannot -->
 <!-- convey properties of abstract network elements. A new ALTO domain needs to be -->
@@ -55,11 +47,9 @@ applications to build the capacity region or realize the latency sensitivity.
 <!-- network elements. -->
 
 AR-3:
-~ The ALTO server SHOULD allow the ALTO client to query path vectors and the
-properties of abstract network elements consistently.
-~ Path vectors and the properties of abstract network elements are correlated
-information, but can be separated into different ALTO information resources. A
-mechanism to query both of them consistently is necessary.
+~ The path vector abstraction requires consistent encoding of path vectors (AR-1) and the 
+properties of the elements in a path vector (AR-2).
+~ Specifically, path vectors and the properties of abstract network elements in the vectors are dependent. A mechanism to query both of them consistently is necessary.
 
 <!-- - Encapsulating multiple map messages in a single response: Sending multiple queries to get path vectors and properties of abstract network elements introduce additional communication overhead.  A mechanism to provide multiple map messages in a single session is necessary. -->
 
@@ -83,7 +73,7 @@ document.
 <!-- TODO: Don't forget to update the organization -->
 
 The rest of this document is organized as follows. [](#SecMF) gives an example
-of multi-flow scheduling and illustrates the limitations of the base ALTO
+of co-flow scheduling and illustrates the limitations of the base ALTO
 protocol in such a use case. [](#SecOverview) gives an overview of the path
 vector extension. [](#SecCostType) introduces a new cost type.
 [](#SecANEDomain) registers a new domain in Domain Registry. [](#SecProtoExt)

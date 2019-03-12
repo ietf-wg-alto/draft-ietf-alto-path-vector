@@ -4,9 +4,9 @@
 not define ANE domain first? -->
 
 This document extends the cost types defined in Section 6.1 of [](#RFC7285) by
-introducing a new cost mode "array" and a new cost metric "ane-path". In the
-rest content, this document uses `path-vector` to indicate the combination cost
-type of the cost mode `array` and the cost metric `ane-path`.
+introducing a new cost-mode "array" and a new cost-metric "ane-path". In the
+rest of the document, we use `path-vector` to refer to the combination cost
+type which has cost-mode `array` and cost-metric `ane-path`.
 
 ## Cost Mode: array{#mode-spec}
 

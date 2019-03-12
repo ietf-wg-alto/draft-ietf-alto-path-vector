@@ -255,6 +255,8 @@ delay       The transmission delay
 
 # Acknowledgments #
 
-The authors would like to thank discussions with Randriamasy Sabine, Andreas
+The authors would like to thank discussions with Andreas
 Voellmy, Erran Li, Haibin Son, Haizhou Du, Jiayuan Hu, Qiao Xiang, Tianyuan Liu,
-Xiao Shi, Xin Wang, and Yan Luo.
+Xiao Shi, Xin Wang, and Yan Luo. The authors thank Greg Bernstein (Grotto Networks), 
+Dawn Chen (Tongji University), Wendy Roome, and Michael Scharf for 
+their contributions to earlier drafts.
