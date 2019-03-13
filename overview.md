@@ -9,9 +9,10 @@ support of Filtered Property Map defined in
 The path vector extension is composed of three building blocks: (1) a new cost
 type to encode path vectors; (2) a new ALTO entity domain for unified property
 extension [](#I-D.ietf-alto-unified-props-new) to encode properties of ANEs; and
-(3) an extension to the cost map and endpoint cost resource to provide path
-vectors and properties of ANEs in a single response.
-<!-- and (3) a new service to provide path vector messages in a single response; -->
+(3) a new type of ALTO resource to provide path vector messages in a single
+response.
+<!-- (3) an extension to the cost map and endpoint cost resource to provide path -->
+<!-- vectors and properties of ANEs in a single response. -->
 
 ## New Cost Type to Encode Path Vectors ## {#ALTO.PV.CostType}
 
@@ -33,6 +34,8 @@ To represent an abstract network path, this document introduces a new cost metri
 A cost mode as defined in Section 6.1.2 of [](#RFC7285), a cost mode is either "numerical" or "ordinal" and none of these can be used to present a list of ANE names. Therefore, this document specifies a new cost mode named "array" for the cost metric "ane-path". The new cost mode "array" means each cost value in the cost maps is a list. -->
 
 ## New ALTO Entity Domain to Provide ANE Properties ## {#nep-map}
+
+<!-- TODO: emphasize the properties indicate the semantics of the `cost-metric`. -->
 
 A path vector can represent only the route between a source and a
 destination. Although an application can find shared ANEs of different
@@ -64,6 +67,7 @@ properties of ane entities, and it is called an ANE Property Map in this
 document.
 -->
 
+<!--
 ## Extended Cost Map/Endpoint Cost Service for Compound Resources ## {#ext-cm-ecs}
 
 Providing path vectors and ANE properties in
@@ -84,12 +88,14 @@ the data entry of a cost map or an endpoint cost service response.
 These issues may exist in all general cases for querying separated ALTO
 information resources. But solving this general problem is not in the scope of
 this document.
+-->
 
 <!-- Decouple the multipart service with path vector -->
 
 <!-- ## [](#RFC2378) media type for path vector: multipart/related ## -->
-<!--
 ## New Service to Enable Multipart Resources ##
+
+<!-- FIXME: Not convincing. Emphasize multiple resource objects in the same response body. -->
 
 In the base ALTO protocol, ALTO servers use media types in the HTTP header to
 indicate the type of the response. Typically one response only contains a single
@@ -112,7 +118,6 @@ vectors in a filtered cost map (or endpoint cost map) and the associated ANE
 Property Map. The media types of the cost map and the property map can still be
 retrieved from the response. The interpretation of each media type in the
 `multipart/related` response is consistent with the base ALTO protocol.
--->
 
 <!--## Applicable ALTO services for Path Vector costs ##-->
 

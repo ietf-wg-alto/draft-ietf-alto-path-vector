@@ -5,6 +5,8 @@ This section lists some examples of path vector queries and the corresponding re
 <!-- FIXED: The workflow is out-of-date -->
 ## Workflow ## { #workflow }
 
+<!-- TODO: enforce multipart query -->
+
 This section gives a typical workflow of how an ALTO client query path vectors using the extension.
 
 1. Send a GET request for the whole Information Resource Directory.
@@ -30,6 +32,8 @@ This section gives a typical workflow of how an ALTO client query path vectors u
 
 
 ## Information Resource Directory Example ## { #id-example-ird }
+
+<!-- TODO: examples should be fully revised. -->
 
 Here is an example of an Information Resource Directory. In this example,
 filtered cost map `cost-map-pv` doesn't support the multi-cost extension but

@@ -8,7 +8,7 @@ introducing a new cost-mode "array" and a new cost-metric "ane-path". In the
 rest of the document, we use `path-vector` to refer to the combination cost
 type which has cost-mode `array` and cost-metric `ane-path`.
 
-## Cost Mode: array{#mode-spec}
+## Cost Mode: path-vector{#mode-spec}
 
 <!-- This cost mode is indicated by the string "array". -->
 This document extends the CostMode defined in Section 10.5 of [](#RFC7285) with
@@ -22,6 +22,8 @@ metric.
 <!-- An ALTO cost service MUST return a JSONArray of JSONValue when the cost mode is "array" unless the interpretation is explicitly specified by other ALTO extensions. -->
 
 ## Cost Metric: ane-path{#metric-spec}
+
+<!-- TODO: Mapping cost metric in `path-vector` mode to `ane` properties. -->
 
 This document specifies a new cost metric: `ane-path`. This cost metric
 indicates that the cost value is a list of ANEs which the path from a source to
@@ -37,6 +39,8 @@ and a non `array` cost mode, the ALTO client SHOULD assume such a cost type is
 invalid and ignore it.
 
 ## Path Vector Cost Type Semantics ##
+
+<!-- TODO: Revise the semantics of `path-vector` cost mode -->
 
 The new cost type follows the convention of the cost types in the base ALTO
 protocol. [](#tbl:cost-type) lists some of the current defined cost types and
@@ -110,6 +114,8 @@ as defined in Section 3.4.2 of [](#I-D.ietf-alto-unified-props-new).
 To make the ALTO client query the path vectors and properties of ANEs
 efficiently and consistently, this document extends the Filtered Cost Map and
 Endpoint Cost Service.
+
+<!-- TODO: Base ALTO services like Filtered Cost Map and Endpoint Cost Map cannot support `path-vector` cost mode. -->
 
 ## Filtered Cost Map Extensions ##
 
@@ -240,14 +246,15 @@ field does. The properties shown in the `compound-properties` input parameter
 but are not supported by the dependent property map SHOULD be omitted from the
 response.
 
-<!--
-# Multipart Service # {#SecMultiService}
+# Multipart Path Vector Cost Map # {#SecMultiService}
+
+<!-- TODO: introduce multipart for pv cost map and pv ecs individually. -->
 
 This document introduces a new ALTO service called `Multipart Service`, which allows a server to provide multiple resources in a single response.
 
 ## Media Type ##
 
-The media type of the multipart service is `multipart/related`.
+The media type of the multipart service is `multipart/related; type=application/alto-costmap+json`.
 
 ## HTTP Method ##
 
@@ -264,8 +271,7 @@ The path vector cost type MUST be the only cost type in the input parameter.
 
 ## Capabilities ##
 
-```
-```
+Same to cost map or endpoint cost map.
 
 ## Uses ##
 
@@ -289,4 +295,3 @@ COMMENT: The writing is pretty poor and has a lot of redundancy.
 If an ALTO client sends a request of the media type `application/alto-costmapfilter+json` and accepts `multipart/related`, the HTTP body of the response MUST consist of two parts with the media types `application/alto-costmap+json` and `application/alto-propmap+json` accordingly. The part with media type `application/alto-costmap+json` MUST be the first part. The content of the `application/alto-costmap+json` part has the same format as defined in Section 11.2.3.6 of [](#RFC7285).
 
 If an ALTO client sends a request of the media type `application/alto-endpointcostparams+json` and accepts `multipart/related`, the HTTP body of the response MUST consist of two parts with the media types `application/alto-endpointcost+json` and `application/alto-propmap+json` accordingly. The part with media type `application/alto-endpointcost+json` MUST be the first part. The content of the `application/alto-endpointcost+json` part has the same format as defined in Section 11.5.1.6 of [](#RFC7285).
--->
