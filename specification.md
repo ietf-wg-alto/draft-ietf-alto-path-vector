@@ -329,7 +329,10 @@ According to [](), the `property-map` field MUST be present in the first resourc
 
 ## Response ##
 
-The HTTP body of the response MUST be a `multipart/related` message as defined
+The response MUST indicate an error, using ALTO protocol error handling, as
+defined in Section 8.5 of [](#RFC7285), if the request is invalid.
+
+The response to a valid request MUST be a `multipart/related` message as defined
 by [](#RFC2387). The body consists of two parts:
 
 - the first part MUST include `Resource-Id` and `Content-Type` in its header.
@@ -399,26 +402,29 @@ According to [](), the `property-map` field MUST be present in the first resourc
 
 ## Response ##
 
-The HTTP body of the response MUST be a `multipart/related` message as defined
+The response MUST indicate an error, using ALTO protocol error handling, as
+defined in Section 8.5 of [](#RFC7285), if the request is invalid.
+
+The response to a valid request MUST be a `multipart/related` message as defined
 by [](#RFC2387). The body consists of two parts:
 
 - the first part MUST include `Resource-Id` and `Content-Type` in its header.
   The value of `Resource-Id` MUST be prefixed by the resource id of the
-  Multipart Filtered Cost Map appended by a `.` character. The body of this part
-  MUST be a JSON object with the same format as defined in Section 11.5.1.6 of
-  [](#RFC7285); The JSON object MUST include the `vtag` field in the `meta`
-  field, which provides the version tag of the returned endpoint cost map. The
-  resource id of the version tag MUST be as same as the value of the
+  Multipart Filtered Cost Map appended by a `.` character (U+002E). The body of
+  this part MUST be a JSON object with the same format as defined in Section
+  11.5.1.6 of [](#RFC7285); The JSON object MUST include the `vtag` field in the
+  `meta` field, which provides the version tag of the returned endpoint cost
+  map. The resource id of the version tag MUST be as same as the value of the
   `Resource-Id` header.
 - the second part MUST also include `Resource-Id` and `Content-Type` in its
   header. The value of `Resource-Id` MUST be prefixed by the resource id of the
-  Multipart Filtered Cost Map appended by a `.` character. The body of this part
-  MUST be a JSON object with the same format as defined in Section 4.6 of
-  [](#I-D.ietf-alto-unified-props-new). The JSON object MUST include the
-  `dependent-vtags` field in the `meta` field. The value of the `dependent-vtags`
-  field MUST be an array with a single VersionTag object as defined by section
-  10.3 of [](#RFC7285). The `resource-id` of this VersionTag MUST be the value
-  of `Resource-Id` header of the first part. The `tag` of this VersionTag MUST
-  be the `tag` of `vtag` of the first part body.
+  Multipart Filtered Cost Map appended by a `.` character (U+002E). The body of
+  this part MUST be a JSON object with the same format as defined in Section 4.6
+  of [](#I-D.ietf-alto-unified-props-new). The JSON object MUST include the
+  `dependent-vtags` field in the `meta` field. The value of the
+  `dependent-vtags` field MUST be an array with a single VersionTag object as
+  defined by section 10.3 of [](#RFC7285). The `resource-id` of this VersionTag
+  MUST be the value of `Resource-Id` header of the first part. The `tag` of this
+  VersionTag MUST be the `tag` of `vtag` of the first part body.
   
 <!-- TODO: Error Handling -->

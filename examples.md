@@ -2,9 +2,8 @@
 
 This section lists some examples of path vector queries and the corresponding responses.
 
+<!--
 ## Workflow ## { #workflow }
-
-<!-- FIXME: enforce multipart query -->
 
 This section gives a typical workflow of how an ALTO client query path vectors
 using the extension.
@@ -29,17 +28,18 @@ using the extension.
       cost map first. After receiving the response, the ALTO client interprets
       all the ANE names appearing in the response and sends another query for
       the property map on those ANE names.
+-->
 
 
 ## Information Resource Directory Example ## { #id-example-ird }
 
-<!-- TODO: examples should be fully revised. -->
-
 Here is an example of an Information Resource Directory. In this example,
-filtered cost map `cost-map-pv` doesn't support the multi-cost extension but
-support the path-vector extension, "endpoint-multicost-map" supports both
-multi-cost extension and path-vector extension. Filtered Property Map
-"propmap-availbw-delay" supports properties "availbw" and "delay".
+`cost-map-pv` provides a Multipart Cost Map resource for path-vector, and
+`endpoint-cost-pv` provides a MultipartEndpoint Cost resource for path-vector.
+Both of them support the Maximum Reservable Bandwidth (`maxresbw`) cost metric
+in `path-vector` cost mode.
+
+<!-- TODO: Use the coherent example with the use case section -->
 
 ```
   {
