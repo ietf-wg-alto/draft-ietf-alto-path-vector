@@ -231,12 +231,14 @@ ane        See [](#entity-address) None
 The `ALTO Property Type Registry` is required by the
 ALTO Domain `ane`, listed in [](#tbl:prop-type-register).
 
----------------------------------------------
-Identifier    Intended Semantics
-------------  ---------------------
-ane:maxresbw  The available bandwidth
+---------------------------------------------------------------------------
+Identifier    Intended Semantics     Dependencies and Interpretation
+------------  ---------------------- --------------------------------------
+ane:maxresbw  The maximum reservable application/alto-costmap+json, or
+              bandwidth for the ANE  application/alto-endpointcostmap+json,
+                                     where the ANE names are used.
 
----------------------------------------------
+---------------------------------------------------------------------------
 
 ^[tbl:prop-type-register::ALTO Abstract Network Element Property Types]
 
