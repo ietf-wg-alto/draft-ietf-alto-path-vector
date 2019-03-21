@@ -3,7 +3,7 @@
 The base ALTO protocol [](#RFC7285) is designed to expose network information
 through services such as cost maps and endpoint cost service. These services use
 an extreme `single-node` network abstraction, which represents a whole
-network as a single node and hosts as `endpoint groups` directly connected
+network as a single node, and hosts as `endpoint groups` directly connected
 to the node.
 
 Although the `single-node` abstraction works well in many settings,
@@ -17,7 +17,7 @@ capacity regions. The path vector abstraction uses path vectors with abstract
 network elements to provide network graph view for applications. A path vector
 consists of a sequence of abstract network elements (ANEs) that end-to-end
 traffic goes through. Example ANEs include links, switches, middleboxes, and their
-aggregations. An ANE can have properties such as `bandwidth`, `delay`. Providing 
+aggregations. An ANE can have properties such as `bandwidth`, and `delay`. Providing 
 such information can help both applications to achieve better
 application performance and networks to avoid network congestion.
 <!--to provide information on the shared bottlenecks of multiple flows.-->
@@ -39,7 +39,7 @@ AR-2:
 ~ The path vector abstraction requires the encoding of the properties of aforementioned ANEs.
 ~ Specifically, only the sequences of ANEs are not enough for existing use cases. Properties 
 of ANEs such as `bandwidth` and `delay` are needed by
-applications to properly construct capacity regions.
+applications to properly construct network constraints or states.
 
 <!-- ~ Unified property map [](#I-D.ietf-alto-unified-props-new) defines an extensible schema to provide properties of general entities; it cannot -->
 <!-- convey properties of abstract network elements. A new ALTO domain needs to be -->
@@ -48,19 +48,25 @@ applications to properly construct capacity regions.
 
 AR-3:
 ~ The path vector abstraction requires consistent encoding of path vectors (AR-1) and the 
-properties of the elements in a path vector (AR-2).
-~ Specifically, path vectors and the properties of abstract network elements in the vectors are dependent. A mechanism to query both of them consistently is necessary.
+properties of the ANEs in a path vector (AR-2).
+~ Specifically, path vectors and the properties of ANEs in the vectors are dependent. A mechanism to query both of them consistently is necessary.
 
 <!-- - Encapsulating multiple map messages in a single response: Sending multiple queries to get path vectors and properties of abstract network elements introduce additional communication overhead.  A mechanism to provide multiple map messages in a single session is necessary. -->
 
-This document proposes the path vector extension which satisfies these
-additional requirements to the ALTO protocol. Specifically, the ALTO protocol
-encodes the array of ANEs over an end-to-end path using a new cost type, and
-conveys the properties of ANEs using unified property map
-[](#I-D.ietf-alto-unified-props-new). We also provide an optional solution to
+This document proposes the path vector extension to the ALTO protocol to satisfy these
+additional requirements . 
+
+Specifically, the extension encodes the array (AR-1) of ANEs over an end-to-end path 
+using a new cost type, and conveys the properties of ANEs (AR-2) using unified property map
+[](#I-D.ietf-alto-unified-props-new). The path vector and ANE properties are conveyed in a
+single message encoded as a multipart/related message to satisfy AR-3. 
+
+<!--
+We also provide an optional solution to
 query separated path vectors and properties of ANEs in a consistent way. But
 querying general separated resources consistently is not the scope in this
 document.
+-->
 
 <!--To replace: This document introduces a new cost type to encode abstract network elements along an end-to-end path and optionally conveys their properties.-->
 

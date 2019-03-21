@@ -15,8 +15,7 @@ Specifically, consider a network as shown in [](#MFUseCase). The network has 7
 switches (sw1 to sw7) forming a dumb-bell topology. Switches sw1/sw3 provide
 access on one side, sw2/sw4 provide access on the other side, and sw5-sw7 form
 the backbone. Endhosts eh1 to eh4 are connected to access switches sw1 to sw4
-respectively. Assume that the bandwidth of link eh1 -> sw1 and link sw1 -> sw5
-are 150 Mbps, and the bandwidth of the rest links are 100 Mbps.
+respectively. Assume that the bandwidth all links are 100 Mbps.
 
 ```
                             +------+
@@ -57,20 +56,20 @@ The single-node ALTO topology abstraction of the network is shown in [](#SingleN
 
 Consider an application overlay (e.g., a large data analysis system) which wants
 to schedule the traffic among a set of end host source-destination pairs, say
-eh1 -> eh2 and eh1 -> eh4. The application can request a cost map providing
+eh1 -> eh2 and eh3 -> eh4. The application can request a cost map providing
 end-to-end available bandwidth, using 'availbw' as cost-metric and 'numerical'
 as cost-mode.
 
 The application will receive from ALTO server that the bandwidth of eh1 -> eh2
-and eh1 -> eh4 are both 100 Mbps. But this information is not enough. Consider
+and eh3 -> eh4 are both 100 Mbps. But this information is not enough. Consider
 the following two cases:
 
 - Case 1: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw6 -> sw7 -> sw2 ->
-  eh2 and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the
-  application will obtain 150 Mbps at most.
+  eh2 and eh3 -> eh4 uses path eh3 -> sw3 -> sw5 -> sw7 -> sw4 -> eh4, then the
+  application will obtain 200 Mbps.
 - Case 2: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw7 -> sw2 -> eh2 and
-  eh1 -> eh4 uses the path eh1 -> sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the
-  application will obtain only 100 Mbps at most.
+  eh3 -> eh4 uses the path eh3 -> sw3 -> sw5 -> sw7 -> sw4 -> eh4, then the
+  application will obtain only 100 Mbps due to the shared link from sw5 to sw7.
 
 To allow applications to distinguish the two aforementioned cases, the network
 needs to provide more details. In particular:
