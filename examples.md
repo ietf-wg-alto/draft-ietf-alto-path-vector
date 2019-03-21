@@ -2,17 +2,17 @@
 
 This section lists some examples of path vector queries and the corresponding responses.
 
-<!-- FIXED: The workflow is out-of-date -->
 ## Workflow ## { #workflow }
 
-<!-- TODO: enforce multipart query -->
+<!-- FIXME: enforce multipart query -->
 
-This section gives a typical workflow of how an ALTO client query path vectors using the extension.
+This section gives a typical workflow of how an ALTO client query path vectors
+using the extension.
 
 1. Send a GET request for the whole Information Resource Directory.
 
 1. Look for the resource of the (Filtered) Cost Map/Endpoint Cost Service which
-   supports the `ane-path` cost metric and get the resource ID of the dependent
+   supports the `path-vector` cost mode and get the resource ID of the dependent
    property map.
 
 1. Check whether the capabilities of the property map includes the desired
@@ -45,17 +45,9 @@ multi-cost extension and path-vector extension. Filtered Property Map
   {
     "meta": {
       "cost-types": {
-        "path-vector": {
-          "cost-mode": "array",
-          "cost-metric": "ane-path"
-        },
-        "num-routingcost": {
-          "cost-mode": "numerical",
-          "cost-metric": "routingcost"
-        },
-        "num-hopcount": {
-          "cost-mode": "numerical",
-          "cost-metric": "hopcount"
+        "pv-maxresbw": {
+          "cost-mode": "path-vector",
+          "cost-metric": "maxresbw"
         }
       }
     },
@@ -64,55 +56,24 @@ multi-cost extension and path-vector extension. Filtered Property Map
         "uri" : "http://alto.example.com/networkmap",
         "media-type" : "application/alto-networkmap+json"
       },
-      "my-default-cost-map": {
-        "uri": "http://alto.example.com/costmap/pv",
-        "media-type": "application/alto-costmap+json",
-        "accepts": "application/alto-costmapfilter+json",
-        "capabilities": {
-          "cost-type-names": [ "num-hopcount",
-                               "num-routingcost" ]
-        },
-        "uses": [ "my-default-networkmap" ]
-      },
       "cost-map-pv": {
         "uri": "http://alto.example.com/costmap/pv",
-        "media-type": "application/alto-costmap+json",
+        "media-type": `multipart/related;
+                       type=application/alto-costmap+json`,
         "accepts": "application/alto-costmapfilter+json",
         "capabilities": {
-          "cost-type-names": [ "path-vector" ],
-          "dependent-property-map": "propmap-availbw-delay"
+          "cost-type-names": [ "pv-maxresbw" ]
         },
         "uses": [ "my-default-networkmap" ]
       },
       "endpoint-cost-pv": {
         "uri": "http://alto.exmaple.com/endpointcost/pv",
-        "media-type": "application/alto-endpointcost+json",
+        "media-type": `multipart/related;
+                       type=application/alto-endpointcost+json`,
         "accepts": "application/alto-endpointcostparams+json",
         "capabilities": {
-          "cost-type-names": [ "path-vector" ],
-          "dependent-property-map": "propmap-availbw-delay",
-          "allow-compound-response": true
+          "cost-type-names": [ "pv-maxresbw" ]
         }
-      },
-      "invalid-cost-map" : {
-        "uri": "http://alto.example.com/costmap/invalid",
-        "media-type": "application/alto-costmap+json",
-        "accepts": "application/alto-costmapfilter+json",
-        "capabilities": {
-          "cost-type-names": [ "path-vector" ],
-          "allow-compound-response": true
-        },
-        "uses": [ "my-default-networkmap" ]
-      },
-      "propmap-availbw-delay": {
-        "uri": "http://alto.exmaple.com/propmap/ane-prop",
-        "media-type": "application/alto-propmap+json",
-        "accepts": "application/alto-propmapparams+json",
-        "capabilities": {
-          "domain-types": [ "ane" ],
-          "prop-types": [ "availbw", "delay" ]
-        },
-        "uses": [ "cost-map-pv", "endpoint-cost-pv" ]
       }
     }
   }
@@ -125,15 +86,16 @@ Query filtered cost map to get the path vectors.
 ```
 POST /costmap/pv HTTP/1.1
 Host: alto.example.com
-Accept: application/alto-costmap+json,
+Accept: multipart/related;
+        type=application/alto-costmap+json,
         application/alto-error+json
 Content-Length: [TBD]
 Content-Type: application/alto-costmapfilter+json
 
 {
   "cost-type": {
-    "cost-mode": "array",
-    "cost-metric": "ane-path"
+    "cost-mode": "path-vector",
+    "cost-metric": "maxresbw"
   },
   "pids": {
     "srcs": [ "PID1" ],
@@ -145,19 +107,29 @@ Content-Type: application/alto-costmapfilter+json
 ```
 HTTP/1.1 200 OK
 Content-Length: [TBD]
+Content-Type: multipart/related; boundary=example-1;
+              start=cost-map-pv.costmap
+              type=application/alto-costmap+json
+
+--example-1
+Resource-Id: cost-map-pv.costmap
 Content-Type: application/alto-costmap+json
 
 {
   "meta": {
+    "vtag": {
+      "resource-id": "cost-map-pv.costmap",
+      "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+    },
     "dependent-vtags": [
       {
         "resource-id": "my-default-networkmap",
-        "tag": "75ed013b3cb58f896e839582504f622838ce670f"
+        "tag": "75ed013b3cb58f896e839582504f6228"
       }
     ],
     "cost-type": {
-      "cost-mode": "array",
-      "cost-metric": "ane-path"
+      "cost-mode": "path-vector",
+      "cost-metric": "maxresbw"
     }
   },
   "cost-map": {
@@ -167,68 +139,43 @@ Content-Type: application/alto-costmap+json
     }
   }
 }
-```
-
-Then query the properties of ANEs in path vectors.
-
-```
-POST /propmap/ane-prop HTTP/1.1
-Host: alto.example.com
-Accept: application/alto-propmap+json,
-        application/alto-error+json
-Content-Length: [TBD]
-Content-Type: application/alto-propmapparams+json
-
-{
-  "entities": [ "ane:L001", "ane:L003", "ane:L004" ],
-  "properties": [ "delay" ]
-}
-```
-
-```
-HTTP/1.1 200 OK
-Content-Length: [TBD]
+--example-1
+Resource-Id: cost-map-pv.propmap
 Content-Type: application/alto-propmap+json
 
 {
   "meta": {
     "dependent-vtags": [
       {
-        "resource-id": "cost-map-pv",
-        "tag": "a7d57e120ab63124e3c9a82f7a54bc120fc96216"
+        "resource-id": "cost-map-pv.costmap",
+        "tag": "d827f484cb66ce6df6b5077cb8562b0a"
       }
     ]
   },
   "property-map": {
-    "ane:L001": { "delay": 46},
-    "ane:L003": { "delay": 50},
-    "ane:L004": { "delay": 70}
+    "ane:L001": { "maxresbw": 100000000},
+    "ane:L003": { "maxresbw": 150000000},
+    "ane:L004": { "maxresbw": 50000000}
   }
 }
 ```
 
-
-## Example # 2 ##
+## Example #2 ##
 
 ```
 POST /endpointcost/pv HTTP/1.1
 Host: alto.example.com
-Accept: application/alto-endpointcost+json,
+Accept: multipart/related;
+        type=application/alto-endpointcost+json,
         application/alto-error+json
 Content-Length: [TBD]
 Content-Type: application/alto-endpointcostparams+json
 
 {
-  "multi-cost-types": [
-    {
-      "cost-mode": "array",
-      "cost-metric": "ane-path"
-    },
-    {
-      "cost-mode": "numerical",
-      "cost-metric": "routingcost"
-    }
-  ],
+  "cost-type": {
+    "cost-mode": "path-vector",
+    "cost-metric": "maxresbw"
+  },
   "endpoints": {
     "srcs": [ "ipv4:192.0.2.2" ],
     "dsts": [ "ipv4:192.0.2.89",
@@ -241,13 +188,24 @@ Content-Type: application/alto-endpointcostparams+json
 ```
 HTTP/1.1 200 OK
 Content-Length: [TBD]
+Content-Type: multipart/related; boundary=example-2;
+              start=endpoint-cost-pv.ecs
+              type=application/alto-endpointcost+json
+
+--example-2
+Resource-Id: endpoint-cost-pv.ecs
 Content-Type: application/alto-endpointcost+json
 
 {
   "meta": {
-    "cost-type": [
-      {"cost-mode": "array", "cost-metric": "ane-path"}
-    ]
+    "vtags": {
+      "resource-id": "endpoint-cost-pv.ecs",
+      "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+    },
+    "cost-type": {
+      "cost-mode": "path-vector",
+      "cost-metric": "maxresbw"
+    }
   },
   "endpoint-cost-map": {
     "ipv4:192.0.2.2": {
@@ -260,111 +218,25 @@ Content-Type: application/alto-endpointcost+json
     }
   }
 }
-```
-
-```
-POST /endpointcost/pv HTTP/1.1
-Host: alto.example.com
-Accept: application/alto-endpointcost+json,
-        application/alto-error+json
-Content-Length: [TBD]
-Content-Type: application/alto-endpointcostparams+json
-
-{
-  "entities": [ "ane:L001", "ane:L003", "ane:L004",
-                "ane:L005", "ane:L007" ],
-  "properties": [ "availbw" ]
-}
-```
-
-```
-HTTP/1.1 200 OK
-Content-Length: [TBD]
+--example-2
+Resource-Id: endpoint-cost-pv.propmap
 Content-Type: application/alto-propmap+json
 
 {
   "meta": {
     "dependent-vtags": [
       {
-        "resource-id": "endpoint-cost-pv",
-        "tag": "12c0889c3c0892bb67df561ed16d93f5d1fa75cf"
-      }
-    ]
-  },
-  "property-map": {
-    "ane:L001": { "availbw": 50 },
-    "ane:L003": { "availbw": 48 },
-    "ane:L004": { "availbw": 55 },
-    "ane:L005": { "availbw": 60 },
-    "ane:L007": { "availbw": 35 }
-  }
-}
-```
-
-## Example #3 ##
-
-```
-POST /endpointcost/pv HTTP/1.1
-Host: alto.example.com
-Accept: application/alto-endpointcost+json,
-        application/alto-error+json
-Content-Length: [TBD]
-Content-Type: application/alto-endpointcostparams+json
-
-{
-  "multi-cost-types": [
-    {
-      "cost-mode": "array",
-      "cost-metric": "ane-path"
-    },
-    {
-      "cost-mode": "numerical",
-      "cost-metric": "routingcost"
-    }
-  ],
-  "endpoints": {
-    "srcs": [ "ipv4:192.0.2.2" ],
-    "dsts": [ "ipv4:192.0.2.89",
-              "ipv4:203.0.113.45",
-              "ipv6:2001:db8::10" ]
-  },
-  "properties": [ "delay", "availbw" ]
-}
-```
-
-```
-HTTP/1.1 200 OK
-Content-Length: [TBD]
-Content-Type: application/alto-endpointcost+json
-
-{
-  "meta": {
-    "dependent-vtags": [
-      {
-        "resource-id": "propmap-availbw-delay",
+        "resource-id": "endpoint-cost-pv.ecs",
         "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
       }
-    ],
-    "cost-type": [
-      {"cost-mode": "array", "cost-metric": "ane-path"}
     ]
   },
-  "endpoint-cost-map": {
-    "ipv4:192.0.2.2": {
-      "ipv4:192.0.2.89":   [ "ane:L001", "ane:L003",
-                             "ane:L004" ],
-      "ipv4:203.0.113.45": [ "ane:L001", "ane:L004",
-                             "ane:L005" ],
-      "ipv6:2001:db8::10": [ "ane:L001", "ane:L005",
-                             "ane:L007" ]
-    }
-  },
   "property-map": {
-    "ane:L001": { "availbw": 50, "delay": 46 },
-    "ane:L003": { "availbw": 48, "delay": 50 },
-    "ane:L004": { "availbw": 55, "delay": 70 },
-    "ane:L005": { "availbw": 60, "delay": 100 },
-    "ane:L007": { "availbw": 35, "delay": 100 }
+    "ane:L001": { "maxresbw": 50000000 },
+    "ane:L003": { "maxresbw": 48000000 },
+    "ane:L004": { "maxresbw": 55000000 },
+    "ane:L005": { "maxresbw": 60000000 },
+    "ane:L007": { "maxresbw": 35000000 }
   }
 }
 ```

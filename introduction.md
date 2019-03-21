@@ -73,15 +73,15 @@ document.
 <!-- TODO: Don't forget to update the organization -->
 
 The rest of this document is organized as follows. [](#SecMF) gives an example
-of co-flow scheduling and illustrates the limitations of the base ALTO
-protocol in such a use case. [](#SecOverview) gives an overview of the path
-vector extension. [](#SecCostType) introduces a new cost type.
-[](#SecANEDomain) registers a new domain in Domain Registry. [](#SecProtoExt)
-extends Filtered Cost Map and Endpoint Cost Service to support the compound
-resource query. [](#SecExample) presents several examples. [](#SecComp) and
-[](#SecDisc) discusses compatibility issues with other existing ALTO extensions
-and design decisions. [](#SecSCons) and [](#SecIANA) review the security and
-IANA considerations.
+of co-flow scheduling and illustrates the limitations of the base ALTO protocol
+in such a use case. [](#SecOverview) gives an overview of the path vector
+extension. [](#SecCostType) introduces a new cost type. [](#SecANEDomain)
+registers a new domain in Domain Registry. [](#SecMultiFCM) and [](#SecMultiECS)
+define new ALTO resources to support Path Vector query by using the request
+format of Filtered Cost Map and Endpoint Cost Service. [](#SecExample) presents
+several examples. [](#SecComp) and [](#SecDisc) discusses compatibility issues
+with other existing ALTO extensions and design decisions. [](#SecSCons) and
+[](#SecIANA) review the security and IANA considerations.
 
 <!-- [](#SecMultiService) defines a new service to encode multiple map messages
 in a single response. -->

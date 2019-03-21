@@ -1,69 +1,3 @@
-# Cost Type {#SecCostType}
-
-<!-- FIXME: Since ane-path requires ANE entities as elements of cost values, why
-not define ANE domain first? -->
-
-This document extends the cost types defined in Section 6.1 of [](#RFC7285) by
-introducing a new cost-mode "array" and a new cost-metric "ane-path". In the
-rest of the document, we use `path-vector` to refer to the combination cost
-type which has cost-mode `array` and cost-metric `ane-path`.
-
-## Cost Mode: path-vector{#mode-spec}
-
-<!-- This cost mode is indicated by the string "array". -->
-This document extends the CostMode defined in Section 10.5 of [](#RFC7285) with
-a new cost mode: `array`. This cost mode indicates that every cost value in a
-cost map represents an array rather than a simple value. The values are arrays
-of JSONValue. The specific type of each element in the array depends on the cost
-metric.
-
-<!-- The extended CostMode is encoded as a string and MUST have a value of either "numerical", "ordinal" or "array" unless it is explicitly specified by a future extension. In particular, this extension has specified that when the cost metric is "ane-path", the cost value MUST be interpreted as a JSONArray of Abstract Network Element Names (defined in [](#nen-spec)). -->
-
-<!-- An ALTO cost service MUST return a JSONArray of JSONValue when the cost mode is "array" unless the interpretation is explicitly specified by other ALTO extensions. -->
-
-## Cost Metric: ane-path{#metric-spec}
-
-<!-- TODO: Mapping cost metric in `path-vector` mode to `ane` properties. -->
-
-This document specifies a new cost metric: `ane-path`. This cost metric
-indicates that the cost value is a list of ANEs which the path from a source to
-a destination goes across. The values are arrays of ANE names which are defined
-in [](#entity-address).
-
-The cost metric `ane-path` SHOULD NOT be used when the cost mode is not `array`
-unless it is explicitly specified by a future extension. If an ALTO client send
-queries with the cost metric `ane-path` and a non `array` cost mode, the ALTO
-server SHOULD return an error with the error code `E_INVALID_FIELD_VALUE`; If an
-ALTO server declares the support of a cost type with the cost metric `ane-path`
-and a non `array` cost mode, the ALTO client SHOULD assume such a cost type is
-invalid and ignore it.
-
-## Path Vector Cost Type Semantics ##
-
-<!-- TODO: Revise the semantics of `path-vector` cost mode -->
-
-The new cost type follows the convention of the cost types in the base ALTO
-protocol. [](#tbl:cost-type) lists some of the current defined cost types and
-their semantics.
-
-Cost Mode   Cost Metric  Semantics
----------   -----------  ---------
-numerical   routingcost  a number representing the routing cost
-numerical   hopcount     a number representing the hop count
-ordinal     routingcost  a ranking representing the routing cost
-ordinal     hopcount     a ranking representing the hop count
-array       ane-path     a list representing the ane path
---------------------------------
-^[tbl:cost-type::Cost Types and Their Semantics]
-
-The `routingcost` and `hopcount` can encoded in `numerical` or `ordinal`,
-however, the cost metric `ane-path` can only be applied to the cost mode `array`
-defined in this document to convey path vector information. The cost metric
-`ane-path` can not be used in `numerical` or `ordinal` unless it is defined in
-future extensions. If the ALTO server declares that it support cost type with
-cost metric being `ane-path` and cost mode not being `array`, the ALTO client
-SHOULD ignore them.
-
 # ANE Domain {#SecANEDomain}
 
 This document specifies a new ALTO entity domain called `ane` in addition to the
@@ -78,9 +12,9 @@ always depends on a cost map or an endpoint cost map.
 
 ane
 
-## Domain-Specific Entity Addresses ## {#entity-address}
+## Domain-Specific Entity Identifier ## {#entity-address}
 
-The entity address of ane domain is encoded as a JSON string.  The string MUST
+The entity identifier of ane domain is encoded as a JSON string.  The string MUST
 be no more than 64 characters, and it MUST NOT contain characters other than
 US-ASCII alphanumeric characters (U+0030-U+0039, U+0041-U+005A, and
 U+0061-U+007A), the hyphen (`-`, U+002D), the colon (`:`, U+003A), the at sign
@@ -88,7 +22,7 @@ U+0061-U+007A), the hyphen (`-`, U+002D), the colon (`:`, U+003A), the at sign
 (U+002E). The `.` separator is reserved for future use and MUST NOT be used
 unless specifically indicated in this document, or an extension document.
 
-To simplify the description, we use "ANE name" to indicate the address
+To simplify the description, we use "ANE name" to indicate the identifier
 of an entity in ANE domain in this document.
 
 The ANE name is usually unrelated to the physical device information. It is
@@ -98,6 +32,104 @@ other ANEs in its dependent cost map or endpoint cost map.
 ## Hierarchy and Inheritance
 
 There is no hierarchy or inheritance for properties associated with ANEs.
+
+# Cost Type {#SecCostType}
+
+This document extends the cost types defined in Section 6.1 of [](#RFC7285) by
+introducing a new cost mode `path-vector`. In the rest of the document, we use
+`path-vector` to indicate the cost type with the cost-mode `path-vector` for
+short.
+
+## Cost Mode: path-vector{#mode-spec}
+
+<!-- This cost mode is indicated by the string "array". -->
+This document extends the CostMode defined in Section 10.5 of [](#RFC7285) with
+a new cost mode: `path-vector`. This cost mode indicates that every cost value
+in a cost map represents an array of ANEs which are defined in
+[](#entity-address), rather than a JSON number or a ranking order.
+
+<!-- TODO: Mapping cost metric in `path-vector` mode to `ane` properties. -->
+
+The ANEs computed by the ALTO server associate to the cost metric for the
+`path-vector` cost mode. This document re-defines some cost metrics for
+`path-vector`, which are motivated by the co-flow scheduling use case. The ALTO
+client SHOULD ignore the `path-vector` cost mode with any other cost metrics,
+unless the future documents define other cost metrics or specify the semantics
+of existing cost metrics for `path-vector` cost mode for some additional
+requirements.
+
+<!--
+The values are arrays
+of JSONValue. The specific type of each element in the array depends on the cost
+metric.
+-->
+
+<!-- The extended CostMode is encoded as a string and MUST have a value of either "numerical", "ordinal" or "array" unless it is explicitly specified by a future extension. In particular, this extension has specified that when the cost metric is "ane-path", the cost value MUST be interpreted as a JSONArray of Abstract Network Element Names (defined in [](#nen-spec)). -->
+
+<!-- An ALTO cost service MUST return a JSONArray of JSONValue when the cost mode is "array" unless the interpretation is explicitly specified by other ALTO extensions. -->
+
+<!-- ## Cost Metric: ane-path{#metric-spec} -->
+
+## Cost Metric: Link Maximum Reservable Bandwidth{#metric-spec}
+
+This document uses the same metric name, units of measurement and measurement
+point(s) with potential measurement domain defined by section 4.1 of
+[](#I-D.ietf-alto-performance-metrics), but specifies different metric
+description and method of measurement or calculation for `path-vector` cost mode
+only.
+
+Metric Description:
+~ When used with `path-vector` cost mode, it is to specify the path vector computed by
+using the spatial and temporal maximum reservable bandwidth over each network
+link. The value of the maximum reservable bandwidth of each ANE in the path
+vector is specified in the associated property map.
+
+Method of Measurement or Calculation:
+~ The value of Maximum Reservable Bandwidth is the bandwidth measured between
+two directly connected IS-IS neighbors, OSPF neighbors or BGP neighbors. The
+associated ANEs are computed by some algorithm which can guarantee the
+equivalent Maximum Reservable Bandwidth constraints.
+
+<!--
+This document specifies a new cost metric: `ane-path`. This cost metric
+indicates that the cost value is a list of ANEs which the path from a source to
+a destination goes across. The values are arrays of ANE names which are defined
+in [](#entity-address).
+
+The cost metric `ane-path` SHOULD NOT be used when the cost mode is not `array`
+unless it is explicitly specified by a future extension. If an ALTO client send
+queries with the cost metric `ane-path` and a non `array` cost mode, the ALTO
+server SHOULD return an error with the error code `E_INVALID_FIELD_VALUE`; If an
+ALTO server declares the support of a cost type with the cost metric `ane-path`
+and a non `array` cost mode, the ALTO client SHOULD assume such a cost type is
+invalid and ignore it.
+-->
+
+<!-- ## Path Vector Cost Type Semantics ## -->
+
+<!--
+The new cost type follows the convention of the cost types in the base ALTO
+protocol. [](#tbl:cost-type) lists some of the current defined cost types and
+their semantics.
+
+Cost Mode   Cost Metric  Semantics
+
+numerical   routingcost  a number representing the routing cost
+numerical   hopcount     a number representing the hop count
+ordinal     routingcost  a ranking representing the routing cost
+ordinal     hopcount     a ranking representing the hop count
+array       ane-path     a list representing the ane path
+
+^[tbl:cost-type::Cost Types and Their Semantics]
+
+The `routingcost` and `hopcount` can encoded in `numerical` or `ordinal`,
+however, the cost metric `ane-path` can only be applied to the cost mode `array`
+defined in this document to convey path vector information. The cost metric
+`ane-path` can not be used in `numerical` or `ordinal` unless it is defined in
+future extensions. If the ALTO server declares that it support cost type with
+cost metric being `ane-path` and cost mode not being `array`, the ALTO client
+SHOULD ignore them.
+-->
 
 <!--
 ## Abstract Network Element Name {#nen-spec}
@@ -109,16 +141,20 @@ An Abstract Network Element Name is encoded as an EntityAddr of the `ane` domain
 as defined in Section 3.4.2 of [](#I-D.ietf-alto-unified-props-new).
 -->
 
+<!--
 # Protocol Extensions for Path Vector# {#SecProtoExt}
 
 To make the ALTO client query the path vectors and properties of ANEs
 efficiently and consistently, this document extends the Filtered Cost Map and
 Endpoint Cost Service.
+-->
 
-<!-- TODO: Base ALTO services like Filtered Cost Map and Endpoint Cost Map cannot support `path-vector` cost mode. -->
+<!-- FIXME: Base ALTO services like Filtered Cost Map and Endpoint Cost Map cannot support `path-vector` cost mode. -->
 
-## Filtered Cost Map Extensions ##
+<!-- ## Filtered Cost Map Extensions ## -->
+<!-- FIXME: No Filtered Cost Map extension, just use the same input parameters but different response -->
 
+<!--
 This document extends Filtered Cost Map, as defined in Section 11.3.2 of
 [](#RFC7285), by adding new input parameters and capabilities, and by augmenting
 the property map into the data entry of the response.
@@ -199,9 +235,12 @@ field, the `properties` field has the same value as the `compound-properties`
 field does. The properties shown in the `compound-properties` input parameter
 but are not supported by the dependent property map SHOULD be omitted from the
 response.
+-->
 
-## Endpoint Cost Service Extensions ##
+<!-- ## Endpoint Cost Service Extensions ## -->
+<!-- FIXME: No ECS extension, just use the same input parameters but different response -->
 
+<!--
 This document extends the Endpoint Cost Service, as defined in Section 11.5.1 of
 [](#RFC7285), by adding new input parameters and capabilities and by augmenting the
 property map into the data entry of the response.
@@ -233,7 +272,7 @@ metric, the response MUST include the `meta` field with the `dependent-vtags` in
 it, and the `dependent-vtags` field MUST include the version tag of its
 dependent property map.
 
-<!-- TODO: reduce the description of thie paragraph as possible -->
+TODO: reduce the description of thie paragraph as possible
 
 If the ALTO client specifies the `compound-properties` input parameter which is
 accepted by the ALTO server, the response MUST include a `property-map` field
@@ -245,53 +284,141 @@ field, the `properties` field has the same value as the `compound-properties`
 field does. The properties shown in the `compound-properties` input parameter
 but are not supported by the dependent property map SHOULD be omitted from the
 response.
+-->
 
-# Multipart Path Vector Cost Map # {#SecMultiService}
+# Multipart Filtered Cost Map for Path Vector # {#SecMultiFCM}
 
-<!-- TODO: introduce multipart for pv cost map and pv ecs individually. -->
-
-This document introduces a new ALTO service called `Multipart Service`, which allows a server to provide multiple resources in a single response.
+This document introduces a new ALTO resource called Multipart Filtered Cost Map
+resource, which allows an ALTO server to provide other ALTO resources associated
+to the Cost Map resource in the same response.
 
 ## Media Type ##
 
-The media type of the multipart service is `multipart/related; type=application/alto-costmap+json`.
+The media type of the Multipart Filtered Cost Map Resource is
+`multipart/related;type=application/alto-costmap+json`.
 
 ## HTTP Method ##
 
-The Multipart service is requested using the HTTP POST method.
+The Multipart Filtered Cost Map is requested using the HTTP POST method.
 
 ## Accept Input Parameters ##
 
-The input parameters of the Multipart service MUST be encoded as a JSON object in the body of an HTTP POST request. The media type of the request SHOULD be one of `application/alto-costmapfilter+json` and `application/alto-endpointcostparams+json`. The format of the request body depends on the media type:
-
-- If the media type of the request is `application/alto-costmapfilter+json`, the request body MUST be the same type as defined by []().
-- If the media type of the request is `application/alto-endpointcostparams+json`, the request body MUST be the same type as defined by []().
-
-The path vector cost type MUST be the only cost type in the input parameter.
+The input parameters of the Multipart Filtered Cost Map MUST be encoded as a JSON object
+in the body of an HTTP POST request. The media type of the request MUST be one
+of `application/alto-costmapfilter+json`. The format of the request body MUST be
+the same type as defined by section 11.3.2.3 of [](#RFC7285).
 
 ## Capabilities ##
 
-Same to cost map or endpoint cost map.
+The Multipart Filtered Cost Map resource uses the same capabilities as defined
+by section 11.3.2.4 of [](#RFC7285). But the `cost-type-names` field SHOULD only
+includes cost types in `path-vector` cost mode. Otherwise, the ALTO client
+SHOULD ignore a cost type in other cost mode, unless additional documents define
+the specification of it for the Multipart Filtered Cost Map resource.
 
 ## Uses ##
 
-COMMENT: an ANE Property Map MUST be used. Because the client need to know
-which properties the server can provide.
+The resource ID of the network map based on which the PIDs in the returned cost
+map will be defined.
 
+<!--
 The `uses` attribute MUST be an array with at least one resource id. The first resource id MUST point to a Filtered Cost Map or an Endpoint Cost Service resource. And the path vector cost type MUST be in its `cost-type` capability. If there are more than one resource id in the `uses` attribute, the ALTO client SHOULD ignore any additional resource ids.
 
-COMMENT: This paragraph is not readable.
-
 According to [](), the `property-map` field MUST be present in the first resource. So the ALTO client MUST infer that the Property Map pointed by the `property-map` field of the first resource is also a dependent resource.
+-->
 
 ## Response ##
 
-COMMENT: We need to clarify whether the property map is "anonymous". And if
-so, we need to define how the server handle "anonymous" property map, and how
-the client show interpret.
+The HTTP body of the response MUST be a `multipart/related` message as defined
+by [](#RFC2387). The body consists of two parts:
 
-COMMENT: The writing is pretty poor and has a lot of redundancy.
+- the first part MUST include `Resource-Id` and `Content-Type` in its header.
+  The value of `Resource-Id` MUST be prefixed by the resource id of the
+  Multipart Filtered Cost Map appended by a `.` character. The body of this part
+  MUST be a JSON object with the same format as defined in Section 11.2.3.6 of
+  [](#RFC7285); The JSON object MUST include the `vtag` field in the `meta`
+  field, which provides the version tag of the returned cost map. The resource
+  id of the version tag MUST be as same as the value of the `Resource-Id`
+  header. The `meta` field MUST also include the `dependent-vtags` field, whose
+  value is a single-element array to indicate the version tag of the network map
+  used, where the network map is specified in the `uses` attribute of the
+  Multipart Cost Map resource in IRD.
+- the second part MUST also include `Resource-Id` and `Content-Type` in its
+  header. The value of `Resource-Id` MUST be prefixed by the resource id of the
+  Multipart Filtered Cost Map appended by a `.` character. The body of this part
+  MUST be a JSON object with the same format as defined in Section 4.6 of
+  [](#I-D.ietf-alto-unified-props-new). The JSON object MUST include the
+  `dependent-vtags` field in the `meta` field. The value of the `dependent-vtags`
+  field MUST be an array with a single VersionTag object as defined by section
+  10.3 of [](#RFC7285). The `resource-id` of this VersionTag MUST be the value
+  of `Resource-Id` header of the first part. The `tag` of this VersionTag MUST
+  be the `tag` of `vtag` of the first part body.
+  
+<!-- TODO: Error Handling -->
 
-If an ALTO client sends a request of the media type `application/alto-costmapfilter+json` and accepts `multipart/related`, the HTTP body of the response MUST consist of two parts with the media types `application/alto-costmap+json` and `application/alto-propmap+json` accordingly. The part with media type `application/alto-costmap+json` MUST be the first part. The content of the `application/alto-costmap+json` part has the same format as defined in Section 11.2.3.6 of [](#RFC7285).
+# Multipart Endpoint Cost Service for Path Vector # {#SecMultiECS}
 
-If an ALTO client sends a request of the media type `application/alto-endpointcostparams+json` and accepts `multipart/related`, the HTTP body of the response MUST consist of two parts with the media types `application/alto-endpointcost+json` and `application/alto-propmap+json` accordingly. The part with media type `application/alto-endpointcost+json` MUST be the first part. The content of the `application/alto-endpointcost+json` part has the same format as defined in Section 11.5.1.6 of [](#RFC7285).
+This document introduces a new ALTO resource called Multipart Endpoint Cost
+resource, which allows an ALTO server to provide other ALTO resources associated
+to the Endpoint Cost resource in the same response.
+
+## Media Type ##
+
+The media type of the Multipart Endpoint Cost Resource is
+`multipart/related;type=application/alto-endpointcostmap+json`.
+
+## HTTP Method ##
+
+The Multipart Endpoint Cost resource is requested using the HTTP POST method.
+
+## Accept Input Parameters ##
+
+The input parameters of the Multipart Endpoint Cost resource MUST be encoded as
+a JSON object in the body of an HTTP POST request. The media type of the request
+MUST be one of `application/alto-endpointcostparams+json`. The format of the
+request body MUST be the same type as defined by section 11.5.1.3 of
+[](#RFC7285).
+
+## Capabilities ##
+
+The Multipart Endpoint Cost resource uses the same capabilities as defined
+by section 11.3.2.4 of [](#RFC7285). But the `cost-type-names` field SHOULD only
+includes cost types in `path-vector` cost mode. Otherwise, the ALTO client
+SHOULD ignore a cost type in other cost mode, unless additional documents define
+the specification of it for the Multipart Endpoint Cost resource.
+
+## Uses ##
+
+The Multipart Endpoint Cost resource MUST NOT specify the `uses` attribute.
+
+<!--
+The `uses` attribute MUST be an array with at least one resource id. The first resource id MUST point to a Filtered Cost Map or an Endpoint Cost Service resource. And the path vector cost type MUST be in its `cost-type` capability. If there are more than one resource id in the `uses` attribute, the ALTO client SHOULD ignore any additional resource ids.
+
+According to [](), the `property-map` field MUST be present in the first resource. So the ALTO client MUST infer that the Property Map pointed by the `property-map` field of the first resource is also a dependent resource.
+-->
+
+## Response ##
+
+The HTTP body of the response MUST be a `multipart/related` message as defined
+by [](#RFC2387). The body consists of two parts:
+
+- the first part MUST include `Resource-Id` and `Content-Type` in its header.
+  The value of `Resource-Id` MUST be prefixed by the resource id of the
+  Multipart Filtered Cost Map appended by a `.` character. The body of this part
+  MUST be a JSON object with the same format as defined in Section 11.5.1.6 of
+  [](#RFC7285); The JSON object MUST include the `vtag` field in the `meta`
+  field, which provides the version tag of the returned endpoint cost map. The
+  resource id of the version tag MUST be as same as the value of the
+  `Resource-Id` header.
+- the second part MUST also include `Resource-Id` and `Content-Type` in its
+  header. The value of `Resource-Id` MUST be prefixed by the resource id of the
+  Multipart Filtered Cost Map appended by a `.` character. The body of this part
+  MUST be a JSON object with the same format as defined in Section 4.6 of
+  [](#I-D.ietf-alto-unified-props-new). The JSON object MUST include the
+  `dependent-vtags` field in the `meta` field. The value of the `dependent-vtags`
+  field MUST be an array with a single VersionTag object as defined by section
+  10.3 of [](#RFC7285). The `resource-id` of this VersionTag MUST be the value
+  of `Resource-Id` header of the first part. The `tag` of this VersionTag MUST
+  be the `tag` of `vtag` of the first part body.
+  
+<!-- TODO: Error Handling -->

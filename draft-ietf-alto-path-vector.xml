@@ -11,9 +11,10 @@
   <!ENTITY  draft-clemm-i2rs-yang-network-topo SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-clemm-i2rs-yang-network-topo-01.xml">
   <!ENTITY  draft-bernstein-alto-topo SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-bernstein-alto-topo-00.xml">
   <!ENTITY  draft-ietf-alto-cost-calendar SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-cost-calendar-01.xml">
-  <!ENTITY  draft-ietf-alto-incr-update-sse SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-incr-update-sse-15.xml">
-  <!ENTITY  draft-ietf-alto-unified-props SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-unified-props-new-01.xml">
+  <!ENTITY  draft-ietf-alto-incr-update-sse SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-incr-update-sse-16.xml">
+  <!ENTITY  draft-ietf-alto-unified-props SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-unified-props-new-07.xml">
   <!ENTITY  draft-gao-alto-fcs SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-gao-alto-fcs-01.xml">
+  <!ENTITY  draft-ietf-alto-performance-metrics SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-performance-metrics-06.xml">
 
 
   <!ENTITY abstract PUBLIC '' "abstract.xml.gen">
@@ -42,7 +43,7 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std"
-     docName="draft-ietf-alto-path-vector-05"
+     docName="draft-ietf-alto-path-vector-06"
      ipr="trust200902">
 
   <front>
@@ -200,13 +201,14 @@
     </references>
 
     <references title="Informative References">
-      <!-- &rfc2387; -->
+      &rfc2387;
       &rfc7285;
       &rfc8189;
       &draft-ietf-alto-unified-props;
       &draft-bernstein-alto-topo;
       &draft-ietf-alto-cost-calendar;
       &draft-ietf-alto-incr-update-sse;
+      &draft-ietf-alto-performance-metrics;
       <!-- &draft-gao-alto-fcs; -->
       <!-- &draft-amante-i2rs-topology-use-cases; -->
       <!-- &draft-lee-alto-app-net-info-exchange; -->

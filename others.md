@@ -17,15 +17,14 @@ backward compatible with the base ALTO protocol:
 
 ## Compatibility with Multi-Cost Extension ##
 
-<!-- Done: Not path vector, but any cost types in the `array` cost mode is not
-testable now. -->
+<!-- FIXME: path-vector cannot be used in multi-cost, also no reason -->
 
-This document does not specify how to integrate the `array` cost mode and the
-`ane-path` cost metric with the multi-cost extension [](#RFC8189). Although
-there is no reason why somebody has to compound the path vectors with other
-cost types in a single query, there is no compatible issue doing it without
-constraint tests.
+This document does not specify how to integrate the `path-vector` cost mode with
+the multi-cost extension [](#RFC8189). Although there is no reason why somebody
+has to compound the path vectors with other cost types in a single query, there
+is no compatible issue doing it without constraint tests.
 
+<!--
 As [](#fcm-cap) mentions, the syntax and semantics of whether `constraints` or
 `or-constraints` field for the `array` cost mode is not specified in this
 document. So if an ALTO server provides a resource with the `array` cost mode
@@ -33,6 +32,7 @@ and the capability `cost-constraints` or `testable-cost-types-names`, the ALTO
 client MAY ignore the capability `cost-constraints` or
 `testable-cost-types-names` unless the implementation or future documents
 specify the behavior.
+-->
 
 <!--
 Cost type path-vector is not a testable cost type. Any format of constraints
@@ -48,6 +48,8 @@ support the path-vector extension. Specifically,
 -->
 
 ## Compatibility with Incremental Update ##
+
+<!-- FIXME: using resource-id header in MIME part -->
 
 As this document still follows the basic request/response protocol with JSON
 encoding, it is surely compatible with the incremental update service as defined
@@ -136,19 +138,19 @@ boolean tests, and can be a duplicated work. So it may be a good idea to
 integrate some already defined and widely used query languages (or their
 subset) to solve this problem. The candidates can be XQuery and JSONiq.
 
-## General Compound Resources Query ##
+## General Multipart Resources Query ##
 
-As the last paragraph of [](#ext-cm-ecs) mentions, querying multiple ALTO
-information resources continuously is a general requirement. And the coming
-issues like inefficiency and inconsistency are also general. There is no
-standard solving these issues yet. So we need some approach to make the ALTO
-client request the compound ALTO information resources in a single query.
+Querying multiple ALTO information resources continuously MAY be a general
+requirement. And the coming issues like inefficiency and inconsistency are also
+general. There is no standard solving these issues yet. So we need some approach
+to make the ALTO client request the compound ALTO information resources in a
+single query.
 
 # Security Considerations # { #SecSCons }
 
-This document is an extension of the base ALTO protocol, so the Security Considerations 
-<xref target="RFC7285"/> of the base ALTO protocol fully apply when this extension 
-is provided by an ALTO server.
+This document is an extension of the base ALTO protocol, so the Security
+Considerations [](#RFC7285) of the base ALTO protocol fully apply when this
+extension is provided by an ALTO server.
 
 <!-- Additional security considerations -->
 
@@ -204,24 +206,10 @@ that the outdated entries can be removed from the property map resource.
 
 ## ALTO Cost Mode Registry ##
 
-This document specifies a new cost mode `array`. However, the base ALTO protocol
+This document specifies a new cost mode `path-vector`. However, the base ALTO protocol
 does not have a Cost Mode Registry where new cost mode can be registered. This
 new cost mode will be registered once the registry is defined either in a
 revised version of [](#RFC7285) or in another future extension.
-
-## ALTO Cost Metric Registry ##
-
-A new cost metric needs to be registered in the `ALTO Cost Metric Registry`,
-listed in [](#tbl:cost-metric).
-
----------------------------------------------
-Identifier  Intended Semantics
----------   ---------------------
-ane-path    See [](#metric-spec)
-
----------------------------------------------
-
-^[tbl:cost-metric::ALTO Cost Metrics]
 
 ## ALTO Entity Domain Registry ##
 
@@ -238,17 +226,16 @@ ane        See [](#entity-address) None
 
 ^[tbl:entity-domain::ALTO Entity Domain]
 
-## ALTO Network Element Property Type Registry ##
+## ALTO Property Type Registry ##
 
-The `ALTO Abstract Network Element Property Type Registry` is required by the
+The `ALTO Property Type Registry` is required by the
 ALTO Domain `ane`, listed in [](#tbl:prop-type-register).
 
 ---------------------------------------------
-Identifier  Intended Semantics
----------   ---------------------
-availbw     The available bandwidth
+Identifier    Intended Semantics
+------------  ---------------------
+ane:maxresbw  The available bandwidth
 
-delay       The transmission delay
 ---------------------------------------------
 
 ^[tbl:prop-type-register::ALTO Abstract Network Element Property Types]
