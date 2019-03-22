@@ -54,7 +54,7 @@ as follows:
   the generated ANEs. Each ANE has the same unique identifier in the path
   vectors and in the dynamic entity domain;
 - each entity in this dynamic entity domain has the property defined by the
-  `cost-metric` in the query.
+  `cost-metric` that generated the ANEs in the query.
 
 Detailed information and specifications are given in [](#SecANEDomain).
 
@@ -188,7 +188,7 @@ This design addresses the two issues as follows:
   is a property map associated to the first map.
 - To address the second issue, each part of the `multipart/related` response
   message has the MIME part header information including `Content-Type` and
-  `Resource-Id`. An ALTO server MUST generate incremental updates (see
+  `Resource-Id`. An ALTO server MAY generate incremental updates (see
   [](#I-D.ietf-alto-incr-update-sse)) for each part separately using the
   `Resource-Id` header.
 
