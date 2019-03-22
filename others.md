@@ -4,6 +4,15 @@
 
 <!-- Legacy ALTO clients SHOULD NOT send queries with the path-vector extension and ALTO servers with this extension SHOULD NOT have any compatibility issue. Legacy ALTO servers do not support cost types with cost mode being "array" and cost metric being "ane-path", so they MUST NOT announce the extended cost types in IRD. Thus, ALTO clients MUST NOT send queries specified in this extension to base ALTO servers according to Section 11.3.2.3 [](#RFC7285). -->
 
+The Multipart Filtered Cost Map resource and the Multipart Endpoint Cost
+resource has no backward compatibility issue with the base ALTO clients and
+servers. Although these two types of resources reuse the media types defined in
+the base ALTO protocol for the accept input parameters, they have different
+media types for responses. If the ALTO server provides these two types of
+resources, but the ALTO client does not support them, the ALTO client will
+ignore the resources without conducting any incompatibility.
+
+<!--
 The path vector extension on Filtered Cost Map and Endpoint Cost Service is
 backward compatible with the base ALTO protocol:
 
@@ -14,6 +23,7 @@ backward compatible with the base ALTO protocol:
 - If the client sends a request with the input parameter `properties`, but the
   server only supports the base ALTO protocol, the server will ignore this
   field.
+-->
 
 ## Compatibility with Multi-Cost Extension ##
 
