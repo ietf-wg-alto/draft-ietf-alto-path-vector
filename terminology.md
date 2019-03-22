@@ -2,14 +2,14 @@
 
 Besides the terms defined in [](#RFC7285) and
 [](#I-D.ietf-alto-unified-props-new), this document also uses the following
-additional terms: Abstract Network Element, Path Vector.
+additional terms: Abstract Network Element and Path Vector.
 
 <!-- FIXME: Do we really need so many terms? A lot of terms are useless actually -->
 
 <!-- TODO: What are the real necessary terms we need? -->
 
 - Abstract Network Element (ANE): An abstract network element is an abstraction
-  of network components; it can be an aggregation of links, middle boxes,
+  of network components. It can be an aggregation of links, middleboxes,
   virtualized network function (VNF), etc. An abstract network element has two
   types of attributes: a name and a set of properties.
 - Path Vector: A path vector is an array of ANEs. It presents an abstract

@@ -8,17 +8,16 @@ to the node.
 
 Although the `single-node` abstraction works well in many settings,
 it lacks the ability to support emerging use cases, such as
-co-flow scheduling for large-scale data analytics. For such a use case, applications 
+co-flow scheduling for large-scale data analytics. For such a use case, applications
 require a more powerful network view abstraction beyond the `single-node` abstraction.
 
 To support capabilities like co-flow scheduling, this document uses a `path
 vector` abstraction to represent more detailed network graph information like
-capacity regions. The path vector abstraction uses path vectors with abstract
-network elements to provide network graph view for applications. A path vector
-consists of a sequence of abstract network elements (ANEs) that end-to-end
-traffic goes through. Example ANEs include links, switches, middleboxes, and their
-aggregations. An ANE can have properties such as `bandwidth`, and `delay`. Providing 
-such information can help both applications to achieve better
+capacity regions. A path vector is a sequence of abstract network elements
+(ANEs), and each ANE represents a network device that end-to-end traffic goes
+through, such as links, switches, middleboxes, and their
+aggregations. An ANE can have properties such as `bandwidth`, and `delay`.
+Providing such information can help both applications to achieve better
 application performance and networks to avoid network congestion.
 <!--to provide information on the shared bottlenecks of multiple flows.-->
 
@@ -28,16 +27,16 @@ requirements (ARs):
 AR-1:
 ~ The path vector abstraction requires the encoding of array-like cost
 values rather than scalar cost values in cost maps or endpoint cost maps.
-~ Specifically, the path vector abstraction requires the specification of the 
+~ Specifically, the path vector abstraction requires the specification of the
 sequence of ANEs between sources and destinations. Such a sequence, however,
 cannot be encoded by the scalar types (numerical or ordinal) which
-the base ALTO protocol supports. 
+the base ALTO protocol supports.
 
 <!--A path vector exposes the abstract network elements (e.g., links, switches, middleboxes and their aggregations) that end-to-end traffic goes through, allowing applications to discover the correlations of traffic with different source/destination endpoints. The properties can be `bandwidth` for links and `delay` between neighboring switches. These information may help the application avoid network congestion, achieving better application performance.-->
 
 AR-2:
 ~ The path vector abstraction requires the encoding of the properties of aforementioned ANEs.
-~ Specifically, only the sequences of ANEs are not enough for existing use cases. Properties 
+~ Specifically, only the sequences of ANEs are not enough for existing use cases. Properties
 of ANEs such as `bandwidth` and `delay` are needed by
 applications to properly construct network constraints or states.
 
@@ -47,19 +46,19 @@ applications to properly construct network constraints or states.
 <!-- network elements. -->
 
 AR-3:
-~ The path vector abstraction requires consistent encoding of path vectors (AR-1) and the 
+~ The path vector abstraction requires consistent encoding of path vectors (AR-1) and the
 properties of the ANEs in a path vector (AR-2).
 ~ Specifically, path vectors and the properties of ANEs in the vectors are dependent. A mechanism to query both of them consistently is necessary.
 
 <!-- - Encapsulating multiple map messages in a single response: Sending multiple queries to get path vectors and properties of abstract network elements introduce additional communication overhead.  A mechanism to provide multiple map messages in a single session is necessary. -->
 
 This document proposes the path vector extension to the ALTO protocol to satisfy these
-additional requirements . 
+additional requirements .
 
-Specifically, the extension encodes the array (AR-1) of ANEs over an end-to-end path 
+Specifically, the extension encodes the array (AR-1) of ANEs over an end-to-end path
 using a new cost type, and conveys the properties of ANEs (AR-2) using unified property map
 [](#I-D.ietf-alto-unified-props-new). The path vector and ANE properties are conveyed in a
-single message encoded as a multipart/related message to satisfy AR-3. 
+single message encoded as a multipart/related message to satisfy AR-3.
 
 <!--
 We also provide an optional solution to

@@ -34,9 +34,9 @@ using the extension.
 ## Information Resource Directory Example ## { #id-example-ird }
 
 Here is an example of an Information Resource Directory. In this example,
-the `cost-map-pv` information resource provides a Multipart Cost Map resource for 
-path-vector; the `endpoint-cost-pv` information resource provides a 
-MultipartEndpoint Cost resource for path-vector. Both of them support the 
+the `cost-map-pv` information resource provides a Multipart Cost Map resource for
+path-vector; the `endpoint-cost-pv` information resource provides a
+MultipartEndpoint Cost resource for path-vector. Both of them support the
 Maximum Reservable Bandwidth (`maxresbw`) cost metric in `path-vector` cost mode.
 
 <!-- TODO: Use the coherent example with the use case section -->
@@ -79,7 +79,7 @@ Maximum Reservable Bandwidth (`maxresbw`) cost metric in `path-vector` cost mode
   }
 ```
 
-## Example # 1##
+## Example #1##
 
 Query filtered cost map to get the path vectors.
 

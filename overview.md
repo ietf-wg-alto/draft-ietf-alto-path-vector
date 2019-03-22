@@ -7,11 +7,12 @@ support of Filtered Property Map defined in
 [](#I-D.ietf-alto-unified-props-new).
 
 The path vector extension is composed of three building blocks: (1) a new cost
-mode to provide path vectors; (2) a new ALTO entity domain to use unified property
-extension [](#I-D.ietf-alto-unified-props-new) to provide properties of ANEs; and
-(3) a generic mechanism to provide multiple ALTO information objects in a single
-response to enforce consistency, preserve modularity and avoid complex linking
-of multiple responses.
+mode to encode path vectors in a cost map or an endpoint cost map; (2) a new
+ALTO entity domain to enable ANE property encoding using the unified property
+extension [](#I-D.ietf-alto-unified-props-new); and (3) a generic mechanism to
+put multiple ALTO information objects in a single response to enforce
+consistency, to preserve modularity and to avoid complex linking of multiple
+responses.
 <!-- (3) an extension to the cost map and endpoint cost resource to provide path -->
 <!-- vectors and properties of ANEs in a single response. -->
 
@@ -19,11 +20,11 @@ of multiple responses.
 
 Existing cost modes defined in [](#RFC7285) allow only scalar cost values.
 However, the "path vector" abstraction requires to convey vector format
-information (AR-1). To achieve this requirement, this document defines a new
+information (AR-1). To fulfill this requirement, this document defines a new
 `cost-mode` named path vector to indicate that the cost value is an array of ANEs.
-A path vector abstraction should be computed for a specific performance metrics, but
-this can be achieved using the existing `cost-metric` component of
-cost type. The details of the new `cost-mode` is given in [](#SecCostType).
+A path vector abstraction should be computed for a specific performance metric,
+and this is achieved using the existing `cost-metric` component of cost type.
+The details of the new `cost-mode` is given in [](#SecCostType).
 
 
 <!-- ### New Cost Metric: ane-path ### {#ALTO.PV.CostMetric}
@@ -34,23 +35,26 @@ To represent an abstract network path, this document introduces a new cost metri
 
 A cost mode as defined in Section 6.1.2 of [](#RFC7285), a cost mode is either "numerical" or "ordinal" and none of these can be used to present a list of ANE names. Therefore, this document specifies a new cost mode named "array" for the cost metric "ane-path". The new cost mode "array" means each cost value in the cost maps is a list. -->
 
-## New ALTO Entity Domain to Provide ANE Properties ## {#nep-map}
+## New ALTO Entity Domain for ANE Properties ## {#nep-map}
 
-A path vector of ANEs provides only the abstracted routing elements between a source and a
-destination. Hence, an application can find shared ANEs of different paths of different
-source-destination pairs but cannot know the properties of the shared ANEs. For the use case
-of capacity-region in [](#SecMF), knowing that eh1->eh2 and eh3->eh4 share ANEs, but not
-knowing the available bandwidth of the shared ANEs is not enough for the use case.
+A path vector of ANEs contains only the abstracted routing elements between a
+source and a destination. Hence, an application can find shared ANEs of
+different source-destination pairs but cannot know the shared ANEs' properties.
+For the capacity region use case in [](#SecMF), knowing that eh1->eh2 and
+eh3->eh4 share ANEs but not the available bandwidth of the shared ANEs, is not
+enough.
 
-To provide properties like the available bandwidth of ANEs for each path vector
-query, this document uses the unified property extension defined in
-[](#I-D.ietf-alto-unified-props-new). Specifically, for each path vector query, the ALTO server generates a property map associated to the (endpoint) cost map as follows:
+To encode ANE properties like the available bandwidth in a path vector
+query response, this document uses the unified property extension defined in
+[](#I-D.ietf-alto-unified-props-new). Specifically, for each path vector query,
+the ALTO server generates a property map associated to the (endpoint) cost map
+as follows:
 
 - a dynamic entity domain of an entity domain type `ane` is generated to contain
-  the generated ANEs. Each ANE has the same identifier in the path vectors and
-  in the dynamic entity domain;
-- each entity in the entity domain has a property which is the `cost-metric`
-  that generated the ANEs, providing the required information.
+  the generated ANEs. Each ANE has the same unique identifier in the path
+  vectors and in the dynamic entity domain;
+- each entity in this dynamic entity domain has the property defined by the
+  `cost-metric` in the query.
 
 Detailed information and specifications are given in [](#SecANEDomain).
 
@@ -113,12 +117,15 @@ this document.
 
 Path vectors and the property map containing the ANEs are two different types
 of objects, but they require strong consistency. One approach to achieving
-strong consistency is to define new media types to contain both objects, but
+strong consistency is to define a new media type to contain both objects, but
 this violates modular design.
 
 Another approach is to provide the objects in two different information resources.
 Thus, an ALTO client needs to make separate queries to get the information of
-related services. This may cause a data synchronization problem between two queries.
+related services. This may cause a data synchronization problem between two
+queries. Also, as the generation of ANE is dynamic, an ALTO server must cache
+the results of a query before a client fully retrieves all related resources,
+which hurts the scalability and security of an ALTO server.
 
 This document uses standard-conforming usage of `multipart/related` media type
 defined in [](#RFC2387) to elegantly solve the problem.
@@ -129,7 +136,7 @@ Specifically, using `multipart/related` needs to address two issues:
   resource directory (IRD) (e.g., `application/alto-costmap+json` for cost map
   and `application/alto-endpointcostmap+json` for endpoint cost map). Simply
   putting `multipart/related` as the media type, however, makes it impossible
-  for an ALTO client to identify the type of service being provided by related
+  for an ALTO client to identify the type of service provided by related
   entries.
 
 - The ALTO SSE extension (see [](#I-D.ietf-alto-incr-update-sse)) depends on
@@ -164,32 +171,31 @@ considered more stable, Path Vectors and the dependent ANE Property Maps might
 change more frequently.
 -->
 
-This design addresses the two issues as the following:
+This design addresses the two issues as follows:
 
 - To address the first issue, the multipart/related media type includes the type
-  parameter to allow indication of the root object. For example, to indicate a
-  cost map service, the `media-type` will be `multipart/related` with a
-  parameter `type=application/alto-costmap+json`; to indicate an endpoint cost
+  parameter to allow type indication of the root object. For a
+  cost map service, the `media-type` will be `multipart/related` with the
+  parameter `type=application/alto-costmap+json`; for an endpoint cost
   map service, the parameter will be
   `type=application/alto-endpointcostmap+json`. This design is highly
-  extensible. The entries can still use the
-  `application/alto-costmapfilter+json` or
+  extensible. The entries can still use `application/alto-costmapfilter+json` or
   `application/alto-endpointcostparams+json` as the accept input parameters, and
-  hence the ALTO client still sends the filtered cost map request or endpoint
+  hence an ALTO client still sends the filtered cost map request or endpoint
   cost service request. The ALTO server sends the response as a
   `multipart/related` message. The body of the response includes two parts: the
-  first one is the media type according to the `type` parameter; the second one
+  first one is of the media type specified by the `type` parameter; the second one
   is a property map associated to the first map.
 - To address the second issue, each part of the `multipart/related` response
   message has the MIME part header information including `Content-Type` and
-  `Resource-Id`. The ALTO client can subscribe to the incremental updates (see
+  `Resource-Id`. An ALTO server MUST generate incremental updates (see
   [](#I-D.ietf-alto-incr-update-sse)) for each part separately using the
   `Resource-Id` header.
-  
-By applying the design above, for each path vector query, the ALTO server can
-return the path vectors and the associated property map modularly and
-consistently. The ALTO server can reuse the data models of the existing
-information resources. And the ALTO client can subscribe to the incremental
+
+By applying the design above, for each path vector query, an ALTO server
+returns the path vectors and the associated property map modularly and
+consistently. An ALTO server can reuse the data models of the existing
+information resources, and an ALTO client can subscribe to the incremental
 updates for the dynamic generated information resources without any changes.
 
 <!--
