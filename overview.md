@@ -19,10 +19,10 @@ of multiple responses.
 
 Existing cost modes defined in [](#RFC7285) allow only scalar cost values.
 However, the "path vector" abstraction requires to convey vector format
-information (AR-1). To achieve this requirement, this document defines a new 
-`cost-mode` named path vector to indicate that the cost value is an array of ANEs. 
-A path vector abstraction should be computed for a specific performance metrics, but 
-this can be achieved using the existing `cost-metric` component of 
+information (AR-1). To achieve this requirement, this document defines a new
+`cost-mode` named path vector to indicate that the cost value is an array of ANEs.
+A path vector abstraction should be computed for a specific performance metrics, but
+this can be achieved using the existing `cost-metric` component of
 cost type. The details of the new `cost-mode` is given in [](#SecCostType).
 
 
@@ -37,16 +37,16 @@ A cost mode as defined in Section 6.1.2 of [](#RFC7285), a cost mode is either "
 ## New ALTO Entity Domain to Provide ANE Properties ## {#nep-map}
 
 A path vector of ANEs provides only the abstracted routing elements between a source and a
-destination. Hence, an application can find shared ANEs of different paths of different 
-source-destination pairs but cannot know the properties of the shared ANEs. For the use case 
-of capacity-region in Section 3, knowing that eh1->eh2 and eh3->eh4 share ANEs, but not 
-knowing the available  bandwidth of the shared ANEs is not enough for the use case. 
+destination. Hence, an application can find shared ANEs of different paths of different
+source-destination pairs but cannot know the properties of the shared ANEs. For the use case
+of capacity-region in Section 3, knowing that eh1->eh2 and eh3->eh4 share ANEs, but not
+knowing the available  bandwidth of the shared ANEs is not enough for the use case.
 
-CHECKME: This design uses the unified property extension defined in 
+CHECKME: This design uses the unified property extension defined in
 [](#I-D.ietf-alto-unified-props-new) to provide the properties of the ANEs. Specifically,
-for each path vector query, a dynamic entity domain of an entity domain type `ane` is 
+for each path vector query, a dynamic entity domain of an entity domain type `ane` is
 generated to contain the generated ANEs. Each ANE has the same identifier in the path vectors and
-in the dynamic entity domain; each entity in the entity domain has a property which is the 
+in the dynamic entity domain; each entity in the entity domain has a property which is the
 `cost-metric` that generated the ANEs, providing the required information.
 Detailed information and specifications are given in [](#SecANEDomain).
 
@@ -97,29 +97,29 @@ this document.
 <!-- ## [](#RFC2378) media type for path vector: multipart/related ## -->
 ## Multipart/Related Resource for Consistency##
 
-Path vectors and the property map containing the ANEs are two different types 
-of objects, but they require strong consistency. One approach to achieving 
-strong consistency is to define new media types to contain both objects, but 
+Path vectors and the property map containing the ANEs are two different types
+of objects, but they require strong consistency. One approach to achieving
+strong consistency is to define new media types to contain both objects, but
 this violates modular design.
 
-Another approach is to provide the objects in two different information resources. 
+Another approach is to provide the objects in two different information resources.
 Thus, an ALTO client needs to make separate queries to get the information of
 related services. This may cause a data synchronization problem between two queries.
 
-This document uses standard-conforming usage of `multipart/related` media type 
+This document uses standard-conforming usage of `multipart/related` media type
 defined in [](#RFC2387) to elegantly solve the problem.
 
-Specifically, using mutipart/related needs to address two issues:
+Specifically, using multipart/related needs to address two issues:
 
-- ALTO uses media type in each entry of the information resource directory (IRD) 
-to indicate the type of information resource 
+- ALTO uses media type
+to indicate the type of an entry in the information resource directory (IRD)
 (e.g., application/alto-costmap+json for cost map and application/alto-endpointcostmap+json
-for endpoint cost map). Simply putting mutipart/related as the media type, however, 
+for endpoint cost map). Simply putting multipart/related as the media type, however,
 makes it impossible for an ALTO client to identify the type of service being provided by related
 entries.
 
 - The ALTO SSE extension depends on resource-id to identify push updates, but resource-id
-is provided only in IRD and hence each entry in the IRD has only one resource-id. 
+is provided only in IRD and hence each entry in the IRD has only one resource-id.
 
 
 <!--
@@ -152,17 +152,17 @@ change more frequently.
  This design addresses the two issues as the following:
 
 - To address the first issue, the multipart/related media type includes the type parameter to allow indication of the
-  root object. For example, to indicate a cost map service, the `media-type` will be 
-  `multipart/related` with a parameter `type=application/alto-costmap+json`; to indicate 
+  root object. For example, to indicate a cost map service, the `media-type` will be
+  `multipart/related` with a parameter `type=application/alto-costmap+json`; to indicate
   an endpoint cost map service,  the parameter will be`type=application/alto-endpointcostmap+json`. This design is highly extensible.
   The entries can still use the `application/alto-costmapfilter+json` or
-  `application/alto-endpointcostparams+json` as the accept input parameters, and 
+  `application/alto-endpointcostparams+json` as the accept input parameters, and
   hence the ALTO client still sends the filtered cost map request or endpoint cost service request. The ALTO server sends the response as a `multipart/related` message. The body
   of the response includes two parts: the first one is the media type according to the `type` parameter; the second one is a property map associated to the first map.
-- To address the second issue, each part of the `multipart/related` response message 
+- To address the second issue, each part of the `multipart/related` response message
   has the MIME part header information including `Content-Type` and `Resource-Id`. The ALTO client can
-  subscribe the incremental update (see [](#I-D.ietf-alto-incr-update-sse)) for
-  each part separately by using the `Resource-Id` header.
+  subscribe to the incremental updates (see [](#I-D.ietf-alto-incr-update-sse)) for
+  each part separately using the `Resource-Id` header.
 
 FIXME: In this way, a response can contain both the path vectors in a filtered cost map
 (or endpoint cost map) and the associated ANE Property Map. The media types of
