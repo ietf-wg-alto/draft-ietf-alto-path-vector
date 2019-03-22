@@ -195,8 +195,9 @@ This design addresses the two issues as follows:
 By applying the design above, for each path vector query, an ALTO server
 returns the path vectors and the associated property map modularly and
 consistently. An ALTO server can reuse the data models of the existing
-information resources, and an ALTO client can subscribe to the incremental
-updates for the dynamic generated information resources without any changes.
+information resources. And an ALTO client can subscribe to the incremental
+updates for the dynamic generated information resources without any changes, if
+th ALTO server provides incremental updates for them.
 
 <!--
 In this way, for each  the ALTO server can reuse the  a response can contain both the path vectors in a filtered cost map
