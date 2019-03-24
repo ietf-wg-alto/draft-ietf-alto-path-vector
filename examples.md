@@ -74,6 +74,15 @@ Maximum Reservable Bandwidth (`maxresbw`) cost metric in `path-vector` cost mode
         "capabilities": {
           "cost-type-names": [ "pv-maxresbw" ]
         }
+      },
+      "update-pv": {
+        "uri": "http://alto.example.com/updates/pv",
+        "media-type": "text/event-stream",
+        "uses": [ "endpoint-cost-pv" ],
+        "accepts": "application/alto-updatestreamparams+json",
+        "capabilities": {
+          "support-stream-control": true
+        }
       }
     }
   }
@@ -240,3 +249,67 @@ Content-Type: application/alto-propmap+json
   }
 }
 ```
+
+## Example for Incremental Update
+
+In this example, an ALTO client subscribe the incremental update for the
+Multipart Endpoint Cost resource `endpoint-cost-pv`.
+
+```
+POST /updates/pv HTTP/1.1
+Host: alto.example.com
+Accept: text/event-stream
+Content-Type: application/alto-updatestreamparams+json
+Content-Length: [TBD]
+
+{
+  "add": {
+    "ecspvsub1": {
+      "resource-id": "endpoint-cost-pv",
+      "input": <ecs-input>
+    }
+  }
+}
+```
+
+Based on the server process defined in [](#I-D.ietf-alto-incr-update-sse), the
+ALTO server will send the control-uri first using Server-Sent Event (SSE), and
+follow the full response of the multipart message.
+
+```
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+
+event: application/alto-updatestreamcontrol+json
+data: {"control-uri": "http://alto.example.com/updates/streams/1414"}
+
+event: multipart/related;boundary=example-3;start=pvmap;
+       type=application/alto-endpointcost+json,ecspvsub1
+data: --example-3
+data: Content-ID: pvmap
+data: Content-Type: application/alto-endpointcost+json
+data:
+data: <endpoint-cost-map-entry>
+data: --example-3
+data: Content-ID: nepmap
+data: Content-Type: application/alto-propmap+json
+data:
+data: <property-map-entry>
+data: --example-3--
+```
+
+Then, the ALTO server will subscribe the whole tree of the multipart message automatically.
+
+When the data updated, the ALTO server will publish the data updates for each
+node in this tree separately.
+
+```
+event: application/merge-patch+json,ecspvsub1.pvmap
+data: <Merge patch for endpoint-cost-map-update>
+
+event: application/merge-patch+json,ecspvsub2.nepmap
+data: <Merge patch for property-map-update>
+```
+
+<!-- TODO: the remaining issue is where to specify the json-merge-patch capability for each node -->
