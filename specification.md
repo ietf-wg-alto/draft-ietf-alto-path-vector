@@ -35,7 +35,7 @@ metric.
 
 <!-- ## Cost Metric: ane-path{#metric-spec} -->
 
-## Cost Metric: Link Maximum Reservable Bandwidth{#metric-spec}
+## Cost Metric: Link Maximum Reservable Bandwidth {#metric-spec}
 
 This document uses the same metric name, units of measurement and measurement
 point(s) with potential measurement domain defined by section 4.1 of
@@ -89,6 +89,26 @@ other ANEs in its dependent cost map or endpoint cost map.
 ## Hierarchy and Inheritance
 
 There is no hierarchy or inheritance for properties associated with ANEs.
+
+# ALTO Resource Entity Domain Export
+
+## Resource Type: costmap
+
+### Entity Domain Export {#costmap-ede}
+
+If a `costmap` typed resource supports `path-vector` cost mode, it can export an
+`ane` typed entity domain defined by the union of all sets of ANE names, where
+each set of ANE names are a `path-vector` mode cost value in this `costmap`
+typed resource.
+
+## Resource Type: endpointcost
+
+### Entity Domain Export {#ec-ede}
+
+If an `endpointcost` typed resource supports `path-vector` cost mode, it can
+export an `ane` typed entity domain defined by the union of all sets of ANE
+names, where each set of ANE names are a `path-vector` mode cost value in this
+`endpointcost` typed resource.
 
 <!--
 This document specifies a new cost metric: `ane-path`. This cost metric

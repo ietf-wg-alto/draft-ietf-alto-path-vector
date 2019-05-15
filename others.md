@@ -236,26 +236,50 @@ ane        See [](#entity-address) None
 
 ^[tbl:entity-domain::ALTO Entity Domain]
 
-## ALTO Property Type Registry ##
+## ALTO Entity Property Type Registry ##
 
-The `ALTO Property Type Registry` is required by the
+The `ALTO Entity Property Type Registry` is required by the
 ALTO Domain `ane`, listed in [](#tbl:prop-type-register).
 
----------------------------------------------------------------------------
-Identifier    Intended Semantics     Dependencies and Interpretation
-------------  ---------------------- --------------------------------------
-ane:maxresbw  The maximum reservable application/alto-costmap+json, or
-              bandwidth for the ANE  application/alto-endpointcostmap+json,
-                                     where the ANE names are used.
+------------------------------------
+Identifier    Intended Semantics
+------------  ----------------------
+maxresbw      The maximum reservable
+              bandwidth for the ANE
 
----------------------------------------------------------------------------
 
-^[tbl:prop-type-register::ALTO Abstract Network Element Property Types]
+------------------------------------
+
+^[tbl:prop-type-register::ALTO Entity Property Types]
+
+## ALTO Resource Entity Domain Export Registries ##
+
+### costmap
+
+---------------------------------------
+Entity Domain Type Export Function
+------------------ --------------------
+ane                See [](#costmap-ede)
+
+---------------------------------------
+
+^[TableNetMapEDE::ALTO Cost Map Entity Domain Export.]
+
+### endpointcost
+
+----------------------------------
+Entity Domain Type Export Function
+------------------ ---------------
+ane                See [](#ec-ede)
+
+----------------------------------
+
+^[TableNetMapEDE::ALTO Endpoint Cost Entity Domain Export.]
 
 # Acknowledgments #
 
 The authors would like to thank discussions with Andreas
 Voellmy, Erran Li, Haibin Son, Haizhou Du, Jiayuan Hu, Qiao Xiang, Tianyuan Liu,
-Xiao Shi, Xin Wang, and Yan Luo. The authors thank Greg Bernstein (Grotto Networks), 
-Dawn Chen (Tongji University), Wendy Roome, and Michael Scharf for 
+Xiao Shi, Xin Wang, and Yan Luo. The authors thank Greg Bernstein (Grotto Networks),
+Dawn Chen (Tongji University), Wendy Roome, and Michael Scharf for
 their contributions to earlier drafts.
