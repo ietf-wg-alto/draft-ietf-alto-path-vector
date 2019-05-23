@@ -263,7 +263,7 @@ ane                See [](#costmap-ede)
 
 ---------------------------------------
 
-^[TableNetMapEDE::ALTO Cost Map Entity Domain Export.]
+^[TableCostMapEDE::ALTO Cost Map Entity Domain Export.]
 
 ### endpointcost
 
@@ -274,7 +274,7 @@ ane                See [](#ec-ede)
 
 ----------------------------------
 
-^[TableNetMapEDE::ALTO Endpoint Cost Entity Domain Export.]
+^[TableEndpointCostEDE::ALTO Endpoint Cost Entity Domain Export.]
 
 # Acknowledgments #
 
