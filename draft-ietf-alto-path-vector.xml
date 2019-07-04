@@ -65,15 +65,15 @@
     -->
 
     <author fullname="Kai Gao" initials="K." surname="Gao">
-      <organization>Tsinghua University</organization>
+      <organization>Sichuan University</organization>
       <address>
         <postal>
         <street></street>
-        <city>Beijing</city>
-        <code>Beijing</code>
+        <city>Chengdu</city>
+        <code>610000</code>
         <country>China</country>
         </postal>
-        <email>gaok12@mails.tsinghua.edu.cn</email>
+        <email>kai.gao@scu.edu.cn</email>
       </address>
     </author>
 
@@ -136,7 +136,7 @@
       </address>
     </author>
     -->
-    
+
     <author fullname="Y. Richard Yang" initials="Y." surname="Yang">
       <organization>Yale University</organization>
       <address>

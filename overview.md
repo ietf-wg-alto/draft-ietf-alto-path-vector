@@ -1,4 +1,4 @@
-# Overview of Path Vector Extensions# {#SecOverview}
+# Overview {#SecOverview}
 
 This section presents an overview of approaches adopted by the path vector
 extension. It assumes that the readers are familiar with cost map and endpoint cost
