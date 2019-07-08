@@ -56,36 +56,28 @@ There is no hierarchy or inheritance for properties associated with ANEs.
 
 ## ANE Properties {#SecANEProp}
 
-This document defines three properties that can be associated with the ANE
-domain. These properties are numerical and can be aggregated for a path vector
-between a source and a destination to compute the end-to-end cost.
-
-### ANE Property: Hop Count
-
-The hop count property conveys the number of hops contained in an ANE and is
-indicated by the property name "hopcount". The value MUST be encoded as a
-numerical cost value as defined in Section 6.1.2.1 of [](#RFC7285). The
-aggregated value of the hop count property for a path vector is the sum of hop
-count values of all ANEs contained in the path vector.
-
-### ANE Property: Routing Cost
-
-The routing cost property conveys the same meaning as the cost metric
-"routingcost" in Section 6.1.1 of [](#RFC7285) and is indicated by the property
-name "routingcost". The value MUST be encoded as a numerical cost value as
-defined in Section 6.1.2.1 of [](#RFC7285). The aggregated value of the routing
-cost property for a path vector is the sum of routing cost values of all ANEs
-contained in the path vector.
-
-### ANE Property: Maximum Reservable Bandwidth
+### ANE Property: Maximum Reservable Bandwidth {#maxresbw}
 
 The maximum reservable bandwidth property conveys the maximum bandwidth that can
 be reserved for traffic from a source to a destination and is indicated by the
 property name "maxresbw". The value MUST be encoded as a numerical cost value as
-defined in Section 6.1.2.1 of [](#RFC7285) and the unit is bit per second. The
-aggregated value of the maximum reservable bandwidth property for a path vector
-is the minimum of maximum reservable bandwidth values of all ANEs contained in
-the path vector.
+defined in Section 6.1.2.1 of [](#RFC7285) and the unit is bit per second.
+
+If this property is requested but is missing for a given ANE, it MUST be
+interpreted as that the ANE does not support bandwidth reservation but have
+sufficiently large bandwidth for all traffic that traverses it.
+
+### ANE Property: Persistent Entity
+
+The persistent entity property conveys the physical or logical network entities
+(e.g., links, in-network caching service) that are contained by an abstract
+network element. It is indicated by the property name `persistent-entity`. The
+value is encoded as a JSON array of entity identifiers
+([](#I-D.ietf-alto-unified-props-new)). These entity identifiers are persistent
+so that a client CAN further query their properties for future use.
+
+If this property is requested but is missing for a given ANE, it MUST be
+interpreted as that no such entities exist in this ANE.
 
 # Service Extensions
 
@@ -114,32 +106,18 @@ PVReqFilteredCostMap, where:
 
 ~~~
 object {
-  [PropertyName ane-equiv-properties<1..*>;]
-  [PropertyName ane-additional-properties<0..*>;]
+  [PropertyName ane-properties<0..*>;]
 } PVReqFilteredCostMap : ReqFilteredCostMap;
 ~~~
 
 with fields:
 
-ane-equiv-properties:
-~ A list of properties that are used to create ANEs. If the cost type is the
-path vector cost type, this field MUST exist and MUST NOT be empty. Each
-property in this list MUST match one of the supported ANE properties indicated
-in the resource's "ane-equiv-properties" capability. If a property appears in
-this list, an ALTO server MUST guarantee the abstracted path vector provides
-accurate end-to-end property values. Thus, an ALTO client CAN safely use the
-aggregated property value as the end-to-end performance metric between a source
-and a destination.
-
-ane-additional-properties:
-~ A list of additional properties that are attached to the ANEs. Each property
-in this list MUST match one of the supported ANE properties indicated in the
-resource's "ane-equiv-properties" or "ane-additional-properties" capability. If
-a property ONLY appears in this list, an ALTO server MAY or MAY NOT guarantee
-the equivalence of the end-to-end value in the abstract path vector and in the
-real underlying network. Accordingly, an ALTO client SHOULD NOT use the
-aggregated property value, if applicable, as the end-to-end performance metric
-between a source and a destination, as it MAY NOT be accurate.
+ane-properties:
+~ A list of properties that are associated with the ANEs. Each property in this
+list MUST match one of the supported ANE properties indicated in the resource's
+`ane-properties` capability. If the field is NOT present, it MUST be interpreted
+as an empty list, indicating that the ALTO server MUST NOT return any property
+in the unified property part.
 
 ### Capabilities ## {#pvcm-cap}
 
@@ -149,8 +127,7 @@ object of type PVFilteredCostMapCapabilities:
 
 ~~~
 object {
-  [PropertyName ane-equiv-properties<1..*>;]
-  [PropertyName ane-additional-properties<0..*>;]
+  [PropertyName ane-properties<0..*>;]
 } PVFilteredCostMapCapabilities : FilteredCostMapCapabilities;
 ~~~
 
@@ -162,22 +139,17 @@ unless explicitly documented by a future extension. This also implies that the
 path vector cost type MUST be defined in the `cost-types` of the Information
 Resource Directory's `meta` field.
 
-ane-equiv-properties:
-~ Defines a list of ANE properties that can be used to create the ANEs. If an
-ALTO resource provides the path vector service, this capability MUST exist and
-MUST have at least one property. The properties MUST be aggregatable, i.e., the
-property values of all ANEs in a path vector can be reduced to a single property
-value using an aggregation operator.
-
-ane-additional-properties:
-~ Defines a list of additional ANE properties that can be attached to the ANEs.
-If a property already exists in "ane-equiv-properties", it MAY NOT appear in
-the "ane-additional-properties" field.
+ane-properties:
+~ Defines a list of ANE properties that can be returned. If the field is NOT
+present, it MUST be interpreted as an empty list, indicating the ALTO server
+CANNOT provide any ANE property.
 
 ### Uses ##
 
 The resource ID of the network map based on which the PIDs in the returned cost
-map will be defined.
+map will be defined. If this resource supports `persistent-entities`, it MUST
+also include ALL the resources that exposes the entities that MAY appear in the
+response.
 
 ### Response ##
 
@@ -220,15 +192,15 @@ Multipart Filtered Cost Map appended by a `.` character. The `Content-Type` MUST
 be `application/alto-propmap+json`.
 
 The body of the second part MUST be a JSON object with the same format as
-defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new), where the
-`property-map` field MUST contain all properties appeared in
-"ane-equiv-properties" and "ane-additional-properties", if present, for all
-ANE identifiers that exists in the first part. The JSON object MUST include the
-`dependent-vtags` field in the `meta` field. The value of the `dependent-vtags`
-field MUST be an array with a single VersionTag object as defined by section
-10.3 of [](#RFC7285). The `resource-id` of this VersionTag MUST be the value of
-`Resource-Id` header of the first part. The `tag` of this VersionTag MUST be the
-`tag` of `vtag` of the first part body.
+defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new). The JSON object
+MUST include the `dependent-vtags` field in the `meta` field. The value of the
+`dependent-vtags` field MUST be an array of VersionTag objects as defined by
+Section 10.3 of [](#RFC7285). The `vtag` of the first part MUST be included in
+the `dependent-vtags`. If `persistent-entities` is requested, the version tags
+of the dependent resources that MAY expose the entities in the response MUST
+also be included. The PropertyMapData has one member for each ANE identifier
+that appears in the first part, where the EntityProps has one member for each
+property requested by the client if applicable.
 
 <!-- TODO: Error Handling -->
 
@@ -257,20 +229,15 @@ PVEndpointCostParams, where
 
 ~~~
 object {
-  [PropertyName ane-equiv-properties<1..*>;]
-  [PropertyName ane-additional-properties<0..*>;]
+  [PropertyName ane-properties<0..*>;]
 } PVReqEndpointCostMap : ReqEndpointCostMap;
 ~~~
 
 with fields:
 
-ane-equiv-properties:
-~ This document defines the `ane-equiv-properties` in PVReqEndpointCostMap as
+ane-properties:
+~ This document defines the `ane-properties` in PVReqEndpointCostMap as
 the same as in PVReqFilteredCostMap. See [](#pvcm-accept).
-
-ane-additional-properties:
-~ This document defines the `ane-additional-properties` in PVReqEndpointCostMap
-as the same as in PVReqFilteredCostMap. See [](#pvcm-accept).
 
 ### Capabilities ##
 
@@ -280,7 +247,9 @@ PVFilteredCostMapCapabilities. See [](#pvcm-cap).
 
 ### Uses ##
 
-The Multipart Endpoint Cost resource MUST NOT specify the `uses` attribute.
+If a Multipart Endpoint Cost resource supports `persistent-entities`, the `uses`
+field in its IRD entry MUST include ALL the resources which exposes the entities
+that MAY appear in the response.
 
 ### Response ##
 
@@ -319,12 +288,12 @@ Multipart Filtered Cost Map appended by a `.` character (U+002E). The
 `Content-Type` MUST be `application/alto-propmap+json`.
 
 The body of the second part MUST be a JSON object with the same format as
-defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new), where the
-`property-map` field MUST contain all properties appeared in
-`ane-equiv-properties` and `ane-additional-properties`, if present, for all ANE
-identifiers that exists in the first part. The JSON object MUST include the
-`dependent-vtags` field in the `meta` field. The value of the `dependent-vtags`
-field MUST be an array with a single VersionTag object as defined by section
-10.3 of [](#RFC7285). The `resource-id` of this VersionTag MUST be the value of
-`Resource-Id` header of the first part. The `tag` of this VersionTag MUST be the
-`tag` of `vtag` of the first part body.
+defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new). The JSON object
+MUST include the `dependent-vtags` field in the `meta` field. The value of the
+`dependent-vtags` field MUST be an array of VersionTag objects as defined by
+Section 10.3 of [](#RFC7285). The `vtag` of the first part MUST be included in
+the `dependent-vtags`. If `persistent-entities` is requested, the version tags
+of the dependent resources that MAY expose the entities in the response MUST
+also be included. The PropertyMapData has one member for each ANE identifier
+that appears in the first part, where the EntityProps has one member for each
+property requested by the client if applicable.

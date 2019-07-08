@@ -53,8 +53,8 @@ as follows:
 - a dynamic entity domain of an entity domain type `ane` is generated to contain
   the generated ANEs. Each ANE has the same unique identifier in the path
   vectors and in the dynamic entity domain;
-- each entity in this dynamic entity domain has the property defined by the
-  `cost-metric` that generated the ANEs in the query.
+- each entity in this dynamic entity domain has the properties specified by the
+  client.
 
 Detailed information and specifications are given in [](#SecANEDomain).
 

@@ -43,7 +43,7 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std"
-     docName="draft-ietf-alto-path-vector-06"
+     docName="draft-ietf-alto-path-vector-07"
      ipr="trust200902">
 
   <front>
@@ -198,16 +198,16 @@
 
     <references title="Normative References">
       &rfc2119;
-    </references>
-
-    <references title="Informative References">
       &rfc2387;
       &rfc7285;
       &rfc8189;
       &draft-ietf-alto-unified-props;
+      &draft-ietf-alto-incr-update-sse;
+    </references>
+
+    <references title="Informative References">
       &draft-bernstein-alto-topo;
       &draft-ietf-alto-cost-calendar;
-      &draft-ietf-alto-incr-update-sse;
       &draft-ietf-alto-performance-metrics;
       <!-- &draft-gao-alto-fcs; -->
       <!-- &draft-amante-i2rs-topology-use-cases; -->

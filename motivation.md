@@ -1,4 +1,6 @@
-# Use Case: Capacity Region for Co-Flow Scheduling # {#SecMF}
+# Use Case
+
+## Capacity Region for Co-Flow Scheduling # {#SecMF}
 
 <!-- Consider the case that routing is given. Then what application-layer traffic optimization will focus on is traffic scheduling among application-layer paths. -->
 
@@ -33,7 +35,6 @@ respectively. Assume that the bandwidth all links are 100 Mbps.
        +-----+                                    +-----+
 
 ```
-
 ^[MFUseCase::Raw Network Topology.]
 
 The single-node ALTO topology abstraction of the network is shown in [](#SingleNodeAbs).
@@ -51,7 +52,6 @@ The single-node ALTO topology abstraction of the network is shown in [](#SingleN
            |                      |
            +----------------------+
 ```
-
 ^[SingleNodeAbs::Base Single-Node Topology Abstraction.]
 
 Consider an application overlay (e.g., a large data analysis system) which wants
@@ -87,3 +87,33 @@ the preceding issue.
 
 See [](#I-D.bernstein-alto-topo) for a more comprehensive survey of use cases
 where extended network topology information is needed.
+
+## In-Network Caching
+
+Consider a network as shown in [](#INC). Two clients (C1/eh2 and C2/eh3) are
+downloading data from a server (S/eh1) and the network provides an HTTP proxy
+which can cache results. The clients and the server are controlled by an ALTO
+client.
+
+```
+                            +---------+
+                            | Caching |
+                           -+ Proxy   |
+                          / |         |
+S      +-------+         /  +---------+
+  eh1__| sub   |_       /
+       | net 1 | \   +--|---+         +----------+
+       +-------+  ---|      |         |          |     C2
+                     | Gate +---------+ Internet |__eh3
+C1     +-------+   --| way  |         |          |
+  eh2__| sub   |__/  +------+         +----------+
+       | net 2 |
+       +-------+
+```
+^[INC::Raw Topology for the In-Network Caching Use Case.]
+
+Without the traffic correlation information, the ALTO client cannot know whether
+or how the traffic goes through the proxy. For example, if subnet1 and subnet2
+are directly connected and the traffic from eh1 to eh2 bypasses the gateway, the
+in-network cache can only be used for traffic from C2 to S and is less
+effective.

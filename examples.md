@@ -41,12 +41,17 @@ vector extension. Some critical modifications include:
   of the `meta` field.
 
 - The `cost-map-pv` information resource provides a Multipart Cost Map resource,
-  which provides abstract network elements providing the equivalent Maximum
-  Reservable Bandwidth (`maxresbw`) property.
+  which exposes the Maximum Reservable Bandwidth (`maxresbw`) property.
+
+- The `http-proxy-props` information resource provides a filtered Unified
+  Property Map resource, which exposes the HTTP proxy entity domain (encoded as
+  `http-proxy`) and the `price` property. Note that HTTP proxy is NOT a valid
+  entity domain yet and is used here only for demonstration.
 
 - The `endpoint-cost-pv` information resource provides a Multipart Endpoint Cost
-  Service. It also provides abstract network elements providing the equivalent
-  Maximum Reservable Bandwidth (`maxresbw`) property.
+  Service. It exposes the Maximum Reservable Bandwidth (`maxresbw`)
+  property and the Persistent Entity property. The persistent entities MAY come
+  from the `http-proxy-props` resource.
 
 - The `update-pv` information resource provides the incremental update
   ([](#I-D.ietf-alto-incr-update-sse)) service for the `endpoint-cost-pv`
@@ -69,22 +74,35 @@ vector extension. Some critical modifications include:
     },
     "cost-map-pv": {
       "uri": "http://alto.example.com/costmap/pv",
-      "media-type": "multipart/related;type=application/alto-costmap+json",
+      "media-type": "multipart/related;
+                     type=application/alto-costmap+json",
       "accepts": "application/alto-costmapfilter+json",
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
-        "ane-equiv-properties": [ "maxresbw" ]
+        "ane-properties": [ "maxresbw" ]
       },
       "uses": [ "my-default-networkmap" ]
     },
+    "http-proxy-props": {
+      "uri": "http://alto.example.com/proxy-props",
+      "media-type": "application/alto-propmap+json",
+      "accpets": "application/alto-propmapparams+json",
+      "capabilities": {
+        "mappings": {
+          "http-proxy": [ "price" ]
+        }
+      }
+    },
     "endpoint-cost-pv": {
       "uri": "http://alto.exmaple.com/endpointcost/pv",
-      "media-type": "multipart/related;type=application/alto-endpointcost+json",
+      "media-type": "multipart/related;
+                     type=application/alto-endpointcost+json",
       "accepts": "application/alto-endpointcostparams+json",
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
-        "ane-equiv-properties": [ "maxresbw" ]
-      }
+        "ane-properties": [ "maxresbw", "persistent-entities" ]
+      },
+      "uses": [ "http-proxy-props" ]
     },
     "update-pv": {
       "uri": "http://alto.example.com/updates/pv",
@@ -104,15 +122,17 @@ vector extension. Some critical modifications include:
 The following examples demonstrate the request to the `cost-map-pv` resource and
 the corresponding response.
 
-The request uses the path vector cost type in the `cost-type` field. Also, it
-queries the Maximum Reservable Bandwidth ANE property.
+The request uses the path vector cost type in the `cost-type` field. The
+`ane-properties` field is missing, indicating that the client only requests for
+the path vector but not the ANE properties.
 
 The response consists of two parts. The first part returns the array of ANE
 identifiers for each source and destination pair. There are three ANEs, where
 `ane:L001` is shared by traffic from `PID1` to both `PID2` and `PID3`.
 
-The second part returns the property map that maps all ANE identifiers to their
-`maxresbw` properties.
+The second part returns an empty property map. Note that the ANE entries are
+omitted since they have no properties (See Section 3.1 of
+[](#I-D.ietf-alto-unified-props-new)).
 
 ```
 POST /costmap/pv HTTP/1.1
@@ -130,8 +150,7 @@ Content-Type: application/alto-costmapfilter+json
   "pids": {
     "srcs": [ "PID1" ],
     "dsts": [ "PID2", "PID3" ]
-  },
-  "ane-equiv-properties": [ "maxresbw" ]
+  }
 }
 ```
 
@@ -185,9 +204,6 @@ Content-Type: application/alto-propmap+json
     ]
   },
   "property-map": {
-    "ane:L001": { "maxresbw": 100000000},
-    "ane:L003": { "maxresbw": 150000000},
-    "ane:L004": { "maxresbw": 50000000}
   }
 }
 ```
@@ -197,14 +213,18 @@ Content-Type: application/alto-propmap+json
 The following examples demonstrate the request to the `endpoint-cost-pv`
 resource and the corresponding response.
 
-Again, the request uses the path vector cost type in the `cost-type` field, and
-queries the Maximum Reservable Bandwidth ANE property.
+The request uses the path vector cost type in the `cost-type` field, and
+queries the Maximum Reservable Bandwidth ANE property and the Persistent Entity
+property.
 
 The response consists of two parts. The first part returns the array of ANE
 identifiers for each valid source and destination pair.
 
-The second part returns the property map that maps all ANE identifiers to their
-`maxresbw` properties.
+The second part returns the requested properties of ANEs in the first part. The
+"ane:NET001" element contains an HTTP proxy entity, which can be further used by
+the client. Since it does not contain a `maxresbw` property, the client SHOULD
+assume it does NOT support bandwidth reservation but will NOT become a traffic
+bottleneck, as specified in [](#maxresbw).
 
 ```
 POST /endpointcost/pv HTTP/1.1
@@ -226,7 +246,7 @@ Content-Type: application/alto-endpointcostparams+json
               "ipv4:203.0.113.45",
               "ipv6:2001:db8::10" ]
   },
-  "ane-equiv-properties": [ "maxresbw" ]
+  "ane-properties": [ "maxresbw", "persistent-entities" ]
 }
 ```
 
@@ -254,10 +274,8 @@ Content-Type: application/alto-endpointcost+json
   },
   "endpoint-cost-map": {
     "ipv4:192.0.2.2": {
-      "ipv4:192.0.2.89":   [ "ane:L001", "ane:L003",
-                             "ane:L004" ],
-      "ipv4:203.0.113.45": [ "ane:L001", "ane:L005",
-                             "ane:L007" ]
+      "ipv4:192.0.2.89":   [ "ane:NET001", "ane:L002" ],
+      "ipv4:203.0.113.45": [ "ane:NET001", "ane:L003" ]
     }
   }
 }
@@ -271,15 +289,19 @@ Content-Type: application/alto-propmap+json
       {
         "resource-id": "endpoint-cost-pv.ecs",
         "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+      },
+      {
+        "resource-id": "http-proxy-props",
+        "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
       }
     ]
   },
   "property-map": {
-    "ane:L001": { "maxresbw": 50000000 },
-    "ane:L003": { "maxresbw": 48000000 },
-    "ane:L004": { "maxresbw": 55000000 },
-    "ane:L005": { "maxresbw": 60000000 },
-    "ane:L007": { "maxresbw": 35000000 }
+    "ane:NET001": {
+      "persistent-entities": [ "http-proxy:192.0.2.1" ]
+    },
+    "ane:L002": { "maxresbw": 48000000 },
+    "ane:L003": { "maxresbw": 35000000 }
   }
 }
 ```
@@ -337,10 +359,12 @@ When the contents change, the ALTO server will publish the updates for each node
 in this tree separately.
 
 ```
-event: application/merge-patch+json,ecspvsub1.endpoint-cost-pv.ecsmap02695067
+event: application/merge-patch+json,
+       ecspvsub1.endpoint-cost-pv.ecsmap02695067
 data: <Merge patch for endpoint-cost-map-update>
 
-event: application/merge-patch+json,ecspvsub1.endpoint-cost-pv.propmapbbc868aa
+event: application/merge-patch+json,
+       ecspvsub1.endpoint-cost-pv.propmapbbc868aa
 data: <Merge patch for property-map-update>
 ```
 
