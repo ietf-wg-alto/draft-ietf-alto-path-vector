@@ -1,7 +1,10 @@
-The Application-Layer Traffic Optimization (ALTO) protocol [](#RFC7285) has defined cost maps and endpoint cost maps to provide basic network information. However, they provide only scalar (numerical or ordinal) cost mode values, which are insufficient to satisfy the demands of solving more complex network optimization problems. This document introduces an extension to the base ALTO protocol, namely the path-vector extension, which allows ALTO clients to query information such as the capacity region for a given set of flows (called co-flows). A non-normative example called co-flow scheduling is presented to illustrate the limitations of existing ALTO endpoint cost maps. After that, details of the extension are defined.
-
-<!--
-The Application-Layer Traffic Optimization (ALTO) Service has defined network and cost maps to provide basic network information, where the cost maps allow only scalar (numerical or ordinal) cost mode values. This document introduces a new cost mode called path-vector to allow ALTO clients to support use cases such as capacity regions for applications. This document starts with a non-normative example called multi-flow scheduling (or capacity region) to illustrate that ALTO cost maps without path vectors cannot provide sufficient information. This document then defines path-vector as a new cost mode.
-
-The Application-Layer Traffic Optimization (ALTO) protocol has defined cost map, filtered cost map and endpoint cost service to provide costs between PIDs or endpoints. However, there are some limits of such services: 1. they only allow scalar (numerical or ordinal) cost modes; 2. The queries of the services must follow the cross-product format. To address above issues, this document defines a new cost-mode "path-vector" and two corresponding cost metrics "ne" (network element), "ane" (abstract network element). Also, "pid-flows" and "endpoint-flows" are introduced to allow flow_based query.
--->
+This document defines an ALTO extension that allows a resource to provide not
+only scalar cost values but also aggregations of network components and their
+properties on the paths between different PIDs or endpoints. The extended
+information can be used to improve the robustness and performance for high-speed
+data transfers, such as virtual overlay networks and CoFlow scheduling. This
+document introduces abstract network element (ANE) as an abstraction for
+aggregated network components. It extends the base protocol and the Unified
+Property extension to enable the capability of encoding such information in a
+"path vector", i.e., an array of ANEs that are traversed by traffic from a
+source to a destination.
