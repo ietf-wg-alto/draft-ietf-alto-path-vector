@@ -13,6 +13,10 @@ indicated in this document, or an extension document.
 The type ANEIdentifier is used in this document to indicate a string of this
 format.
 
+## Part Client Id {#mpri}
+
+A Part Client Id is encoded as a JSON string.
+
 ## Path Vector Cost Type {#SecCostType}
 
 This document defines a new cost type, which is referred to as the `path vector`
@@ -229,7 +233,7 @@ to the Endpoint Cost resource in the same response.
 ### Media Type ##
 
 The media type of the Multipart Endpoint Cost Resource is
-`multipart/related;type=application/alto-endpointcostmap+json`.
+`multipart/related;type=application/alto-endpointcost+json`.
 
 ### HTTP Method ##
 
@@ -246,19 +250,19 @@ PVEndpointCostParams, where
 ~~~
 object {
   [PropertyName ane-properties<0..*>;]
-} PVReqEndpointCostMap : ReqEndpointCostMap;
+} PVReqEndpointcost : ReqEndpointcost;
 ~~~
 
 with fields:
 
 ane-properties:
-~ This document defines the `ane-properties` in PVReqEndpointCostMap as
+~ This document defines the `ane-properties` in PVReqEndpointcost as
 the same as in PVReqFilteredCostMap. See [](#pvcm-accept).
 
 ### Capabilities ##
 
 The capabilities of the Multipart Endpoint Cost Service are defined by a JSON
-object of type PVEndpointCostMapCapabilities, which is defined as the same as
+object of type PVEndpointcostCapabilities, which is defined as the same as
 PVFilteredCostMapCapabilities. See [](#pvcm-cap).
 
 ### Uses ##
@@ -276,7 +280,7 @@ The "Content-Type" header of the response MUST be `multipart/related` as defined
 by [](#RFC2387) with the following parameters:
 
 type:
-~ The type parameter MUST be "application/alto-endpointcostmap+json".
+~ The type parameter MUST be "application/alto-endpointcost+json".
 
 start:
 ~ The start parameter MUST be a quoted string where the quoted part has the same
@@ -290,7 +294,7 @@ The body consists of two parts:
 The first part MUST include `Resource-Id` and `Content-Type` in its header. The
 value of `Resource-Id` MUST be prefixed by the resource id of the Multipart
 Endpoint Cost Service appended by a `.` character (U+002E). The `Content-Type`
-MUST be `application/alto-endpointcostmap+json`.
+MUST be `application/alto-endpointcost+json`.
 
 The body of the first part MUST be a JSON object with the same format as defined
 in Section 11.5.1.6 of [](#RFC7285); The JSON object MUST include the `vtag`

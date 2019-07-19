@@ -1,116 +1,179 @@
-# Use Case
+# Use Cases {#use-cases}
 
-## Capacity Region for Co-Flow Scheduling # {#SecMF}
+This section describes typical use cases of the path vector extension. These use
+cases provide new usage scenarios of the ALTO framework.
 
-<!-- Consider the case that routing is given. Then what application-layer traffic optimization will focus on is traffic scheduling among application-layer paths. -->
+## Shared Risk Resource Group {#uc-srrg}
 
-<!-- Done: Revise the first paragraph. -->
-<!--Once routing has been configured in the network, application-layer traffic optimization may want to schedule traffic among application-layer paths. Specifically, assume that an application has control over a set of flows F = {f_1, f_2, ..., f_|F|}. If routing is given, what the application can control is x_1, x_2, ..., x_|F|, where x_i is the amount of traffic for flow i. Let x = [x_1, ..., x_|F|] be the vector of the flow traffic amounts. Due to shared links, feasible values of x where link capacities are not exceeded can be a complex polytype.-->
-
-Assume that an application has control over a set of flows, which may go through
-shared links or switches and share a bottleneck. The application hopes to
-schedule the traffic among multiple flows to get better performance. The
-capacity region information for those flows will benefit the scheduling.
-However, existing cost maps cannot reveal such information.
-
-Specifically, consider a network as shown in [](#MFUseCase). The network has 7
-switches (sw1 to sw7) forming a dumb-bell topology. Switches sw1/sw3 provide
-access on one side, sw2/sw4 provide access on the other side, and sw5-sw7 form
-the backbone. Endhosts eh1 to eh4 are connected to access switches sw1 to sw4
-respectively. Assume that the bandwidth all links are 100 Mbps.
+Consider an application which controls 4 end hosts (eh1, eh2, eh3 and eh4),
+which are connected by an ISP network with 5 switches (sw1, sw2, sw3, sw4 and
+sw5) and 5 links (l1, l2, l3, l4 and l5), as shown in [](#UCTP). Assume the end
+hosts are running data storage services and some analytics tasks, which requires
+high data availability. In order to determine the replica placement, the
+application must know how the end hosts will be partitioned if certain network
+failures happen.
 
 ```
-                            +------+
-                            |      |
-                          --+ sw6  +--
-                        /   |      |  \
-  PID1 +-----+         /    +------+   \          +-----+  PID2
-  eh1__|     |_       /                 \     ____|     |__eh2
-       | sw1 | \   +--|---+         +---|--+ /    | sw2 |
-       +-----+  \  |      |         |      |/     +-----+
-                 \_| sw5  +---------+ sw7  |
-  PID3 +-----+   / |      |         |      |\     +-----+  PID4
-  eh3__|     |__/  +------+         +------+ \____|     |__eh4
-       | sw3 |                                    | sw4 |
-       +-----+                                    +-----+
+                 +-----------------+
+   ------------->|                 |<---------
+  /   ---------->|   ALTO client   |<------   \
+ /   /           +-----------------+       \   \
+|   |                    ^                  |   |
+|   |                    |                  |   |
+|   |                    v                  |   |
+|   |            +-----------------+        |   |
+|   |  ..........|                 |......  |   |
+|   |  .         |   ALTO server   |     .  |   |
+|   |  .         +-----------------+     .  |   |
+|   |  .                                 .  |   |
+|   v  . +-----+                 +-----+ .  v   |
+|  eh1 --|     |-         l3.   -|     |-- eh3  |
+|      . | sw1 | \..l1       ../ | sw4 | .      |
+|      . +-----+  \  +-----+  /  +-----+ .      |
+|      .           --|     |--      |    .      |
+|      .             | sw3 |    l5..|    .      |
+|      .           --|     |--      |    .      |
+|      . +-----+  /  +-----+  \  +-----+ .      |
+|      . |     | /..l2     l4..\ |     | .      |
+-->eh2 --| sw2 |-               -| sw5 |-- eh4<--
+       . +-----+                 +-----+ .
+       ...................................
+```
+^[UCTP::Topology for the Shared Risk Resource Group and the Capacity Region Use Cases]
+
+
+For that purpose, the application uses an ALTO client, which communicates with
+an ALTO server provided by the ISP network. Since the Endpoint Cost Service with
+only scalar cost values cannot provide essential information for the
+application, thus, both the client and the server have the path vector extension
+enabled.
+
+Assume the ISP uses shortest path routing. For simplicity, consider the data
+availability on eh4. The network components on the paths from all other end
+hosts to eh4 are as follows:
+
+    eh1->eh4: sw1, l1, sw3, l4, sw5
+    eh2->eh4: sw2, l2, sw3, l4, sw5
+    eh3->eh4: sw4, l5, sw5
+
+These network components can be categorized into 5 categories:
+
+1. Failure will only disconnect eh1 to eh4: sw1, l1.
+2. Failure will only disconnect eh2 to eh4: sw2, l2.
+3. Failure will only disconnect eh3 to eh4: sw4, l5.
+4. Failure will only disconnect eh1 and eh2 to eh4: sw3, l4.
+5. Failure will disconnect eh1, eh2 and eh3 to eh4: sw5.
+
+The ALTO server can then aggregate sw1 and l1 as an abstract network element,
+ane1. By applying the aggregation to the categories, the response may be as
+follows:
+
+    eh1->eh4: ane1, ane4, ane5
+    eh2->eh4: ane2, ane4, ane5
+    eh3->eh4: ane3, ane5
+
+Thus, the application can still derive the potential network partitions for all
+possible network failures without knowing the exact network topology, which
+protects the privacy of the ISP.
+
+
+## Capacity Region {#uc-cr}
+
+This use case uses the same topology and application settings as
+in [](#uc-srrg) as shown in [](#UCTP). Assume the capacity of each link is 10
+Gbps, except l5 whose capacity is 5 Gbps . Assume the application is running a
+map-reduce task, where the optimal traffic scheduling is usually referred to the
+co-flow scheduling problem. Consider a simplified co-flow scheduling problem,
+e.g., the first stage of a map-reduce task which needs to transfer data from two
+data nodes (eh1 and eh3) to the mappers (eh2 and eh4). In order to optimize the
+job completion time, the application needs to determine the bottleneck of the
+transfers.
+
+If the ALTO server encodes the routing cost as bandwidth of the path, the client
+will obtain the following information:
+
+    eh1->eh2: 10 Gbps,
+    eh1->eh4: 10 Gbps,
+    eh3->eh2: 10 Gbps,
+    eh3->eh4:  5 Gbps.
+
+However, it does not provide sufficient information to determine the bottleneck.
+With the path vector extension, the ALTO server will first return the
+correlations of network paths between eh1, eh3 and eh2, eh4, as follows:
+
+    eh1->eh2: ane1 (l1), ane2 (l2),
+    eh1->eh4: ane1 (l1), ane4 (l4),
+    eh3->eh2: ane3 (l3), ane2 (l2),
+    eh3->eh3: ane5 (l5).
+
+Meanwhile, the ALTO server can also return the capacity of each ANE:
+
+    ane1.capacity = 10 Gbps,
+    ane2.capacity = 10 Gbps,
+    ane3.capacity = 10 Gbps,
+    ane4.capacity = 10 Gbps,
+    ane5.capacity =  5 Gbps.
+
+With the correlation of network paths and the link capacity property, the client
+is able to derive the capacity region of data transfer rates. Let x1 denote the
+transfer rate of eh1->eh2, x2 denote the rate of eh1->eh4, x3 denote the rate of
+eh3->eh2, and x4 denote the rate of eh3->eh4. The application can derive the
+following information from the responses:
 
 ```
-^[MFUseCase::Raw Network Topology.]
+      eh1->eh2  eh1->eh4  eh3->eh2  eh3->eh4      capaity
+ane1     1         1         0         0      |   10 Gbps
+ane2     1         0         1         0      |   10 Gbps
+ane3     0         0         1         0      |   10 Gbps
+ane4     0         1         0         0      |   10 Gbps
+ane5     0         0         0         1      |    5 Gbps
+```
 
-The single-node ALTO topology abstraction of the network is shown in [](#SingleNodeAbs).
+Specifically, the coefficient matrix on the left hand side is the transposition
+of the matrix directly derived from the path vector part, and the
+right-hand-side vector is directly derived from the property part. Thus, the
+bandwidth constraints of the data transfers are as follows:
+
+    x1 + x2 <= 10 Gbps (ane1),
+    x1 + x3 <= 10 Gbps (ane2),
+    x2 + x3 <= 10 Gbps (ane3),
+    x2      <= 10 Gbps (ane4),
+    x4      <=  5 Gbps (ane5).
+
+## In-Network Caching {#uc-inc}
+
+Consider an application which controls 3 end hosts (eh1, eh2 and eh3), which are
+connected by an ISP network and the Internet, as shown in [](#INCTP). Assume two
+clients at end hosts eh2 and eh3 are downloading the same data from a data
+server at eh1. Meanwhile, the network provider offers an in-network caching
+service at the gateway.
 
 ```
-           +----------------------+
-  {eh1}    |                      |     {eh2}
-  PID1     |                      |     PID2
-    +------+                      +------+
-           |                      |
-           |                      |
-  {eh3}    |                      |     {eh4}
-  PID3     |                      |     PID4
-    +------+                      +------+
-           |                      |
-           +----------------------+
+                +-------------+
+        ------->|             |<-----------------------
+       /  ----->| ALTO client |<-------                \
+      /  /      +-------------+       |                 \
+     /  /                             v                  |
+    /  /                          +-------------+        |
+   /  /   ........................| ALTO server |......  |
+  /  /    .                       +-------------+     .  |
+ /  /     .                     +---------+           .  |
+|  |      .                    -+ Caching |           .  |
+|  |      .                   / | Proxy   |           .  |
+|  |S     .+-------+         /  +---------+           .  |
+|  -->eh1--| sub   |_       |                         .  |
+|         .| net 1 | \   +------+         +----------+.  |
+|         .+-------+  ---|      |         |          |.  v C2
+|         .              | Gate +---------+ Internet |--eh3
+|   C1    .+-------+   --| way  |         |          |.
+----->eh2--| sub   |__/  +------+         +----------+.
+          .| net 2 |                                  .
+          .+-------+                                  .
+          .............................................
 ```
-^[SingleNodeAbs::Base Single-Node Topology Abstraction.]
+^[INCTP::Topology for the In-Network Caching Use Case.]
 
-Consider an application overlay (e.g., a large data analysis system) which wants
-to schedule the traffic among a set of end host source-destination pairs, say
-eh1 -> eh2 and eh3 -> eh4. The application can request a cost map providing
-end-to-end available bandwidth, using 'availbw' as cost-metric and 'numerical'
-as cost-mode.
-
-The application will receive from ALTO server that the bandwidth of eh1 -> eh2
-and eh3 -> eh4 are both 100 Mbps. But this information is not enough. Consider
-the following two cases:
-
-- Case 1: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw6 -> sw7 -> sw2 ->
-  eh2 and eh3 -> eh4 uses path eh3 -> sw3 -> sw5 -> sw7 -> sw4 -> eh4, then the
-  application will obtain 200 Mbps.
-- Case 2: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw7 -> sw2 -> eh2 and
-  eh3 -> eh4 uses the path eh3 -> sw3 -> sw5 -> sw7 -> sw4 -> eh4, then the
-  application will obtain only 100 Mbps due to the shared link from sw5 to sw7.
-
-To allow applications to distinguish the two aforementioned cases, the network
-needs to provide more details. In particular:
-<!-- , it needs to provide the following new capabilities: -->
-
-- The network needs to expose more detailed routing information to show the
-  shared bottlenecks;
-- The network needs to provide the necessary abstraction to hide the real
-  topology information while providing enough information to applications.
-<!-- as possible. -->
-
-<!-- The path-vector extension defined in this document will satisfy all the requirements. -->
-The path vector extension defined in this document provides a solution to address
-the preceding issue.
-
-See [](#I-D.bernstein-alto-topo) for a more comprehensive survey of use cases
-where extended network topology information is needed.
-
-## In-Network Caching
-
-Consider a network as shown in [](#INC). Two clients (C1/eh2 and C2/eh3) are
-downloading data from a server (S/eh1) and the network provides an HTTP proxy
-which can cache results. The clients and the server are controlled by an ALTO
-client.
-
-```
-                            +---------+
-                            | Caching |
-                           -+ Proxy   |
-                          / |         |
-S      +-------+         /  +---------+
-  eh1__| sub   |_       /
-       | net 1 | \   +--|---+         +----------+
-       +-------+  ---|      |         |          |     C2
-                     | Gate +---------+ Internet |__eh3
-C1     +-------+   --| way  |         |          |
-  eh2__| sub   |__/  +------+         +----------+
-       | net 2 |
-       +-------+
-```
-^[INC::Raw Topology for the In-Network Caching Use Case.]
+With the path vector extension enabled, the ALTO server can expose two types of information
 
 Without the traffic correlation information, the ALTO client cannot know whether
 or how the traffic goes through the proxy. For example, if subnet1 and subnet2

@@ -20,10 +20,10 @@ Very-high-speed data transfers:
 
 In-network storage and computation:
 ~ Emerging networking technologies such as network function virtualization and
-  mobile edge computing provide storage and computation power inside the
-  network. Applications can leverage these resources to further improve their
+  mobile edge computing provide storage and computation inside the network.
+  Applications can leverage these resources to further improve their
   performance, for example, using in-network caching to reduce latency and
-  bandwidth from multiple clients to a given source. However, existing ALTO
+  bandwidth from a given source to multiple clients. However, existing ALTO
   extensions provide no map resources to discover available in-network services,
   nor any information to help ALTO clients determine how to effectively and
   efficiently use these services.

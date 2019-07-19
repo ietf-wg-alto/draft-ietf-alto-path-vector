@@ -1,9 +1,9 @@
 # Overview {#SecOverview}
 
 This section gives a top-down overview of approaches adopted by the path vector
-extension. It is assumed that readers are familiar with both the base protocol
-[](#RFC7285) and the Unified Property Map extension
-[](#I-D.ietf-alto-unified-props-new).
+extension, with discussions to fully explore the design space. It is assumed
+that readers are familiar with both the base protocol [](#RFC7285) and the
+Unified Property Map extension [](#I-D.ietf-alto-unified-props-new).
 
 ## Workflow {#design-workflow}
 
@@ -90,21 +90,35 @@ eh1 --| sw1 |--| sw2 |--...--| swN |-- eh2
 ```
 ^[ANETP::Topology for Dynamic ANE Example.]
 
-Since ANEs CAN be generated dynamically, an ALTO client MUST NOT assume that
-ANEs with the same identifier but from different queries refer to the same
-aggregation of network components. This approach simplifies the management of
-ANE identifiers at ALTO servers, and increases the difficulty to infer the real
-network topology with cross queries. It is RECOMMENDED that the identifiers of
-statically generated ANEs be anonymized in the path vector response, for
-example, by shuffling the ANEs and shrinking their identifier space to 1, 2, 3,
-etc.
+An ANE is uniquely identified by an ANE identifier (see [](#SecAneId)) in the
+same response. However, since ANEs CAN be generated dynamically, an ALTO client
+MUST NOT assume that ANEs with the same identifier but from different queries
+refer to the same aggregation of network components. This approach simplifies
+the management of ANE identifiers at ALTO servers, and increases the difficulty
+to infer the real network topology with cross queries. It is RECOMMENDED that
+the identifiers of statically generated ANEs be anonymized in the path vector
+response, for example, by shuffling the ANEs and shrinking their identifier
+space to [1, N], where N is the number of ANEs etc.
 
-## Message Encoding {#design-msg}
+## Protocol Extensions {#design-msg}
 
 [](#design-workflow) has well articulated the reasons to complete the
 information exchange in a single round of communication. This section introduces
-the three major extensions to the base ALTO protocol and the Unified Property
-Map extension.
+the three major extended components to the base ALTO protocol and the Unified
+Property Map extension, as shown in [](#EXT).
+
+---------------------- ----  --------  ---------
+Component              IRD   Request   Response
+---------------------- ----  --------  ---------
+Path Vector Cost Type  Yes   Yes       Yes
+
+Property Negotiation   Yes   Yes       Yes
+
+Multipart Message      Yes   No        Yes
+
+---------------------- ----  --------  --------
+
+^[EXT::Extended Components and Where They Apply.]
 
 ### Path Vector Cost Type
 
@@ -136,49 +150,57 @@ return the selected properties for the ANEs in the response, if applicable.
 ### Multipart/Related Message
 
 Path vectors and the property map containing the ANEs are two different types
-of objects, but they require strong consistency. One approach to achieving
-strong consistency is to define a new media type to contain both objects, but
-this violates modular design.
+of objects, but they need to be encoded in one message. One approach is to
+define a new media type to contain both objects, but this violates modular
+design.
 
 This document uses standard-conforming usage of `multipart/related` media type
-defined in [](#RFC2387) to elegantly encode the objects. Specifically, using
-`multipart/related` needs to address two issues:
+defined in [](#RFC2387) to elegantly combine the objects. Path vectors are
+encoded as a Cost Map or an Endpoint Cost Map, and the property map is encoded
+as a Unified Propert Map. They are encapsulated as parts of a multipart message.
+The modular composition allows ALTO servers and clients to reuse the data models
+of the existing information resources. Specifically, this document addresses the
+following practical issues using `multipart/related`.
 
-- ALTO uses media type to indicate the type of an entry in the information
-  resource directory (IRD) (e.g., `application/alto-costmap+json` for cost map
-  and `application/alto-endpointcostmap+json` for endpoint cost map). Simply
-  putting `multipart/related` as the media type, however, makes it impossible
-  for an ALTO client to identify the type of service provided by related
-  entries.
+#### Identifying the Media Type of the Root Object
 
-- The ALTO SSE extension (see [](#I-D.ietf-alto-incr-update-sse)) depends on
-  resource-id to identify push updates, but resource-id is provided only in IRD
-  and hence each entry in the IRD has only one resource-id.
+ALTO uses media type to indicate the type of an entry in the Information
+Resource Directory (IRD) (e.g., `application/alto-costmap+json` for Cost Map
+and `application/alto-endpointcost+json` for Endpoint Cost Map). Simply
+putting `multipart/related` as the media type, however, makes it impossible
+for an ALTO client to identify the type of service provided by related
+entries.
 
-This design addresses the two issues as follows:
+To address this issue, this document uses the `type` parameter to indicate the
+root object of a multipart/related message. For a Cost Map resource, the
+`media-type` in the IRD entry MUST be `multipart/related` with the parameter
+`type=application/alto-costmap+json`; for an Endpoint Cost Service, the
+parameter MUST be `type=application/alto-endpointcost+json`.
 
-- To address the first issue, the multipart/related media type includes the type
-  parameter to allow type indication of the root object. For a
-  cost map service, the `media-type` will be `multipart/related` with the
-  parameter `type=application/alto-costmap+json`; for an endpoint cost
-  map service, the parameter will be
-  `type=application/alto-endpointcostmap+json`. This design is highly
-  extensible. The entries can still use `application/alto-costmapfilter+json` or
-  `application/alto-endpointcostparams+json` as the accept input parameters, and
-  hence an ALTO client still sends the filtered cost map request or endpoint
-  cost service request. The ALTO server sends the response as a
-  `multipart/related` message. The body of the response includes two parts: the
-  first one is of the media type specified by the `type` parameter; the second one
-  is a property map associated to the first map.
-- To address the second issue, each part of the `multipart/related` response
-  message has the MIME part header information including `Content-Type` and
-  `Resource-Id`. An ALTO server MAY generate incremental updates (see
-  [](#I-D.ietf-alto-incr-update-sse)) for each part separately using the
-  `Resource-Id` header.
+#### Supporting Incremental Updates
 
-By applying the design above, for each path vector query, an ALTO server
-returns the path vectors and the associated property map modularly and
-consistently. An ALTO server can reuse the data models of the existing
-information resources. And an ALTO client can subscribe to the incremental
-updates for the dynamic generated information resources without any changes, if
-the ALTO server provides incremental updates for them.
+The ALTO SSE extension (see [](#I-D.ietf-alto-incr-update-sse)) uses
+`client-id` to demultiplex push updates. However, `client-id` is provided
+for each request, which introduces ambiguity when applying SSE to a path vector
+resource.
+
+To address this issue, an ALTO server MUST assign a unique identifier to each
+part of the `multipart/related` response message. This identifier, referred to
+as a Part Client Id (See [](#mpri) for details), MUST be present in the part
+message's `Resource-Id` header. The MIME part header MUST also contain the
+`Content-Type` header, whose value is the media type of the part (e.g.,
+`application/alto-costmap+json`, `application/alto-endpointcost+json`, or
+`application/alto-propmap+json`). If an ALTO server provides incremental updates
+for this path vector resource, it MUST generate incremental updates for each
+part separately using the corresponding Part Client Id and media type.
+
+#### Order of Part Messages
+
+According to RFC 2387 [](#RFC2387), the path vector part, whose media type is
+the same as the `type` parameter of the multipart response message, is the root
+object. Thus, it is the element the application processes first. Even though the
+`start` parameter allows it to be placed anywhere in the part sequence, it is
+RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
+the path vector part is always put as the first part, followed by the property
+map part. It is also RECOMMENDED that when doing so, an ALTO server SHOULD NOT
+set the `start` parameter, which implies the first part is the root object.
