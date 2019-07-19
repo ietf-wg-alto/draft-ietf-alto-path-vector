@@ -41,7 +41,7 @@ values with the ANEs in a network. The entity in ANE domain is often used in the
 path vector by cost maps or endpoint cost resources. Accordingly, the ANE domain
 always depends on a cost map or an endpoint cost map.
 
-### Domain Name ##
+### Entity Domain Type ##
 
 ane
 
@@ -53,6 +53,22 @@ The entity identifier of ANE domain uses the same encoding as ANEIdentifier
 ### Hierarchy and Inheritance
 
 There is no hierarchy or inheritance for properties associated with ANEs.
+
+## New Resource-Specific Entity Domain Exports
+
+### ANE Domain of Cost Map Resource {#costmap-ede}
+
+If an ALTO cost map resource supports `ane-path` cost metric, it can export an
+`ane` typed entity domain defined by the union of all sets of ANE names, where
+each set of ANE names are an `ane-path` metric cost value in this ALTO cost map
+resource.
+
+### ANE Domain of Endpoint Cost Resource {#ec-ede}
+
+If an ALTO endpoint cost resource supports `ane-path` cost metric, it can export
+an `ane` typed entity domain defined by the union of all sets of ANE names,
+where each set of ANE names are an `ane-path` metric cost value in this ALTO
+endpoint cost resource.
 
 ## ANE Properties {#SecANEProp}
 
