@@ -233,14 +233,10 @@ ALTO Domain `ane`, listed in [](#tbl:prop-type-register).
 -------------------------------------------------
 Identifier              Intended Semantics
 ------------            ----------------------
-ane:maxresbw            The maximum reservable
-                        bandwidth for the ANE
+ane:maxresbw            The maximum reservable bandwidth for the ANE
 
-
-
-ane:persistent-entities Identifiers of persistent
-                        entities associated with
-                        an ANE
+ane:persistent-entities An array of identifiers of persistent entities
+                        that reside in an ANE
 
 ------------------------------------
 
@@ -273,7 +269,7 @@ ane                See [](#ec-ede)
 # Acknowledgments #
 
 The authors would like to thank discussions with Andreas
-Voellmy, Erran Li, Haibin Son, Haizhou Du, Jiayuan Hu, Qiao Xiang, Tianyuan Liu,
+Voellmy, Erran Li, Haibin Song, Haizhou Du, Jiayuan Hu, Qiao Xiang, Tianyuan Liu,
 Xiao Shi, Xin Wang, and Yan Luo. The authors thank Greg Bernstein (Grotto Networks),
 Dawn Chen (Tongji University), Wendy Roome, and Michael Scharf for
 their contributions to earlier drafts.
