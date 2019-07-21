@@ -100,7 +100,7 @@ interpreted as that no such entities exist in this ANE.
 A Part Resource ID is encoded as a JSON string with the same format as that of the
 Resource ID (Section 10.2 of [](#RFC7285)).
 
-Note that even though the client-id assigned to a path vector request and the
+WARNING: Even though the client-id assigned to a path vector request and the
 Part Resource ID MAY contain up to 64 characters by their own definition. Their
 concatenation (see [](#design-rpm)) MUST also conform to the same length
 constraint. The same requirement applies to the resource ID of the path vector

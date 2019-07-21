@@ -201,11 +201,11 @@
       &rfc2387;
       &rfc7285;
       &rfc8189;
-      &draft-ietf-alto-unified-props;
-      &draft-ietf-alto-incr-update-sse;
     </references>
 
     <references title="Informative References">
+      &draft-ietf-alto-unified-props;
+      &draft-ietf-alto-incr-update-sse;
       &draft-bernstein-alto-topo;
       &draft-ietf-alto-cost-calendar;
       &draft-ietf-alto-performance-metrics;
