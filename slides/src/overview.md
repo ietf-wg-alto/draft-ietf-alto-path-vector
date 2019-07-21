@@ -123,7 +123,7 @@ Domain used in the example: http-proxy (not formally registered)
    }
 ```
 
-## Restructured Clarification Texts
+## Restructured Sections
 
 In -07:
 
@@ -133,16 +133,16 @@ In -07:
 
 Since -08:
 
-- Introduction: the necessity of path vector extension in two aspects
+- Introduction: the importance of path vector extension in two aspects
   - It can be used to support \alert{new usage scenarios}
   - It provides fundamentally different information: \alert{correlations} of network
     paths (while the base protocol provides \alert{preferences} of network paths)
 - Overview: a top-down \alert{exploration of the design space} and \alert{design
   decision justifications}
-  - Why encoded the information in a single message
+  - Why encode the information in a single message
   - Why introduce abstract network element
   - Why the specification extensions are essential
-- Motivation (renamed to use cases): 3 use cases covering
+- Motivation (renamed to use cases): 3 use cases covering different usage scenarios
   - only the correlations of network paths
   - correlations of network paths and bandwidth information
   - correlations of network paths and in-network resources
