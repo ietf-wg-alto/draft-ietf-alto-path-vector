@@ -3,9 +3,9 @@
 In -07
 
 - Finalize the specification
-  - Revert back the cost type to -05
-  - New capabilities and request field to negotiate properties
-  - A new property to support use cases other than coflow scheduling
+  - Revert the cost type design to -05
+  - Add a new IRD capability and request field to negotiate properties
+  - Add a new property to support use cases other than coflow scheduling
 - Re-categorize some references (based on the IESG statement)
 
 In -08
@@ -16,7 +16,7 @@ In -08
     and storage)
   - Provide \alert{correlations} of network paths, in addition to
     \alert{preferences} of network paths (which motivates the base protocol)
-- Two more use cases
+- Add two more use cases
 - Clarify some design decisions including concepts (ANE, Part Resource ID), and
   procedures (property negotiation, incremental updates)
 
