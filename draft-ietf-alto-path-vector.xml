@@ -20,8 +20,8 @@
   <!ENTITY abstract PUBLIC '' "abstract.xml.gen">
   <!ENTITY introduction PUBLIC '' "introduction.xml.gen">
   <!ENTITY terminology PUBLIC '' "terminology.xml.gen">
+  <!ENTITY changes PUBLIC '' "changes.xml.gen">
   <!ENTITY overview PUBLIC '' "overview.xml.gen">
-  <!-- <!ENTITY changes PUBLIC '' "changes.xml.gen"> -->
   <!ENTITY motivation PUBLIC '' "motivation.xml.gen">
   <!ENTITY specification PUBLIC '' "specification.xml.gen">
   <!ENTITY examples PUBLIC '' "examples.xml.gen">
@@ -43,7 +43,7 @@
 <?rfc subcompact="no" ?>
 
 <rfc category="std"
-     docName="draft-ietf-alto-path-vector-07"
+     docName="draft-ietf-alto-path-vector-08"
      ipr="trust200902">
 
   <front>
@@ -73,7 +73,7 @@
         <code>610000</code>
         <country>China</country>
         </postal>
-        <email>kai.gao@scu.edu.cn</email>
+        <email>kaigao@scu.edu.cn</email>
       </address>
     </author>
 

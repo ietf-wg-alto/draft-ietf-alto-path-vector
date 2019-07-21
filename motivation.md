@@ -16,14 +16,14 @@ failures happen.
 ```
                  +-----------------+
    ------------->|                 |<---------
-  /   ---------->|   ALTO client   |<------   \
+  /   ---------->|   ALTO Client   |<------   \
  /   /           +-----------------+       \   \
 |   |                    ^                  |   |
 |   |                    |                  |   |
 |   |                    v                  |   |
 |   |            +-----------------+        |   |
 |   |  ..........|                 |......  |   |
-|   |  .         |   ALTO server   |     .  |   |
+|   |  .         |   ALTO Server   |     .  |   |
 |   |  .         +-----------------+     .  |   |
 |   |  .                                 .  |   |
 |   v  . +-----+                 +-----+ .  v   |
@@ -131,7 +131,7 @@ ane5     0         0         0         1      |    5 Gbps
 
 Specifically, the coefficient matrix on the left hand side is the transposition
 of the matrix directly derived from the path vector part, and the
-right-hand-side vector is directly derived from the property part. Thus, the
+right-hand-side vector is directly derived from the property map part. Thus, the
 bandwidth constraints of the data transfers are as follows:
 
     x1 + x2 <= 10 Gbps (ane1),
@@ -151,11 +151,11 @@ service at the gateway.
 ```
                 +-------------+
         ------->|             |<-----------------------
-       /  ----->| ALTO client |<-------                \
+       /  ----->| ALTO Client |<-------                \
       /  /      +-------------+       |                 \
      /  /                             v                  |
     /  /                          +-------------+        |
-   /  /   ........................| ALTO server |......  |
+   /  /   ........................| ALTO Server |......  |
   /  /    .                       +-------------+     .  |
  /  /     .                     +---------+           .  |
 |  |      .                    -+ Caching |           .  |

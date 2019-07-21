@@ -3,36 +3,7 @@
 This section lists some examples of path vector queries and the corresponding
 responses. Some long lines are truncated for better readability.
 
-<!--
-## Workflow ## { #workflow }
-
-This section gives a typical workflow of how an ALTO client query path vectors
-using the extension.
-
-1. Send a GET request for the whole Information Resource Directory.
-
-1. Look for the resource of the (Filtered) Cost Map/Endpoint Cost Service which
-   supports the `path-vector` cost mode and get the resource ID of the dependent
-   property map.
-
-1. Check whether the capabilities of the property map includes the desired
-   "prop-types".
-
-1. Check whether the (Filtered) Cost Map/Endpoint Cost Service allows the
-   compound response.
-
-   1. If allowed, the ALTO client can send a request including the desired ANE
-      properties to the ALTO server and receive a compound response with the
-      cost map/endpoint cost map and the property map.
-
-   1. If not allowed, the ALTO client sends a query for the cost map/endpoint
-      cost map first. After receiving the response, the ALTO client interprets
-      all the ANE names appearing in the response and sends another query for
-      the property map on those ANE names.
--->
-
-
-## Information Resource Directory Example ## { #id-example-ird }
+## Example: Information Resource Directory ## { #id-example-ird }
 
 Below is an example of an Information Resource Directory which enables the path
 vector extension. Some critical modifications include:
@@ -40,18 +11,19 @@ vector extension. Some critical modifications include:
 - The `path-vector` cost type ([](#SecCostType)) is defined in the `cost-types`
   of the `meta` field.
 
-- The `cost-map-pv` information resource provides a Multipart Cost Map resource,
-  which exposes the Maximum Reservable Bandwidth (`maxresbw`) property.
+- The `cost-map-pv` information resource provides a multipart filtered cost map
+  resource, which exposes the Maximum Reservable Bandwidth (`maxresbw`)
+  property.
 
-- The `http-proxy-props` information resource provides a filtered Unified
-  Property Map resource, which exposes the HTTP proxy entity domain (encoded as
+- The `http-proxy-props` information resource provides a filtered unified
+  property map resource, which exposes the HTTP proxy entity domain (encoded as
   `http-proxy`) and the `price` property. Note that HTTP proxy is NOT a valid
   entity domain yet and is used here only for demonstration.
 
-- The `endpoint-cost-pv` information resource provides a Multipart Endpoint Cost
-  Service. It exposes the Maximum Reservable Bandwidth (`maxresbw`)
-  property and the Persistent Entity property. The persistent entities MAY come
-  from the `http-proxy-props` resource.
+- The `endpoint-cost-pv` information resource provides a multipart endpoint cost
+  resource. It exposes the Maximum Reservable Bandwidth (`maxresbw`)
+  property and the Persistent Entity property (`persistent-entities`). The
+  persistent entities MAY come from the `http-proxy-props` resource.
 
 - The `update-pv` information resource provides the incremental update
   ([](#I-D.ietf-alto-incr-update-sse)) service for the `endpoint-cost-pv`
@@ -157,13 +129,11 @@ Content-Type: application/alto-costmapfilter+json
 ```
 HTTP/1.1 200 OK
 Content-Length: [TBD]
-Content-Type: multipart/related;
-              boundary=example-1;
-              start=cost-map-pv.costmap;
+Content-Type: multipart/related; boundary=example-1;
               type=application/alto-costmap+json
 
 --example-1
-Resource-Id: cost-map-pv.costmap
+Resource-Id: costmap
 Content-Type: application/alto-costmap+json
 
 {
@@ -191,7 +161,7 @@ Content-Type: application/alto-costmap+json
   }
 }
 --example-1
-Resource-Id: cost-map-pv.propmap
+Resource-Id: propmap
 Content-Type: application/alto-propmap+json
 
 {
@@ -208,7 +178,7 @@ Content-Type: application/alto-propmap+json
 }
 ```
 
-## Example: Multipart Endpoint Cost Service ##
+## Example: Multipart Endpoint Cost Resource ##
 
 The following examples demonstrate the request to the `endpoint-cost-pv`
 resource and the corresponding response.
@@ -254,11 +224,10 @@ Content-Type: application/alto-endpointcostparams+json
 HTTP/1.1 200 OK
 Content-Length: [TBD]
 Content-Type: multipart/related; boundary=example-2;
-              start=endpoint-cost-pv.ecs;
               type=application/alto-endpointcost+json
 
 --example-2
-Resource-Id: endpoint-cost-pv.ecs
+Resource-Id: ecs
 Content-Type: application/alto-endpointcost+json
 
 {
@@ -280,7 +249,7 @@ Content-Type: application/alto-endpointcost+json
   }
 }
 --example-2
-Resource-Id: endpoint-cost-pv.propmap
+Resource-Id: propmap
 Content-Type: application/alto-propmap+json
 
 {
@@ -309,7 +278,7 @@ Content-Type: application/alto-propmap+json
 ## Example: Incremental Updates
 
 In this example, an ALTO client subscribes to the incremental update for the
-Multipart Endpoint Cost resource `endpoint-cost-pv`.
+multipart endpoint cost resource `endpoint-cost-pv`.
 
 ```
 POST /updates/pv HTTP/1.1
@@ -340,15 +309,15 @@ Content-Type: text/event-stream
 event: application/alto-updatestreamcontrol+json
 data: {"control-uri": "http://alto.example.com/updates/streams/1414"}
 
-event: multipart/related;boundary=example-3;start=pvmap;
+event: multipart/related;boundary=example-3;
        type=application/alto-endpointcost+json,ecspvsub1
 data: --example-3
-data: Resource-ID: endpoint-cost-pv.ecsmap02695067
+data: Resource-ID: ecsmap
 data: Content-Type: application/alto-endpointcost+json
 data:
 data: <endpoint-cost-map-entry>
 data: --example-3
-data: Resource-ID: endpoint-cost-pv.propmapbbc868aa
+data: Resource-ID: propmap
 data: Content-Type: application/alto-propmap+json
 data:
 data: <property-map-entry>
@@ -359,12 +328,10 @@ When the contents change, the ALTO server will publish the updates for each node
 in this tree separately.
 
 ```
-event: application/merge-patch+json,
-       ecspvsub1.endpoint-cost-pv.ecsmap02695067
+event: application/merge-patch+json, ecspvsub1.ecsmap
 data: <Merge patch for endpoint-cost-map-update>
 
-event: application/merge-patch+json,
-       ecspvsub1.endpoint-cost-pv.propmapbbc868aa
+event: application/merge-patch+json, ecspvsub1.propmap
 data: <Merge patch for property-map-update>
 ```
 

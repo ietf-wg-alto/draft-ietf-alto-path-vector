@@ -13,10 +13,6 @@ indicated in this document, or an extension document.
 The type ANEIdentifier is used in this document to indicate a string of this
 format.
 
-## Part Client Id {#mpri}
-
-A Part Client Id is encoded as a JSON string.
-
 ## Path Vector Cost Type {#SecCostType}
 
 This document defines a new cost type, which is referred to as the `path vector`
@@ -99,28 +95,40 @@ so that a client CAN further query their properties for future use.
 If this property is requested but is missing for a given ANE, it MUST be
 interpreted as that no such entities exist in this ANE.
 
+## Part Resource ID {#mpri}
+
+A Part Resource ID is encoded as a JSON string with the same format as that of the
+Resource ID (Section 10.2 of [](#RFC7285)).
+
+Note that even though the client-id assigned to a path vector request and the
+Part Resource ID MAY contain up to 64 characters by their own definition. Their
+concatenation (see [](#design-rpm)) MUST also conform to the same length
+constraint. The same requirement applies to the resource ID of the path vector
+resource, too. Thus, it is RECOMMENDED to limit the length of resource ID and
+client ID related to a path vector resource to 31 characters.
+
 # Service Extensions
 
 ## Multipart Filtered Cost Map for Path Vector # {#SecMultiFCM}
 
-This document introduces a new ALTO resource called Multipart Filtered Cost Map
+This document introduces a new ALTO resource called multipart filtered cost map
 resource, which allows an ALTO server to provide other ALTO resources associated
-to the Cost Map resource in the same response.
+to the cost map resource in the same response.
 
 ### Media Type ##
 
-The media type of the Multipart Filtered Cost Map Resource is
+The media type of the multipart filtered cost map resource is
 `multipart/related;type=application/alto-costmap+json`.
 
 ### HTTP Method ##
 
-The Multipart Filtered Cost Map is requested using the HTTP POST method.
+The multipart filtered cost map is requested using the HTTP POST method.
 
 ### Accept Input Parameters ## {#pvcm-accept}
 
-The input parameters of the Multipart Filtered Cost Map are supplied in the body
+The input parameters of the multipart filtered cost map are supplied in the body
 of an HTTP POST request. This document extends the input parameters to a
-filtered Cost Map with a data format indicated by the media type
+filtered cost map with a data format indicated by the media type
 `application/alto-costmapfilter+json`, which is a JSON object of type
 PVReqFilteredCostMap, where:
 
@@ -141,7 +149,7 @@ in the unified property part.
 
 ### Capabilities ## {#pvcm-cap}
 
-The Multipart Filtered Cost Map resource extends the capabilities defined
+The multipart filtered cost map resource extends the capabilities defined
 in Section 11.3.2.4 of [](#RFC7285). The capabilities are defined by a JSON
 object of type PVFilteredCostMapCapabilities:
 
@@ -193,23 +201,21 @@ boundary:
 The body of the response consists of two parts.
 
 The first part MUST include `Resource-Id` and `Content-Type` in its header. The
-value of `Resource-Id` MUST be prefixed by the resource id of the Multipart
-Filtered Cost Map appended by a `.` character. The `Content-Type` MUST be
-`application/alto-costmap+json`.
+value of `Resource-Id` MUST has the format of a Part Resource ID. The
+`Content-Type` MUST be `application/alto-costmap+json`.
 
 The body of the first part MUST be a JSON object with the same format as defined
 in Section 11.2.3.6 of [](#RFC7285). The JSON object MUST include the `vtag`
 field in the `meta` field, which provides the version tag of the returned cost
-map. The resource id of the version tag MUST be the same as the value of the
-`Resource-Id` header. The `meta` field MUST also include the `dependent-vtags`
+map. The resource ID of the version tag MUST follow the format
+in [](#design-rpm). The `meta` field MUST also include the `dependent-vtags`
 field, whose value is a single-element array to indicate the version tag of the
 network map used, where the network map is specified in the `uses` attribute of
-the Multipart Cost Map resource in IRD.
+the multipart filtered cost map resource in IRD.
 
 The second part MUST also include `Resource-Id` and `Content-Type` in its
-header. The value of `Resource-Id` MUST be prefixed by the resource id of the
-Multipart Filtered Cost Map appended by a `.` character. The `Content-Type` MUST
-be `application/alto-propmap+json`.
+header. The value of `Resource-Id` has the format of a Part Resource ID. The
+`Content-Type` MUST be `application/alto-propmap+json`.
 
 The body of the second part MUST be a JSON object with the same format as
 defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new). The JSON object
@@ -226,24 +232,24 @@ property requested by the client if applicable.
 
 ## Multipart Endpoint Cost Service for Path Vector # {#SecMultiECS}
 
-This document introduces a new ALTO resource called Multipart Endpoint Cost
+This document introduces a new ALTO resource called multipart endpoint cost
 resource, which allows an ALTO server to provide other ALTO resources associated
-to the Endpoint Cost resource in the same response.
+to the endpoint cost resource in the same response.
 
 ### Media Type ##
 
-The media type of the Multipart Endpoint Cost Resource is
+The media type of the multipart endpoint cost resource is
 `multipart/related;type=application/alto-endpointcost+json`.
 
 ### HTTP Method ##
 
-The Multipart Endpoint Cost resource is requested using the HTTP POST method.
+The multipart endpoint cost resource is requested using the HTTP POST method.
 
 ### Accept Input Parameters ##
 
-The input parameters of the Multipart Endpoint Cost resource are supplied in the
+The input parameters of the multipart endpoint cost resource are supplied in the
 body of an HTTP POST request. This document extends the input parameters to an
-Endpoint Cost Map with a data format indicated by the media type
+endpoint cost map with a data format indicated by the media type
 `application/alto-endpointcostparams+json`, which is a JSON object of type
 PVEndpointCostParams, where
 
@@ -261,13 +267,13 @@ the same as in PVReqFilteredCostMap. See [](#pvcm-accept).
 
 ### Capabilities ##
 
-The capabilities of the Multipart Endpoint Cost Service are defined by a JSON
+The capabilities of the multipart endpoint cost resource are defined by a JSON
 object of type PVEndpointcostCapabilities, which is defined as the same as
 PVFilteredCostMapCapabilities. See [](#pvcm-cap).
 
 ### Uses ##
 
-If a Multipart Endpoint Cost resource supports `persistent-entities`, the `uses`
+If a multipart endpoint cost resource supports `persistent-entities`, the `uses`
 field in its IRD entry MUST include ALL the resources which exposes the entities
 that MAY appear in the response.
 
@@ -292,20 +298,18 @@ boundary:
 The body consists of two parts:
 
 The first part MUST include `Resource-Id` and `Content-Type` in its header. The
-value of `Resource-Id` MUST be prefixed by the resource id of the Multipart
-Endpoint Cost Service appended by a `.` character (U+002E). The `Content-Type`
+value of `Resource-Id` MUST has the format of a Part Resource ID. The `Content-Type`
 MUST be `application/alto-endpointcost+json`.
 
 The body of the first part MUST be a JSON object with the same format as defined
-in Section 11.5.1.6 of [](#RFC7285); The JSON object MUST include the `vtag`
+in Section 11.5.1.6 of [](#RFC7285). The JSON object MUST include the `vtag`
 field in the `meta` field, which provides the version tag of the returned
-endpoint cost map. The resource id of the version tag MUST be the same as the
-value of the `Resource-Id` header.
+endpoint cost map. The resource ID of the version tag MUST follow the format
+in [](#design-rpm).
 
 The second part MUST also include `Resource-Id` and `Content-Type` in its
-header. The value of `Resource-Id` MUST be prefixed by the resource id of the
-Multipart Filtered Cost Map appended by a `.` character (U+002E). The
-`Content-Type` MUST be `application/alto-propmap+json`.
+header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
+The `Content-Type` MUST be `application/alto-propmap+json`.
 
 The body of the second part MUST be a JSON object with the same format as
 defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new). The JSON object

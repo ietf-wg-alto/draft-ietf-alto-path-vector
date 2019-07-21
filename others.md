@@ -94,7 +94,7 @@ document.
 Fetching the historical network information is useful for many traffic
 optimization problem. [](#I-D.ietf-alto-cost-calendar) already proposes an ALTO
 extension called Cost Calendar which provides the historical cost values using
-Filtered Cost Map and Endpoint Cost Service. However, the calendar for only
+filtered cost map and endpoint cost service. However, the calendar for only
 path costs is not enough.
 
 For example, as the properties of ANEs (e.g., available bandwidth and link
@@ -174,10 +174,9 @@ information (Section 15.3 of [](#RFC7285)) and availability of ALTO service
 For confidentiality of ALTO information, a network operator should be aware of
 that this extension may introduce a new risk: the path vector information may
 make network attacks easier. For example, as the path vector information may
-reveal more network internal structures than the more abstract single-node
-abstraction, an ALTO client may detect the bottleneck link and start
-a distributed denial-of-service (DDoS) attack involving minimal flows to conduct the
-in-network congestion.
+reveal more network internal structures than the base protocol, an ALTO client
+may detect the bottleneck link and start a distributed denial-of-service (DDoS)
+attack involving minimal flows to conduct the in-network congestion.
 
 To mitigate this risk, the ALTO server should consider protection mechanisms to
 reduce information exposure or obfuscate the real information, in particular,
@@ -201,16 +200,6 @@ requests (e.g., where the flows are distributed). Hence, the service providing
 path vectors may become an entry point for denial-of-service attacks on the
 availability of an ALTO server. To avoid this risk, authenticity and
 authorization of this ALTO service may need to be better protected.
-
-Even if there is no intentional attack, the dependent property map of path
-vector might be still dynamically enriched, in that every new request for path
-vectors will make the ALTO server generate a new property map. So the
-properties of the abstract network elements can consume a large amount of
-resources when cached. To avoid this, the ALTO server providing the path vector
-extension should support a time-to-live configuration for the property map, so
-that the outdated entries can be removed from the property map resource.
-
-<!-- ## Resource Consumption on ALTO Servers # { #TTL } -->
 
 # IANA Considerations # {#SecIANA}
 
@@ -241,12 +230,17 @@ ane        See [](#entity-address) None
 The `ALTO Entity Property Type Registry` is required by the
 ALTO Domain `ane`, listed in [](#tbl:prop-type-register).
 
-------------------------------------
-Identifier    Intended Semantics
-------------  ----------------------
-maxresbw      The maximum reservable
-              bandwidth for the ANE
+-------------------------------------------------
+Identifier              Intended Semantics
+------------            ----------------------
+ane:maxresbw            The maximum reservable
+                        bandwidth for the ANE
 
+
+
+ane:persistent-entities Identifiers of persistent
+                        entities associated with
+                        an ANE
 
 ------------------------------------
 

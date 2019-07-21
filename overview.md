@@ -8,9 +8,9 @@ Unified Property Map extension [](#I-D.ietf-alto-unified-props-new).
 ## Workflow {#design-workflow}
 
 The workflow of the base ALTO protocol consists of one round of communication:
-An ALTO Client sends a request to an ALTO Server, and the ALTO Server returns a
+An ALTO client sends a request to an ALTO server, and the ALTO server returns a
 response, as shown in [](#WF). Each response contains only one type of ALTO
-resources, e.g., Network Map, Cost Map, or Property Map.
+resources, e.g., network maps, cost maps, or property maps.
 
 ```
 +-------------+                          +-------------+
@@ -28,10 +28,10 @@ resources, e.g., Network Map, Cost Map, or Property Map.
        |              PV Request                |
        |--------------------------------------->|
        |                                        |
-       |       PV Response (Cost Map part)      |
+       |       PV Response (Cost Map Part)     |
        |<---------------------------------------|
        |                                        |
-       |      PV Response (Property Map part)   |
+       |      PV Response (Property Map Part)  |
        |<---------------------------------------|
        |                                        |
 ```
@@ -40,8 +40,8 @@ resources, e.g., Network Map, Cost Map, or Property Map.
 The path vector extension, on the other hand, CAN be decomposed to two types of
 information resources. First, path vectors, which represent the correlations of
 network paths for all <source, destination> pairs in the requst, CAN be encoded
-as an (Endpoint) Cost Map with an extended cost type. Second, properties
-associated with the ANEs CAN be encoded as a Unified Property Map.
+as an (endpoint) cost map with an extended cost type. Second, properties
+associated with the ANEs CAN be encoded as a property map.
 
 Instead of making two consecutive queries, however, the path vector extension
 adopts a workflow which also consists of only one round of communication, based
@@ -156,7 +156,7 @@ design.
 
 This document uses standard-conforming usage of `multipart/related` media type
 defined in [](#RFC2387) to elegantly combine the objects. Path vectors are
-encoded as a Cost Map or an Endpoint Cost Map, and the property map is encoded
+encoded as a cost map or an endpoint cost map, and the property map is encoded
 as a Unified Propert Map. They are encapsulated as parts of a multipart message.
 The modular composition allows ALTO servers and clients to reuse the data models
 of the existing information resources. Specifically, this document addresses the
@@ -165,19 +165,19 @@ following practical issues using `multipart/related`.
 #### Identifying the Media Type of the Root Object
 
 ALTO uses media type to indicate the type of an entry in the Information
-Resource Directory (IRD) (e.g., `application/alto-costmap+json` for Cost Map
-and `application/alto-endpointcost+json` for Endpoint Cost Map). Simply
+Resource Directory (IRD) (e.g., `application/alto-costmap+json` for cost map
+and `application/alto-endpointcost+json` for endpoint cost map). Simply
 putting `multipart/related` as the media type, however, makes it impossible
 for an ALTO client to identify the type of service provided by related
 entries.
 
 To address this issue, this document uses the `type` parameter to indicate the
-root object of a multipart/related message. For a Cost Map resource, the
+root object of a multipart/related message. For a cost map resource, the
 `media-type` in the IRD entry MUST be `multipart/related` with the parameter
 `type=application/alto-costmap+json`; for an Endpoint Cost Service, the
 parameter MUST be `type=application/alto-endpointcost+json`.
 
-#### Supporting Incremental Updates
+#### References to Part Messages {#design-rpm}
 
 The ALTO SSE extension (see [](#I-D.ietf-alto-incr-update-sse)) uses
 `client-id` to demultiplex push updates. However, `client-id` is provided
@@ -186,13 +186,35 @@ resource.
 
 To address this issue, an ALTO server MUST assign a unique identifier to each
 part of the `multipart/related` response message. This identifier, referred to
-as a Part Client Id (See [](#mpri) for details), MUST be present in the part
+as a Part Resource ID (See [](#mpri) for details), MUST be present in the part
 message's `Resource-Id` header. The MIME part header MUST also contain the
 `Content-Type` header, whose value is the media type of the part (e.g.,
 `application/alto-costmap+json`, `application/alto-endpointcost+json`, or
-`application/alto-propmap+json`). If an ALTO server provides incremental updates
-for this path vector resource, it MUST generate incremental updates for each
-part separately using the corresponding Part Client Id and media type.
+`application/alto-propmap+json`).
+
+If an ALTO server provides incremental updates for this path vector resource, it
+MUST generate incremental updates for each part separately. The client-id MUST
+have the following format:
+
+```
+   pv-client-id '.' part-resource-id
+```
+
+where pv-client-id is the client-id assigned to the path vector request, and
+part-resource-id is the `Resource-Id` header value of the part. The media-type
+MUST match the `Content-Type` of the part.
+
+The same problem happens inside the part messages as well. The two parts MUST
+contain a version tag, which SHOULD contain a unique Resource ID. This document
+requires the resource-id in a Version Tag to have the following format:
+
+```
+   pv-resource-id '.' part-resource-id
+```
+
+where pv-resource-id is the resource ID of the path vector resource in the IRD
+entry, and the part-resource-id has the same value as the `Resource-Id` header
+of the part.
 
 #### Order of Part Messages
 
