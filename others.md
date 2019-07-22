@@ -1,11 +1,11 @@
 # Compatibility # { #SecComp }
 
-## Compatibility with Base ALTO Clients/Servers
+## Compatibility with Legacy ALTO Clients/Servers
 
 <!-- Legacy ALTO clients SHOULD NOT send queries with the path-vector extension and ALTO servers with this extension SHOULD NOT have any compatibility issue. Legacy ALTO servers do not support cost types with cost mode being "array" and cost metric being "ane-path", so they MUST NOT announce the extended cost types in IRD. Thus, ALTO clients MUST NOT send queries specified in this extension to base ALTO servers according to Section 11.3.2.3 [](#RFC7285). -->
 
 The multipart filtered cost map resource and the multipart endpoint cost
-resource has no backward compatibility issue with the base ALTO clients and
+resource has no backward compatibility issue with legacy ALTO clients and
 servers. Although these two types of resources reuse the media types defined in
 the base ALTO protocol for the accept input parameters, they have different
 media types for responses. If the ALTO server provides these two types of
@@ -61,17 +61,33 @@ support the path-vector extension. Specifically,
 
 <!-- FIXME: using resource-id header in MIME part -->
 
-As this document still follows the basic request/response protocol with JSON
-encoding, it is surely compatible with the incremental update service as defined
-by [](#I-D.ietf-alto-incr-update-sse). But the following details are to be
-noticed:
+The extension specified in this document is NOT compatible with the original
+incremental update extension [](#I-D.ietf-alto-incr-update-sse). A legacy ALTO
+client CANNOT recognize the compound client-id, and a legacy ALTO server MAY
+use the same client-id for updates of both parts.
 
-- When using the compound response, updates on both cost map and property map
-  SHOULD be notified.
-- When not using the compound response, because the cost map is in the `uses`
-  attribute of the property map, once the path vectors in the cost map change,
-  the ALTO server MUST send the updates of the cost map before the updates of
-  the property map.
+ALTO clients and servers MUST follow the specifications given in this document
+to ensure compatibility with the incremental update extension.
+
+## Compatibility with Cost Calendar
+
+The extension specified in this document is compatible with the Cost Calendar
+extension [](#I-D.ietf-alto-cost-calendar). When used together with the Cost
+Calendar extension, the cost value between a source and a destination is an
+array of path vectors, where the k-th path vector refers to the abstract network
+paths traversed in the k-th time interval by traffic from the source to the
+destination.
+
+When used with time-varying properties, e.g., maximum reservable bandwidth
+(maxresbw), a property of a single entity may also have different values in
+different time intervals. In this case, an ANE with different property values
+MUST be considered as different ANEs.
+
+The two extensions combined together CAN provide the historical network
+correlation information for a set of source and destination pairs. A network
+broker or client MAY use this information to derive other resource requirements
+such as Time-Block-Maximum Bandwidth, Bandwidth-Sliding-Window, and
+Time-Bandwidth-Product (TBP) (See [](#SENSE) for details.)
 
 <!--
 [](#I-D.ietf-alto-incr-update-sse) defines incremental updates to ALTO resources
@@ -86,25 +102,6 @@ document.
 <!-- Design: Make prop-map reference the [endpoint-]cost-map. When subscribe the incremental update for the prop-map resource, it will publish the update for dependent [endpoint-]cost-map first. -->
 
 # General Discussions # { #SecDisc }
-
-## Provide Calendar for Property Map ##
-
-<!-- TODO: Logic is not clear. Revise this section. -->
-
-Fetching the historical network information is useful for many traffic
-optimization problem. [](#I-D.ietf-alto-cost-calendar) already proposes an ALTO
-extension called Cost Calendar which provides the historical cost values using
-filtered cost map and endpoint cost service. However, the calendar for only
-path costs is not enough.
-
-For example, as the properties of ANEs (e.g., available bandwidth and link
-delay) are usually the real-time network states, they change frequently in
-the real network. It is very helpful to get the historical value of these
-properties. Applications may predicate the network status using these
-information to better optimize their performance.
-
-So the coming requirement may be a general calendar service for the ALTO
-information resources.
 
 <!--
 Cost Calendar is proposed as a useful ALTO extension to provide the historical

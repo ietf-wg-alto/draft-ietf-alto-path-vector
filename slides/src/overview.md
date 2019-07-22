@@ -143,9 +143,9 @@ Since -08:
   - Why introduce abstract network element
   - Why the specification extensions are essential
 - Motivation (renamed to use cases): 3 use cases covering different usage scenarios
-  - only the correlations of network paths
-  - correlations of network paths and bandwidth information
-  - correlations of network paths and in-network resources
+  - only the correlations of network paths (shared risk resource group)
+  - correlations of network paths and bandwidth information (co-flow scheduling)
+  - correlations of network paths and in-network resources (in-network cache planning)
 
 ## Synchronized with the SSE draft -16
 
@@ -204,6 +204,66 @@ data: <Merge patch for endpoint-cost-map-update>
 event: application/merge-patch+json, ecspvsub1.propmap
 data: <Merge patch for property-map-update>
 ```
+
+## Cost Calendar Compatibility
+
+In -07:
+
+- The integration with Cost Calendar is left as a future requirement
+
+Since -08:
+
+- The Cost Calendar extension can be used directly with the path vector extension
+- One requirement: the same ANE in different time intervals with different
+  properties MUST be treated as different ANEs
+  - It can cover time-varying routing and time-varying properties simultaneously
+
+## Cost Calendar Example
+
+- Request:
+
+```
+{
+  "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" },
+  "endpoints": {
+    "srcs": [ "ipv4:192.0.2.2" ],
+    "dsts": [ "ipv4:192.0.2.89", "ipv4:203.0.113.45" ]
+  },
+  "ane-properties": [ "maxresbw" ],
+  "time-interval-size": 3600,
+  "number-of-intervals": 2
+}
+```
+
+- Response (PV part)
+
+```
+{ ...
+  "ipv4:192.0.2.2": {
+    "ipv4:192.0.2.89":   [ ["ane:L001", "ane:L003"], ["ane:L004", "ane:L003"] ],
+    "ipv4:203.0.113.45": [ ["ane:L002", "ane:L003"], ["ane:L005", "ane:L003"] ]
+  }
+}
+```
+
+## Cost Calendar Example (Cont.)
+
+- Response (property map part)
+
+```
+{
+  ...
+    "ane:L001": { "maxresbw": 1000000000 },
+    "ane:L002": { "maxresbw": 1000000000 },
+    "ane:L003": { "maxresbw": 1000000000 },
+    "ane:L004": { "maxresbw":  500000000 },
+    "ane:L005": { "maxresbw": 1500000000 }
+  ...
+}
+```
+
+L004 and L005 can either be different ANEs or the same ANEs as L001 and L002 but
+with different property values.
 
 ## Conclusion
 

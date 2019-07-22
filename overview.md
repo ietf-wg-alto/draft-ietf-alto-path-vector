@@ -81,7 +81,9 @@ that the client only asks for the bandwidth information, an ALTO server CAN
 either 1) selectively pick the link with the smallest available bandwidth, or 2)
 dynamically generate a new ANE whose available bandwidth is the smallest value
 of the links' on the path. Thus, an ALTO server can provide accurate information
-with very little leak of its internal network topology.
+with very little leak of its internal network topology. For more general cases,
+ANEs MAY be constructed based on algebraic aggregations, please see [](#TON2019)
+for more details.
 
 ```
       +-----+  +-----+       +-----+

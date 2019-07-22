@@ -3,7 +3,7 @@
 This document extends the ALTO base protocol [](#RFC7285) and the Unified
 Property Map extension [](#I-D.ietf-alto-unified-props-new). In additional to
 the ones defined in these documents, this document also uses the following
-additional terms: Abstract Network Element and Path Vector.
+additional terms:
 
 - Abstract network element (ANE): An abstract network element is an abstraction
   of network components. It can be a link, a middleboxes, a virtualized network

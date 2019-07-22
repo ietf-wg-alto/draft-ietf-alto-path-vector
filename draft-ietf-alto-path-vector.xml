@@ -15,6 +15,8 @@
   <!ENTITY  draft-ietf-alto-unified-props SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-unified-props-new-07.xml">
   <!ENTITY  draft-gao-alto-fcs SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-gao-alto-fcs-01.xml">
   <!ENTITY  draft-ietf-alto-performance-metrics SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-alto-performance-metrics-06.xml">
+  <!ENTITY ton2019 SYSTEM "references/onv.xml">
+  <!ENTITY sense SYSTEM "references/sense.xml">
 
 
   <!ENTITY abstract PUBLIC '' "abstract.xml.gen">
@@ -209,6 +211,8 @@
       &draft-bernstein-alto-topo;
       &draft-ietf-alto-cost-calendar;
       &draft-ietf-alto-performance-metrics;
+      &ton2019;
+      &sense;
       <!-- &draft-gao-alto-fcs; -->
       <!-- &draft-amante-i2rs-topology-use-cases; -->
       <!-- &draft-lee-alto-app-net-info-exchange; -->

@@ -1,0 +1,17 @@
+<reference anchor="TON2019">
+  <front>
+    <title>An objective-driven on-demand network abstraction for adaptive applications</title>
+    <author fullname="Kai Gao" initials="K." surname="Gao" />
+    <author fullname="Qiao Xiang" initials="Q." surname="Xiang" />
+    <author fullname="Xin Wang" initials="X." surname="Wang" />
+    <author fullname="Y. R. Yang" initials="Y. R." surname="Yang" />
+    <author fullname="Jun Bi" initials="J." surname="Bi" />
+    <date year="2019" />
+    <keyword>Routing</keyword>
+    <keyword> Topology</keyword>
+    <keyword> Bandwidth</keyword>
+    <keyword> quality of service</keyword>
+    <keyword> Measurement</keyword><keyword> Network topology</keyword><keyword> Quality of service</keyword><keyword> Software-defined networking</keyword><keyword> IEEE transactions</keyword><keyword> resource abstraction.</keyword><keyword> routing algebra</keyword>
+  </front>
+  <seriesInfo name='IEEE/ACM Transactions on Networking (TON)' value='27, no. 2 (2019): 805-818.' />
+</reference>
