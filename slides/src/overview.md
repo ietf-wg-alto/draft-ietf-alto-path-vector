@@ -162,7 +162,7 @@ Since -08:
 ## Part Resource ID
 
 - Two usages:
-  - In the PV response, indicate the resource dependency
+  - In the PV response, specify the resource dependency
   - In the SSE update stream, demultiplex updates for the two resources returned
     by PV
 - Add a WARNING that the resource-id and client-id for each part MAY violate the
@@ -181,7 +181,7 @@ Resource-Id: ecsmap
 Resource-Id: propmap
 ```
 
-- Used in vtag and dependent-vtags to indicate dependency
+- Used in vtag and dependent-vtags to specify dependency
 
 ```
 Resource-Id: ecsmap
