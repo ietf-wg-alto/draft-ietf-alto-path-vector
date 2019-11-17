@@ -28,20 +28,20 @@ resources, e.g., network maps, cost maps, or property maps.
        |              PV Request                |
        |--------------------------------------->|
        |                                        |
-       |       PV Response (Cost Map Part)     |
+       |       PV Response (Cost Map Part)      |
        |<---------------------------------------|
        |                                        |
-       |      PV Response (Property Map Part)  |
+       |      PV Response (Property Map Part)   |
        |<---------------------------------------|
        |                                        |
 ```
 ^[WF::Information Exchange Process of the base ALTO Protocol and the Path Vector Extension]
 
-The path vector extension, on the other hand, CAN be decomposed to two types of
-information resources. First, path vectors, which represent the correlations of
-network paths for all <source, destination> pairs in the requst, CAN be encoded
-as an (endpoint) cost map with an extended cost type. Second, properties
-associated with the ANEs CAN be encoded as a property map.
+The path vector extension, on the other hand, involves two types of information
+resources. First, path vectors, which represent the correlations of network
+paths for all <source, destination> pairs in the request, are encoded as an
+(endpoint) cost map with an extended cost type. Second, properties associated
+with the ANEs are encoded as a property map.
 
 Instead of making two consecutive queries, however, the path vector extension
 adopts a workflow which also consists of only one round of communication, based
@@ -58,8 +58,9 @@ on the following reasons:
    to its underlying network devices and resources CAN be different in different
    queries. In order to respond to the second request correctly, an ALTO server
    MUST store the mapping of each path vector request until the client fully
-   retrieves the property information, which CAN substantially harm the server
-   scalability and potentially lead to Denial-of-Service attacks.
+   retrieves the property information. The "stateful" behavior CAN substantially
+   harm the server scalability and potentially lead to Denial-of-Service
+   attacks.
 
 Thus, the path vector extension encapsulates all essential information in one
 request, and returns both path vectors and properties associated with the ANEs
@@ -70,12 +71,12 @@ in a single response. See [](#design-msg) for more details.
 A key design in the path vector extension is abstract network element. Abstract
 network elements can be statically generated, for example, based on
 geo-locations, OSPF areas, or simply the raw network topology. They CAN also be
-generated dynamically, based on a client's request. This on-demand ANE
+generated on demand based on a client's request. This on-demand ANE
 generation allows for better scalability, flexibility and privacy enhancement.
 
 Consider an extreme case where the client only queries the bandwidth between one
 source and one destination in the topology shown in [](#ANETP). Without knowing
-in prior the desired property, an ALTO server MAY need to include all network
+in advance the desired property, an ALTO server MAY need to include all network
 components on the paths for high accuracy. However, with the prior knowledge
 that the client only asks for the bandwidth information, an ALTO server CAN
 either 1) selectively pick the link with the smallest available bandwidth, or 2)

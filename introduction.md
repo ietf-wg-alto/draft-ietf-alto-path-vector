@@ -6,9 +6,9 @@ protocol [](#RFC7285) defines cost maps and endpoint cost services that expose
 the preferences of network paths for a set of source and destination pairs.
 
 While the preferences of network paths are already sufficient for a wide range
-of applications, new application traffic patterns and new network technologies
-are emerging that are well beyond the domain for which existing ALTO maps are
-engineered, including but not limited to:
+of applications, new traffic patterns and new network technologies are emerging
+that are well beyond the domain for which existing ALTO maps are engineered.
+This trend includes but is not limited to:
 
 Very-high-speed data transfers:
 ~ Applications, such as Content Distribution Network (CDN) overlays,
@@ -30,7 +30,7 @@ In-network storage and computation:
 
 This document specifies a new extension to incorporate these newly emerged
 scenarios into the ALTO framework. The essence of this extension is that an ALTO
-server exposes correlations of network paths in additional to preferences of
+server exposes correlations of network paths in addition to preferences of
 network paths.
 
 The correlations of network paths are represented by path vectors. Each element
@@ -51,3 +51,17 @@ server can provide a more fine-grained view of the network. ALTO clients can use
 this view to derive information such as shared risk resource groups, capacity
 regions and available in-network cache locations, which can be used to improve
 the robustness and performance of the application traffic.
+
+Given specific properties, an ALTO server may construct the abstract network
+elements on demand. For example, as shown in [](#uc-cr), when an ALTO client
+only demands the capacity region, an ALTO server can identify and construct an
+abstract network element for each bottleneck link for the specific query. Thus,
+an ALTO server can minimize the information exposed to a client.
+
+# Changes since -08
+
+This revision
+
+- fixes a few spelling errors
+- emphasizes that abstract network elements can be generated on demand in both
+  introduction and motivating use cases
