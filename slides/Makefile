@@ -1,4 +1,4 @@
-VERSION=08
+VERSION=09
 target=ietf-alto-path-vector-$(VERSION).pdf
 
 mdfiles=$(wildcard src/*.md)

@@ -1,4 +1,4 @@
-\documentclass[letter, 10pt, aspectratio=169]{beamer}
+\documentclass[letter, 11pt, aspectratio=169]{beamer}
 
 \addtobeamertemplate{navigation symbols}{}{%
     %\usebeamerfont{footline}%
@@ -6,10 +6,12 @@
     \hspace{1em}%
     \scriptsize\insertframenumber/\inserttotalframenumber
 }
+\usepackage{longtable, booktabs}
 \usepackage{fontspec}
 \usepackage{textcase}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{ulem}
 \usefonttheme{serif}
 \setmainfont{Cantarell}
 
@@ -49,22 +51,23 @@ url=false]{biblatex} % for footfullcite
 }
 \author{%
 	% abuse \author command to list related drafts
-	{\center \texttt{draft-ietf-alto-path-vector-08}}\\[20pt]
-  \alert{K. Gao}\inst{3} \and
-  Y. Lee\inst{1} \and
-  S. Randriamasy\inst{2}
+	{\center \texttt{draft-ietf-alto-path-vector-09}}\\[20pt]
+  \alert{K. Gao}\inst{2} \and
+  Y. Lee\inst{3} \and
+  S. Randriamasy\inst{1} \and
 	Y. R. Yang\inst{5} \and
 	J. Zhang\inst{4,5}
 }
 \institute{
 	\scriptsize
-	\inst{1} Huawei \quad
-  \inst{2} Nokia Bell Labs \quad
-	\inst{3} Sichuan University \quad
+  \inst{1} Nokia Bell Labs \quad
+	\inst{2} Sichuan University \quad
+	\inst{3} Sungkyunkwan University
+  \\
 	\inst{4} Tongji University \quad
 	\inst{5} Yale University
 }
-\date{\small July 25, 2019 @ IETF 105}
+\date{\small Oct 20, 2019 @ IETF 106}
 
 \begin{frame}
 	\titlepage
