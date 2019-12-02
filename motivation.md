@@ -9,7 +9,7 @@ also demonstrate the benefits of constructing abstract network elements on deman
 
 Consider an application which controls 4 end hosts (eh1, eh2, eh3 and eh4),
 which are connected by an ISP network with 5 switches (sw1, sw2, sw3, sw4 and
-sw5) and 5 links (l1, l2, l3, l4 and l5), as shown in [](#UCTP). Assume the end
+sw5) and 5 links (l1, l2, l3, l4 and l5), as shown in {{fig-topo}}. Assume the end
 hosts are running data storage services and some analytics tasks, which requires
 high data availability. In order to determine the replica placement, the
 application must know how the end hosts will be partitioned if certain network
@@ -32,7 +32,7 @@ hosts to eh4 are as follows:
 While an ALTO server can simply return the information above to the client, it
 can benefit from on-demand aggregation of network components.
 
-```
+~~~~~~~~~~ drawing
                  +-----------------+
    ------------->|                 |<---------
   /   ---------->|   ALTO Client   |<------   \
@@ -57,8 +57,8 @@ can benefit from on-demand aggregation of network components.
 -->eh2 --| sw2 |-               -| sw5 |-- eh4<--
        . +-----+                 +-----+ .
        ...................................
-```
-^[UCTP::Topology for the Shared Risk Resource Group and the Capacity Region Use Cases]
+~~~~~~~~~~
+{: #fig-topo title="Topology for the Shared Risk Resource Group and the Capacity Region Use Cases"}
 
 These network components can be categorized into 5 categories:
 
@@ -88,7 +88,7 @@ switches.
 ## Capacity Region {#uc-cr}
 
 This use case uses the same topology and application settings as
-in [](#uc-srrg) as shown in [](#UCTP). Assume the capacity of each link is 10
+in {{uc-srrg}} as shown in {{fig-topo}}. Assume the capacity of each link is 10
 Gbps, except l5 whose capacity is 5 Gbps. Assume the application is running a
 map-reduce task, where the optimal traffic scheduling is usually referred to the
 co-flow scheduling problem. Consider a simplified co-flow scheduling problem,
@@ -128,14 +128,14 @@ transfer rate of eh1->eh2, x2 denote the rate of eh1->eh4, x3 denote the rate of
 eh3->eh2, and x4 denote the rate of eh3->eh4. The application can derive the
 following information from the responses:
 
-```
+~~~~~~~~~~
       eh1->eh2  eh1->eh4  eh3->eh2  eh3->eh4      capaity
 ane1     1         1         0         0      |   10 Gbps
 ane2     1         0         1         0      |   10 Gbps
 ane3     0         0         1         0      |   10 Gbps
 ane4     0         1         0         0      |   10 Gbps
 ane5     0         0         0         1      |    5 Gbps
-```
+~~~~~~~~~~
 
 Specifically, the coefficient matrix on the left hand side is the transposition
 of the matrix directly derived from the path vector part, and the
@@ -169,12 +169,12 @@ and
 ## In-Network Caching {#uc-inc}
 
 Consider an application which controls 3 end hosts (eh1, eh2 and eh3), which are
-connected by an ISP network and the Internet, as shown in [](#INCTP). Assume two
+connected by an ISP network and the Internet, as shown in {{fig-inc-topo}}. Assume two
 clients at end hosts eh2 and eh3 are downloading the same data from a data
 server at eh1. Meanwhile, the network provider offers an in-network caching
 service at the gateway.
 
-```
+~~~~~~~~~~ drawing
                 +-------------+
         ------->|             |<-----------------------
        /  ----->| ALTO Client |<-------                \
@@ -196,10 +196,8 @@ service at the gateway.
           .| net 2 |                                  .
           .+-------+                                  .
           .............................................
-```
-^[INCTP::Topology for the In-Network Caching Use Case.]
-
-With the path vector extension enabled, the ALTO server can expose two types of information
+~~~~~~~~~~
+{: #fig-inc-topo title="Topology for the In-Network Caching Use Case."}
 
 Without the traffic correlation information, the ALTO client cannot know whether
 or how the traffic goes through the proxy. For example, if subnet1 and subnet2

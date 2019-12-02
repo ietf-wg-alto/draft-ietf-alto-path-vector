@@ -1,4 +1,4 @@
-# Examples # { #SecExample }
+# Examples {#SecExample}
 
 This section lists some examples of path vector queries and the corresponding
 responses. Some long lines are truncated for better readability.
@@ -8,7 +8,7 @@ responses. Some long lines are truncated for better readability.
 Below is an example of an Information Resource Directory which enables the path
 vector extension. Some critical modifications include:
 
-- The `path-vector` cost type ([](#SecCostType)) is defined in the `cost-types`
+- The `path-vector` cost type ({{SecCostType}}) is defined in the `cost-types`
   of the `meta` field.
 
 - The `cost-map-pv` information resource provides a multipart filtered cost map
@@ -26,10 +26,10 @@ vector extension. Some critical modifications include:
   persistent entities MAY come from the `http-proxy-props` resource.
 
 - The `update-pv` information resource provides the incremental update
-  ([](#I-D.ietf-alto-incr-update-sse)) service for the `endpoint-cost-pv`
+  ({{I-D.ietf-alto-incr-update-sse}}) service for the `endpoint-cost-pv`
   resource.
 
-```
+~~~
 {
   "meta": {
     "cost-types": {
@@ -87,7 +87,7 @@ vector extension. Some critical modifications include:
     }
   }
 }
-```
+~~~
 
 ## Example: Multipart Filtered Cost Map##
 
@@ -103,10 +103,9 @@ identifiers for each source and destination pair. There are three ANEs, where
 `ane:L001` is shared by traffic from `PID1` to both `PID2` and `PID3`.
 
 The second part returns an empty property map. Note that the ANE entries are
-omitted since they have no properties (See Section 3.1 of
-[](#I-D.ietf-alto-unified-props-new)).
+omitted since they have no properties (See Section 3.1 of {{I-D.ietf-alto-unified-props-new}}).
 
-```
+~~~
 POST /costmap/pv HTTP/1.1
 Host: alto.example.com
 Accept: multipart/related;type=application/alto-costmap+json,
@@ -124,9 +123,9 @@ Content-Type: application/alto-costmapfilter+json
     "dsts": [ "PID2", "PID3" ]
   }
 }
-```
+~~~
 
-```
+~~~
 HTTP/1.1 200 OK
 Content-Length: [TBD]
 Content-Type: multipart/related; boundary=example-1;
@@ -176,7 +175,7 @@ Content-Type: application/alto-propmap+json
   "property-map": {
   }
 }
-```
+~~~
 
 ## Example: Multipart Endpoint Cost Resource ##
 
@@ -194,9 +193,9 @@ The second part returns the requested properties of ANEs in the first part. The
 "ane:NET001" element contains an HTTP proxy entity, which can be further used by
 the client. Since it does not contain a `maxresbw` property, the client SHOULD
 assume it does NOT support bandwidth reservation but will NOT become a traffic
-bottleneck, as specified in [](#maxresbw).
+bottleneck, as specified in {{maxresbw}}.
 
-```
+~~~
 POST /endpointcost/pv HTTP/1.1
 Host: alto.example.com
 Accept: multipart/related;
@@ -218,9 +217,9 @@ Content-Type: application/alto-endpointcostparams+json
   },
   "ane-properties": [ "maxresbw", "persistent-entities" ]
 }
-```
+~~~
 
-```
+~~~
 HTTP/1.1 200 OK
 Content-Length: [TBD]
 Content-Type: multipart/related; boundary=example-2;
@@ -273,14 +272,14 @@ Content-Type: application/alto-propmap+json
     "ane:L003": { "maxresbw": 35000000 }
   }
 }
-```
+~~~
 
 ## Example: Incremental Updates
 
 In this example, an ALTO client subscribes to the incremental update for the
 multipart endpoint cost resource `endpoint-cost-pv`.
 
-```
+~~~
 POST /updates/pv HTTP/1.1
 Host: alto.example.com
 Accept: text/event-stream
@@ -295,13 +294,13 @@ Content-Length: [TBD]
     }
   }
 }
-```
+~~~
 
-Based on the server-side process defined in [](#I-D.ietf-alto-incr-update-sse),
-the ALTO server will send the `control-uri` first using Server-Sent Event (SSE),
-followed by the full response of the multipart message.
+Based on the server-side process defined in {{I-D.ietf-alto-incr-update-sse}}, the ALTO server will
+send the `control-uri` first using Server-Sent Event (SSE), followed by the full
+response of the multipart message.
 
-```
+~~~
 HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Type: text/event-stream
@@ -322,17 +321,17 @@ data: Content-Type: application/alto-propmap+json
 data:
 data: <property-map-entry>
 data: --example-3--
-```
+~~~
 
 When the contents change, the ALTO server will publish the updates for each node
 in this tree separately.
 
-```
+~~~
 event: application/merge-patch+json, ecspvsub1.ecsmap
 data: <Merge patch for endpoint-cost-map-update>
 
 event: application/merge-patch+json, ecspvsub1.propmap
 data: <Merge patch for property-map-update>
-```
+~~~
 
 <!-- TODO: the remaining issue is where to specify the json-merge-patch capability for each node -->

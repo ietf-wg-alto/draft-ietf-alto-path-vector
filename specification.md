@@ -1,6 +1,6 @@
 # Basic Data Types {#SecPV}
 
-## ANE Identifier {#SecAneId}
+## ANE Identifier {#ane-id}
 
 An ANE identifier is encoded as a JSON string. The string MUST be no more than
 64 characters, and it MUST NOT contain characters other than US-ASCII
@@ -31,12 +31,12 @@ map MUST be interpreted as a JSON array object.
 
 Note that this cost mode only requires the cost value to be a JSON array of
 JSONValue. However, an ALTO server that enables this extension MUST return a
-JSON array of ANEIdentifier ([](#SecAneId)) when the cost metric is "ane-path".
+JSON array of ANEIdentifier ({{ane-id}}) when the cost metric is "ane-path".
 
 ## ANE Domain {#SecANEDomain}
 
 This document specifies a new ALTO entity domain called `ane` in addition to the
-ones in [](#I-D.ietf-alto-unified-props-new). The ANE domain associates property
+ones in {{I-D.ietf-alto-unified-props-new}}. The ANE domain associates property
 values with the ANEs in a network. The entity in ANE domain is often used in the
 path vector by cost maps or endpoint cost resources. Accordingly, the ANE domain
 always depends on a cost map or an endpoint cost map.
@@ -48,7 +48,7 @@ ane
 ### Domain-Specific Entity Identifier ## {#entity-address}
 
 The entity identifier of ANE domain uses the same encoding as ANEIdentifier
-([](#SecAneId)).
+({{ane-id}}).
 
 ### Hierarchy and Inheritance
 
@@ -77,7 +77,7 @@ endpoint cost resource.
 The maximum reservable bandwidth property conveys the maximum bandwidth that can
 be reserved for traffic from a source to a destination and is indicated by the
 property name "maxresbw". The value MUST be encoded as a numerical cost value as
-defined in Section 6.1.2.1 of [](#RFC7285) and the unit is bit per second.
+defined in Section 6.1.2.1 of {{RFC7285}} and the unit is bit per second.
 
 If this property is requested but is missing for a given ANE, it MUST be
 interpreted as that the ANE does not support bandwidth reservation but have
@@ -89,7 +89,7 @@ The persistent entity property conveys the physical or logical network entities
 (e.g., links, in-network caching service) that are contained by an abstract
 network element. It is indicated by the property name `persistent-entity`. The
 value is encoded as a JSON array of entity identifiers
-([](#I-D.ietf-alto-unified-props-new)). These entity identifiers are persistent
+({{I-D.ietf-alto-unified-props-new}}). These entity identifiers are persistent
 so that a client CAN further query their properties for future use.
 
 If this property is requested but is missing for a given ANE, it MUST be
@@ -98,11 +98,11 @@ interpreted as that no such entities exist in this ANE.
 ## Part Resource ID {#mpri}
 
 A Part Resource ID is encoded as a JSON string with the same format as that of the
-Resource ID (Section 10.2 of [](#RFC7285)).
+Resource ID (Section 10.2 of {{RFC7285}}).
 
 WARNING: Even though the client-id assigned to a path vector request and the
 Part Resource ID MAY contain up to 64 characters by their own definition. Their
-concatenation (see [](#design-rpm)) MUST also conform to the same length
+concatenation (see {{design-rpm}}) MUST also conform to the same length
 constraint. The same requirement applies to the resource ID of the path vector
 resource, too. Thus, it is RECOMMENDED to limit the length of resource ID and
 client ID related to a path vector resource to 31 characters.
@@ -150,7 +150,7 @@ in the unified property part.
 ### Capabilities ## {#pvcm-cap}
 
 The multipart filtered cost map resource extends the capabilities defined
-in Section 11.3.2.4 of [](#RFC7285). The capabilities are defined by a JSON
+in Section 11.3.2.4 of {{RFC7285}}. The capabilities are defined by a JSON
 object of type PVFilteredCostMapCapabilities:
 
 ~~~
@@ -182,21 +182,21 @@ response.
 ### Response ##
 
 The response MUST indicate an error, using ALTO protocol error handling, as
-defined in Section 8.5 of [](#RFC7285), if the request is invalid.
+defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
 
 The "Content-Type" header of the response MUST be `multipart/related` as defined
-by [](#RFC2387) with the following parameters:
+by {{RFC2387}} with the following parameters:
 
 type:
 ~ The type parameter MUST be "application/alto-costmap+json". Note that
-[](#RFC2387) permits both parameters with and without the double quotes.
+{{RFC2387}} permits both parameters with and without the double quotes.
 
 start:
 ~ The start parameter MUST be a quoted string where the quoted part has the same
 value as the "Resource-ID" header in the first part.
 
 boundary:
-~ The boundary parameter is as defined in [](#RFC2387).
+~ The boundary parameter is as defined in {{RFC2387}}.
 
 The body of the response consists of two parts.
 
@@ -205,10 +205,10 @@ value of `Resource-Id` MUST has the format of a Part Resource ID. The
 `Content-Type` MUST be `application/alto-costmap+json`.
 
 The body of the first part MUST be a JSON object with the same format as defined
-in Section 11.2.3.6 of [](#RFC7285). The JSON object MUST include the `vtag`
+in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the `vtag`
 field in the `meta` field, which provides the version tag of the returned cost
 map. The resource ID of the version tag MUST follow the format
-in [](#design-rpm). The `meta` field MUST also include the `dependent-vtags`
+in {{design-rpm}}. The `meta` field MUST also include the `dependent-vtags`
 field, whose value is a single-element array to indicate the version tag of the
 network map used, where the network map is specified in the `uses` attribute of
 the multipart filtered cost map resource in IRD.
@@ -218,10 +218,10 @@ header. The value of `Resource-Id` has the format of a Part Resource ID. The
 `Content-Type` MUST be `application/alto-propmap+json`.
 
 The body of the second part MUST be a JSON object with the same format as
-defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new). The JSON object
+defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The JSON object
 MUST include the `dependent-vtags` field in the `meta` field. The value of the
 `dependent-vtags` field MUST be an array of VersionTag objects as defined by
-Section 10.3 of [](#RFC7285). The `vtag` of the first part MUST be included in
+Section 10.3 of {{RFC7285}}. The `vtag` of the first part MUST be included in
 the `dependent-vtags`. If `persistent-entities` is requested, the version tags
 of the dependent resources that MAY expose the entities in the response MUST
 also be included. The PropertyMapData has one member for each ANE identifier
@@ -263,13 +263,13 @@ with fields:
 
 ane-properties:
 ~ This document defines the `ane-properties` in PVReqEndpointcost as
-the same as in PVReqFilteredCostMap. See [](#pvcm-accept).
+the same as in PVReqFilteredCostMap. See {{pvcm-accept}}.
 
 ### Capabilities ##
 
 The capabilities of the multipart endpoint cost resource are defined by a JSON
 object of type PVEndpointcostCapabilities, which is defined as the same as
-PVFilteredCostMapCapabilities. See [](#pvcm-cap).
+PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
 
 ### Uses ##
 
@@ -280,10 +280,10 @@ that MAY appear in the response.
 ### Response ##
 
 The response MUST indicate an error, using ALTO protocol error handling, as
-defined in Section 8.5 of [](#RFC7285), if the request is invalid.
+defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
 
 The "Content-Type" header of the response MUST be `multipart/related` as defined
-by [](#RFC2387) with the following parameters:
+by {{RFC7285}} with the following parameters:
 
 type:
 ~ The type parameter MUST be "application/alto-endpointcost+json".
@@ -302,20 +302,20 @@ value of `Resource-Id` MUST has the format of a Part Resource ID. The `Content-T
 MUST be `application/alto-endpointcost+json`.
 
 The body of the first part MUST be a JSON object with the same format as defined
-in Section 11.5.1.6 of [](#RFC7285). The JSON object MUST include the `vtag`
+in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the `vtag`
 field in the `meta` field, which provides the version tag of the returned
 endpoint cost map. The resource ID of the version tag MUST follow the format
-in [](#design-rpm).
+in {{design-rpm}}.
 
 The second part MUST also include `Resource-Id` and `Content-Type` in its
 header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
 The `Content-Type` MUST be `application/alto-propmap+json`.
 
 The body of the second part MUST be a JSON object with the same format as
-defined in Section 4.6 of [](#I-D.ietf-alto-unified-props-new). The JSON object
+defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The JSON object
 MUST include the `dependent-vtags` field in the `meta` field. The value of the
 `dependent-vtags` field MUST be an array of VersionTag objects as defined by
-Section 10.3 of [](#RFC7285). The `vtag` of the first part MUST be included in
+Section 10.3 of {{RFC7285}}. The `vtag` of the first part MUST be included in
 the `dependent-vtags`. If `persistent-entities` is requested, the version tags
 of the dependent resources that MAY expose the entities in the response MUST
 also be included. The PropertyMapData has one member for each ANE identifier

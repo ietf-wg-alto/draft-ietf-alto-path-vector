@@ -1,8 +1,8 @@
-# Introduction #
+# Introduction
 
 The ALTO protocol is aimed to provide applications with knowledge of the
 underlying network topologies from the point of views of ISPs. The base
-protocol [](#RFC7285) defines cost maps and endpoint cost services that expose
+protocol {{RFC7285}} defines cost maps and endpoint cost services that expose
 the preferences of network paths for a set of source and destination pairs.
 
 While the preferences of network paths are already sufficient for a wide range
@@ -53,15 +53,7 @@ regions and available in-network cache locations, which can be used to improve
 the robustness and performance of the application traffic.
 
 Given specific properties, an ALTO server may construct the abstract network
-elements on demand. For example, as shown in [](#uc-cr), when an ALTO client
+elements on demand. For example, as shown in {{uc-cr}}, when an ALTO client
 only demands the capacity region, an ALTO server can identify and construct an
 abstract network element for each bottleneck link for the specific query. Thus,
 an ALTO server can minimize the information exposed to a client.
-
-# Changes since -08
-
-This revision
-
-- fixes a few spelling errors
-- emphasizes that abstract network elements can be generated on demand in both
-  introduction and motivating use cases

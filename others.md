@@ -1,8 +1,6 @@
-# Compatibility # { #SecComp }
+# Compatibility {#SecComp}
 
 ## Compatibility with Legacy ALTO Clients/Servers
-
-<!-- Legacy ALTO clients SHOULD NOT send queries with the path-vector extension and ALTO servers with this extension SHOULD NOT have any compatibility issue. Legacy ALTO servers do not support cost types with cost mode being "array" and cost metric being "ane-path", so they MUST NOT announce the extended cost types in IRD. Thus, ALTO clients MUST NOT send queries specified in this extension to base ALTO servers according to Section 11.3.2.3 [](#RFC7285). -->
 
 The multipart filtered cost map resource and the multipart endpoint cost
 resource has no backward compatibility issue with legacy ALTO clients and
@@ -30,7 +28,7 @@ backward compatible with the base ALTO protocol:
 <!-- FIXME: path-vector cannot be used in multi-cost, also no reason -->
 
 This document does not specify how to integrate the `path-vector` cost mode with
-the multi-cost extension [](#RFC8189). Although there is no reason why somebody
+the multi-cost extension {{RFC8189}}. Although there is no reason why somebody
 has to compound the path vectors with other cost types in a single query, there
 is no compatible issue doing it without constraint tests.
 
@@ -62,7 +60,7 @@ support the path-vector extension. Specifically,
 <!-- FIXME: using resource-id header in MIME part -->
 
 The extension specified in this document is NOT compatible with the original
-incremental update extension [](#I-D.ietf-alto-incr-update-sse). A legacy ALTO
+incremental update extension {{I-D.ietf-alto-incr-update-sse}}. A legacy ALTO
 client CANNOT recognize the compound client-id, and a legacy ALTO server MAY
 use the same client-id for updates of both parts.
 
@@ -72,7 +70,7 @@ to ensure compatibility with the incremental update extension.
 ## Compatibility with Cost Calendar
 
 The extension specified in this document is compatible with the Cost Calendar
-extension [](#I-D.ietf-alto-cost-calendar). When used together with the Cost
+extension {{I-D.ietf-alto-cost-calendar}}. When used together with the Cost
 Calendar extension, the cost value between a source and a destination is an
 array of path vectors, where the k-th path vector refers to the abstract network
 paths traversed in the k-th time interval by traffic from the source to the
@@ -87,21 +85,9 @@ The two extensions combined together CAN provide the historical network
 correlation information for a set of source and destination pairs. A network
 broker or client MAY use this information to derive other resource requirements
 such as Time-Block-Maximum Bandwidth, Bandwidth-Sliding-Window, and
-Time-Bandwidth-Product (TBP) (See [](#SENSE) for details.)
+Time-Bandwidth-Product (TBP) (See {{SENSE}} for details.)
 
-<!--
-[](#I-D.ietf-alto-incr-update-sse) defines incremental updates to ALTO resources
-and hence it can be applied to the path-vector resource defined in this
-document.
--->
-
-<!-- [x] allows both JSON merge and JSON patch to encode incremental changes. Between these two encoding formats, JSON merge patch does not handle array changes efficeintly, and path vector changes are likely to involve array changes; therefore, it is RECOMMENDED that JSON merge patch be used to transport incremental changes. -->
-
-<!--Incremental updates supported by SSE [english not clear] uses JSON merge patch or JSON patch to represent updates; however, JSON merge patch does not handle array changes well. So, If an SSE resource supports Path Vector, it is RECOMMENDED to use JSON patch to send updates.-->
-
-<!-- Design: Make prop-map reference the [endpoint-]cost-map. When subscribe the incremental update for the prop-map resource, it will publish the update for dependent [endpoint-]cost-map first. -->
-
-# General Discussions # { #SecDisc }
+# General Discussions {#SecDisc}
 
 <!--
 Cost Calendar is proposed as a useful ALTO extension to provide the historical
@@ -131,7 +117,7 @@ Property Map Service.
 
 The constraint test is a simple approach to query the data. It allows users to
 filter the query result by specifying some boolean tests. This approach is
-already used in the ALTO protocol. [](#RFC7285) and [](#RFC8189) allow ALTO
+already used in the ALTO protocol. {{RFC7285}} and {{RFC8189}} allow ALTO
 clients to specify the `constraints` and `or-constraints` tests to better
 filter the result.
 
@@ -153,10 +139,10 @@ general. There is no standard solving these issues yet. So we need some approach
 to make the ALTO client request the compound ALTO information resources in a
 single query.
 
-# Security Considerations # { #SecSCons }
+# Security Considerations {#SecSCons}
 
 This document is an extension of the base ALTO protocol, so the Security
-Considerations [](#RFC7285) of the base ALTO protocol fully apply when this
+Considerations {{RFC7285}} of the base ALTO protocol fully apply when this
 extension is provided by an ALTO server.
 
 <!-- Additional security considerations -->
@@ -165,8 +151,8 @@ extension is provided by an ALTO server.
 
 The path vector extension requires additional considerations on two security
 considerations discussed in the base protocol: confidentiality of ALTO
-information (Section 15.3 of [](#RFC7285)) and availability of ALTO service
-(Section 15.5 of [](#RFC7285)).
+information (Section 15.3 of {{RFC7285}}) and availability of ALTO service
+(Section 15.5 of {{RFC7285}}).
 
 For confidentiality of ALTO information, a network operator should be aware of
 that this extension may introduce a new risk: the path vector information may
@@ -205,63 +191,46 @@ authorization of this ALTO service may need to be better protected.
 This document specifies a new cost mode `path-vector`. However, the base ALTO protocol
 does not have a Cost Mode Registry where new cost mode can be registered. This
 new cost mode will be registered once the registry is defined either in a
-revised version of [](#RFC7285) or in another future extension.
+revised version of {{RFC7285}} or in another future extension.
 
 ## ALTO Entity Domain Registry ##
 
-As proposed in Section 9.2 of [I-D.ietf-alto-unified-props-new], `ALTO Domain
+As proposed in Section 9.2 of {{I-D.ietf-alto-unified-props-new}}, `ALTO Domain
 Entity Registry` is requested. Besides, a new domain is to be registered, listed in
-[](#tbl:entity-domain).
+{{tbl-entity-domain}}.
 
---------------------------------------------------------------
-Identifier Entity Address Encoding Hierarchy &amp; Inheritance
----------- ----------------------- ---------------------------
-ane        See [](#entity-address) None
 
---------------------------------------------------------------
-
-^[tbl:entity-domain::ALTO Entity Domain]
+| Identifier | Entity Address Encoding | Hierarchy &amp; Inheritance |
+|------------|-------------------------|-----------------------------|
+| ane        | See {{entity-address}}  | None                        |
+{: #tbl-entity-domain title="ALTO Entity Domain"}
 
 ## ALTO Entity Property Type Registry ##
 
 The `ALTO Entity Property Type Registry` is required by the
-ALTO Domain `ane`, listed in [](#tbl:prop-type-register).
+ALTO Domain `ane`, listed in {{tbl-prop-type-reg}}.
 
--------------------------------------------------
-Identifier              Intended Semantics
-------------            ----------------------
-ane:maxresbw            The maximum reservable bandwidth for the ANE
-
-ane:persistent-entities An array of identifiers of persistent entities
-                        that reside in an ANE
-
-------------------------------------
-
-^[tbl:prop-type-register::ALTO Entity Property Types]
+| Identifier              | Intended Semantics                                                   |
+|-------------------------|----------------------------------------------------------------------|
+| ane:maxresbw            | The maximum reservable bandwidth                                     |
+| ane:persistent-entities | An array of identifiers of persistent entities that reside in an ANE |
+{: #tbl-prop-type-reg title="ALTO Entity Property Types"}
 
 ## ALTO Resource Entity Domain Export Registries ##
 
 ### costmap
 
----------------------------------------
-Entity Domain Type Export Function
------------------- --------------------
-ane                See [](#costmap-ede)
-
----------------------------------------
-
-^[TableCostMapEDE::ALTO Cost Map Entity Domain Export.]
+| Entity Domain Type | Export Function     |
+|--------------------|---------------------|
+| ane                | See {{costmap-ede}} |
+{: title="ALTO Cost Map Entity Domain Export"}
 
 ### endpointcost
 
-----------------------------------
-Entity Domain Type Export Function
------------------- ---------------
-ane                See [](#ec-ede)
-
-----------------------------------
-
-^[TableEndpointCostEDE::ALTO Endpoint Cost Entity Domain Export.]
+| Entity Domain Type | Export Function |
+|--------------------|-----------------|
+| ane                | See {{ec-ede}}  |
+{: title="ALTO Endpoint Cost Entity Domain Export"}
 
 # Acknowledgments #
 

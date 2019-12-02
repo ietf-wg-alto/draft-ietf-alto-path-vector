@@ -1,5 +1,5 @@
 ---
-title: ALTO Extension: Path Vector
+title: "ALTO Extension: Path Vector"
 abbrev: ALTO-PV
 docname: draft-ietf-alto-path-vector-latest
 date: {DATE}
@@ -15,6 +15,10 @@ author:
 -
     ins: K. Gao
     name: Kai Gao
+    street: "No.24 South Section 1, Yihuan Road"
+    city: Chengdu
+    code: 610000
+    country: China
     org: Sichuan University
     email: kaigao@scu.edu.cn
 -
@@ -24,40 +28,75 @@ author:
 -
     ins: S. Randriamasy
     name: Sabine Randriamasy
+    street: Route de Villejust
+    city: Nozay
+    code: 91460
+    country: France
     org: Nokia Bell Labs
     email: sabine.randriamasy@nokia-bell-labs.com
 
 -
     ins:  Y. R. Yang
     name: Yang Richard Yang
+    street: 51 Prospect Street
+    city: New Haven
+    code: CT
+    country: USA
     org: Yale University
     email: yry@cs.yale.edu
 
 -
     ins: J. Zhang
     name: Jingxuan Jensen Zhang
+    street: 4800 Caoan Road
+    city: Shanghai
+    code: 201804
+    country: China
     org: Tongji University
     email: jingxuan.n.zhang@gmail.com
 
+normative:
+
+  RFC7285:
+  RFC2387:
+  RFC8189:
+  I-D.ietf-alto-cost-calendar:
+  I-D.ietf-alto-unified-props-new:
+  I-D.ietf-alto-incr-update-sse:
+
+informative:
+
+  TON2019:
+    title: "TON 2019"
+    date: {DATE}
+
+  SENSE:
+    title: "SENSE"
+    date: {DATE}
 
 --- abstract
 
-This document defines an ALTO extension that allows an ALTO information resource
-to provide not only preferences but also correlations of the paths between
-different PIDs or endpoints. The extended information, including aggregations of
-network components on the paths and their properties, can be used to improve the
-robustness and performance for applications in some new usage scenarios, such as
-high-speed data transfers and traffic optimization using in-network storage and
-computation.
+{::include abstract.md}
 
-This document reuses the mechanisms of the ALTO base protocol and the Unified
-Property extension, such as Information Resource Directory (IRD) capabilities
-and entity domains, to negotiate and exchange path correlation information.
-Meanwhile, it uses an extended compound message to fully represent the path
-correlation information, for better server scalability and message modularity.
-Specifically, the extension 1) introduces abstract network element (ANE) as an
-abstraction for an aggregation of network components and encodes a network path
-as a "path vector", i.e., an array of ANEs traversed from the source to the
-destination, 2) encodes properties of abstract network elements in a unified
-property map, and 3) encapsulates the two types of information in a multipart
-message.
+--- middle
+
+{::include introduction.md}
+
+
+# Changes since -08
+
+This revision
+
+- fixes a few spelling errors
+- emphasizes that abstract network elements can be generated on demand in both
+  introduction and motivating use cases
+
+{::include motivation.md}
+
+{::include overview.md}
+
+{::include specification.md}
+
+{::include examples.md}
+
+{::include others.md}
