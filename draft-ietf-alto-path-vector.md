@@ -67,12 +67,36 @@ normative:
 informative:
 
   TON2019:
-    title: "TON 2019"
-    date: {DATE}
+    title: "An objective-driven on-demand network abstraction for adaptive applications"
+    author:
+      -
+        ins: K. Gao
+        name: Kai Gao
+        org: Sichuan University
+      -
+        ins: Q. Xiang
+        name: Qiao Xiang
+        org: Yale University
+      -
+        ins: X. Wang
+        name: Xin Wang
+        org: Tongji University
+      -
+        ins: Y. R. Yang
+        name: Yang Richard Yang
+        org: Yale University
+      -
+        ins: J. Bi
+        name: Jun Bi
+        org: Tsinghua University
+    date: 2019
+    seriesinfo:
+      IEEE/ACM: "Transactions on Networking (TON) Vol 27, no. 2 (2019): 805-818."
 
   SENSE:
-    title: "SENSE"
-    date: {DATE}
+    title: "Services - SENSE"
+    target: http://sense.es.net/services
+    date: 2019
 
 --- abstract
 
