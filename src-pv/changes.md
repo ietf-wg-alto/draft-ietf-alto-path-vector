@@ -1,3 +1,11 @@
+# Changes since -08
+
+This revision
+
+- fixes a few spelling errors
+- emphasizes that abstract network elements can be generated on demand in both
+  introduction and motivating use cases
+
 # Changes Since Version -06 #
 
 - We emphasize the importance of the path vector extension in two aspects:

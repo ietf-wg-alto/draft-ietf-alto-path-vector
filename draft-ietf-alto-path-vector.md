@@ -100,27 +100,24 @@ informative:
 
 --- abstract
 
-{::include abstract.md}
+{::include src-pv/abstract.md}
 
 --- middle
 
-{::include introduction.md}
+{::include src-pv/introduction.md}
 
+{::include src-pv/terminology.md}
 
-# Changes since -08
+{::include src-pv/motivation.md}
 
-This revision
+{::include src-pv/overview.md}
 
-- fixes a few spelling errors
-- emphasizes that abstract network elements can be generated on demand in both
-  introduction and motivating use cases
+{::include src-pv/specification.md}
 
-{::include motivation.md}
+{::include src-pv/examples.md}
 
-{::include overview.md}
+{::include src-pv/others.md}
 
-{::include specification.md}
+--- back
 
-{::include examples.md}
-
-{::include others.md}
+{::include src-pv/changes.md}
