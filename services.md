@@ -1,6 +1,6 @@
 # Service Extensions {#Services}
 
-## Multipart Filtered Cost Map for Path Vector # {#SecMultiFCM}
+## Multipart Filtered Cost Map for Path Vector # {#pvcm-spec}
 
 This document introduces a new ALTO resource called multipart filtered cost map
 resource, which allows an ALTO server to provide other ALTO resources associated
@@ -25,18 +25,18 @@ PVReqFilteredCostMap, where:
 
 ~~~
 object {
-  [PropertyName ane-properties<0..*>;]
+  [EntityPropertyName ane-property-names<0..*>;]
 } PVReqFilteredCostMap : ReqFilteredCostMap;
 ~~~
 
 with fields:
 
-ane-properties:
-~ A list of properties that are associated with the ANEs. Each property in this
-list MUST match one of the supported ANE properties indicated in the resource's
-`ane-properties` capability. If the field is NOT present, it MUST be interpreted
-as an empty list, indicating that the ALTO server MUST NOT return any property
-in the unified property part.
+ane-property-names:
+: A list of properties that are associated with the ANEs. Each property in this
+  list MUST match one of the supported ANE properties indicated in the
+  resource's `ane-property-names` capability. If the field is NOT present, it
+  MUST be interpreted as an empty list, indicating that the ALTO server MUST NOT
+  return any property in the unified property part.
 
 ### Capabilities ## {#pvcm-cap}
 
@@ -46,22 +46,22 @@ object of type PVFilteredCostMapCapabilities:
 
 ~~~
 object {
-  [PropertyName ane-properties<0..*>;]
+  [EntityPropertyName ane-property-names<0..*>;]
 } PVFilteredCostMapCapabilities : FilteredCostMapCapabilities;
 ~~~
 
 with fields:
 
 cost-type-names:
-~ The `cost-type-names` field MUST only include the path vector cost type,
-unless explicitly documented by a future extension. This also implies that the
-path vector cost type MUST be defined in the `cost-types` of the Information
-Resource Directory's `meta` field.
+: The `cost-type-names` field MUST only include the Path Vector cost type,
+  unless explicitly documented by a future extension. This also implies that the
+  Path Vector cost type MUST be defined in the `cost-types` of the Information
+  Resource Directory's `meta` field.
 
-ane-properties:
-~ Defines a list of ANE properties that can be returned. If the field is NOT
-present, it MUST be interpreted as an empty list, indicating the ALTO server
-CANNOT provide any ANE property.
+ane-property-names:
+: Defines a list of ANE properties that can be returned. If the field is NOT
+  present, it MUST be interpreted as an empty list, indicating the ALTO server
+  CANNOT provide any ANE property.
 
 ### Uses ##
 
@@ -79,15 +79,15 @@ The "Content-Type" header of the response MUST be `multipart/related` as defined
 by {{RFC2387}} with the following parameters:
 
 type:
-~ The type parameter MUST be "application/alto-costmap+json". Note that
-{{RFC2387}} permits both parameters with and without the double quotes.
+: The type parameter MUST be "application/alto-costmap+json". Note that
+  {{RFC2387}} permits both parameters with and without the double quotes.
 
 start:
-~ The start parameter MUST be a quoted string where the quoted part has the same
-value as the "Resource-ID" header in the first part.
+: The start parameter MUST be a quoted string where the quoted part has the same
+  value as the "Resource-ID" header in the first part.
 
 boundary:
-~ The boundary parameter is as defined in {{RFC2387}}.
+: The boundary parameter is as defined in {{RFC2387}}.
 
 The body of the response consists of two parts.
 
@@ -99,7 +99,7 @@ The body of the first part MUST be a JSON object with the same format as defined
 in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the `vtag`
 field in the `meta` field, which provides the version tag of the returned cost
 map. The resource ID of the version tag MUST follow the format
-in {{design-rpm}}. The `meta` field MUST also include the `dependent-vtags`
+in {{ref-partmsg-design}}. The `meta` field MUST also include the `dependent-vtags`
 field, whose value is a single-element array to indicate the version tag of the
 network map used, where the network map is specified in the `uses` attribute of
 the multipart filtered cost map resource in IRD.
@@ -115,13 +115,13 @@ MUST include the `dependent-vtags` field in the `meta` field. The value of the
 Section 10.3 of {{RFC7285}}. The `vtag` of the first part MUST be included in
 the `dependent-vtags`. If `persistent-entities` is requested, the version tags
 of the dependent resources that MAY expose the entities in the response MUST
-also be included. The PropertyMapData has one member for each ANE identifier
-that appears in the first part, where the EntityProps has one member for each
+also be included. The PropertyMapData has one member for each ANEName that
+appears in the first part, where the EntityProps has one member for each
 property requested by the client if applicable.
 
 <!-- TODO: Error Handling -->
 
-## Multipart Endpoint Cost Service for Path Vector # {#SecMultiECS}
+## Multipart Endpoint Cost Service for Path Vector # {#pvecs-spec}
 
 This document introduces a new ALTO resource called multipart endpoint cost
 resource, which allows an ALTO server to provide other ALTO resources associated
@@ -146,15 +146,15 @@ PVEndpointCostParams, where
 
 ~~~
 object {
-  [PropertyName ane-properties<0..*>;]
+  [EntityPropertyName ane-property-names<0..*>;]
 } PVReqEndpointcost : ReqEndpointcost;
 ~~~
 
 with fields:
 
-ane-properties:
-~ This document defines the `ane-properties` in PVReqEndpointcost as
-the same as in PVReqFilteredCostMap. See {{pvcm-accept}}.
+ane-property-names:
+: This document defines the `ane-property-names` in PVReqEndpointcost as the
+  same as in PVReqFilteredCostMap. See {{pvcm-accept}}.
 
 ### Capabilities ##
 
@@ -177,26 +177,26 @@ The "Content-Type" header of the response MUST be `multipart/related` as defined
 by {{RFC7285}} with the following parameters:
 
 type:
-~ The type parameter MUST be "application/alto-endpointcost+json".
+: The type parameter MUST be "application/alto-endpointcost+json".
 
 start:
-~ The start parameter MUST be a quoted string where the quoted part has the same
-value as the "Resource-ID" header in the first part.
+: The start parameter MUST be a quoted string where the quoted part has the same
+  value as the "Resource-ID" header in the first part.
 
 boundary:
-~ The boundary parameter is as defined in [RFC2387].
+: The boundary parameter is as defined in [RFC2387].
 
 The body consists of two parts:
 
 The first part MUST include `Resource-Id` and `Content-Type` in its header. The
-value of `Resource-Id` MUST has the format of a Part Resource ID. The `Content-Type`
-MUST be `application/alto-endpointcost+json`.
+value of `Resource-Id` MUST has the format of a Part Resource ID. The
+`Content-Type` MUST be `application/alto-endpointcost+json`.
 
 The body of the first part MUST be a JSON object with the same format as defined
 in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the `vtag`
 field in the `meta` field, which provides the version tag of the returned
 endpoint cost map. The resource ID of the version tag MUST follow the format
-in {{design-rpm}}.
+in {{ref-partmsg-design}}.
 
 The second part MUST also include `Resource-Id` and `Content-Type` in its
 header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
@@ -209,6 +209,6 @@ MUST include the `dependent-vtags` field in the `meta` field. The value of the
 Section 10.3 of {{RFC7285}}. The `vtag` of the first part MUST be included in
 the `dependent-vtags`. If `persistent-entities` is requested, the version tags
 of the dependent resources that MAY expose the entities in the response MUST
-also be included. The PropertyMapData has one member for each ANE identifier
-that appears in the first part, where the EntityProps has one member for each
+also be included. The PropertyMapData has one member for each ANEName that
+appears in the first part, where the EntityProps has one member for each
 property requested by the client if applicable.

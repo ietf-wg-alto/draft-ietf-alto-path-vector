@@ -88,7 +88,8 @@ transfer mechanisms, or even deploy different 5G User Plane Functions (UPF)
 A growing trend in today's applications is to bring storage and computation
 closer to the end user for better QoE, such as Content Delivery Network (CDN),
 AR/VR, and cloud gaming, as reported in various recent documents
-({{I-D.contreras-alto-service-edge}}, [TBD-TENCENT-CLOUDGAMING](), and
+({{I-D.contreras-alto-service-edge}},
+{{I-D.huang-alto-mowie-for-network-aware-app}}, and
 {{I-D.yang-alto-deliver-functions-over-networks}}).
 
 With the Path Vector extension, an ALTO server can selectively reveal the CDNs
@@ -128,6 +129,7 @@ src ----| Network A |                 | Network D |---- dst
 ~~~~~~~~
 {: #fig-multidomain title="An Example Topology" artwork-align="center"}
 
+
 ## Terminology # {#term}
 
 This document extends the ALTO base protocol [](#RFC7285) and the Unified
@@ -140,22 +142,23 @@ additional terms:
   virtualized network function (VNF), etc., or their aggregations. An ANE can be
   constructed either statically in advance or on demand based on the requested
   information. In a response, each ANE is represented by a unique ANE
-  identifier. Note that an ALTO client MUST NOT assume ANEs in different
-  responses but with the same identifier refer to the same aggregation of
+  Name. Note that an ALTO client MUST NOT assume ANEs in different
+  responses but with the same ANE Name refer to the same aggregation of
   network components.
 
-- Path Vector: A Path Vector is a JSON array of ANE identifiers. It presents an
-  abstract network path between source/destination points such as PIDs or
-  endpoints.
+- Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
+  Names. It conveys the information that the traffic between a source and a
+  destination traverses the ANEs in the same order as they appear in the Path
+  Vector.
 
 - Path Vector resource: A Path Vector resource refers to an ALTO resource which
   supports the extension defined in this document.
 
 - Path Vector cost type: The Path Vector cost type is a special cost type, which
-  is specified in {{cost-type}}. When this cost type is present in an IRD entry,
-  it indicates that the information resource is a Path Vector resource. When
-  this cost type is present in a Cost Map or an Endpoint Cost Map, it indicates
-  each cost value must be interpreted as a Path Vector.
+  is specified in {{cost-type-spec}}. When this cost type is present in an IRD
+  entry, it indicates that the information resource is a Path Vector resource.
+  When this cost type is present in a Cost Map or an Endpoint Cost Map, it
+  indicates each cost value must be interpreted as a Path Vector.
 
 - Path Vector request: A Path Vector request refers to the POST message sent to
   an ALTO Path Vector resource.

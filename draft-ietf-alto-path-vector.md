@@ -82,6 +82,10 @@ informative:
   I-D.ietf-dmm-5g-uplane-analysis:
   I-D.contreras-alto-service-edge:
   I-D.yang-alto-deliver-functions-over-networks:
+  I-D.huang-alto-mowie-for-network-aware-app:
+    title: TBD
+    author:
+    date: 2020
 
   TON2019:
     title: "An objective-driven on-demand network abstraction for adaptive applications"
@@ -152,31 +156,35 @@ informative:
 
 --- abstract
 
-This document defines an ALTO extension that allows an ALTO information resource
-to provide not only preferences but also correlations of the paths between
-different PIDs or endpoints. The extended information, including aggregations of
-network components on the paths and their properties, can be used to improve the
-robustness and performance for applications in some new usage scenarios, such as
-high-speed data transfers and traffic optimization using in-network storage and
-computation.
-
-This document reuses the mechanisms of the ALTO base protocol and the Unified
-Property extension, such as Information Resource Directory (IRD) capabilities
-and entity domains, to negotiate and exchange path correlation information.
-Meanwhile, it uses an extended compound message to fully represent the path
-correlation information, for better server scalability and message modularity.
-Specifically, the extension 1) introduces abstract network element (ANE) as an
-abstraction for an aggregation of network components and encodes a network path
-as a "path vector", i.e., an array of ANEs traversed from the source to the
-destination, 2) encodes properties of abstract network elements in a unified
-property map, and 3) encapsulates the two types of information in a multipart
-message.
+This document is an extension to the base Application-Layer Traffic Optimization
+protocol {{RFC7285}}. The current ALTO Cost Services allow applications to
+obtain cost values on an end-to-end path defined by its source and destination.
+The present extension provides abstracted information on particular network
+parts or elements traversed by a path between its source and destination.
+Examples of such abstracted parts are networks, data centers or links. This is
+useful for applications whose performance is impacted by particular network
+parts they traverse or by their properties. Applications having the choice among
+several connection paths may use this information to select paths accordingly
+and improve their performance. In particular, they may infer that several paths
+share common links and prevent traffic bottlenecks by avoiding such paths. This
+document introduces a new cost type called Path Vector. A Path Vector is an
+array of entities that each identifies an abstracted representation of a network
+part and that are called Abstract Network Element (ANE). Each ANE is defined by
+a set of properties. ANE properties are conveyed by an ALTO information resource
+called "Property Map", that can be packed together with the Path Vectors in a
+multipart response. They can also be obtained via a separate ALTO request to a
+Property Map. An ALTO Property Map is an extension to the ALTO protocol, that is
+specified in another document entitled "Unified Properties for the ALTO
+Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
 --- middle
 
 {::include introduction.md}
 
 {::include overview.md}
+
+
+
 
 {::include basic.md}
 

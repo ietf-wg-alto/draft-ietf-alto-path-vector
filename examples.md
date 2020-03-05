@@ -3,13 +3,13 @@
 This section lists some examples of path vector queries and the corresponding
 responses. Some long lines are truncated for better readability.
 
-## Example: Information Resource Directory ## { #id-example-ird }
+## Example: Information Resource Directory {#example-ird}
 
 Below is an example of an Information Resource Directory which enables the path
 vector extension. Some critical modifications include:
 
-- The `path-vector` cost type ({{cost-type}}) is defined in the `cost-types`
-  of the `meta` field.
+- The `path-vector` cost type ({{cost-type-spec}}) is defined in the
+  `cost-types` of the `meta` field.
 
 - The `cost-map-pv` information resource provides a multipart filtered cost map
   resource, which exposes the Maximum Reservable Bandwidth (`maxresbw`)
@@ -89,7 +89,7 @@ vector extension. Some critical modifications include:
 }
 ~~~
 
-## Example: Multipart Filtered Cost Map##
+## Example: Multipart Filtered Cost Map
 
 The following examples demonstrate the request to the `cost-map-pv` resource and
 the corresponding response.
@@ -98,9 +98,9 @@ The request uses the path vector cost type in the `cost-type` field. The
 `ane-properties` field is missing, indicating that the client only requests for
 the path vector but not the ANE properties.
 
-The response consists of two parts. The first part returns the array of ANE
-identifiers for each source and destination pair. There are three ANEs, where
-`ane:L001` is shared by traffic from `PID1` to both `PID2` and `PID3`.
+The response consists of two parts. The first part returns the array of ANEName
+for each source and destination pair. There are three ANEs, where `ane:L001` is
+shared by traffic from `PID1` to both `PID2` and `PID3`.
 
 The second part returns an empty property map. Note that the ANE entries are
 omitted since they have no properties (See Section 3.1 of {{I-D.ietf-alto-unified-props-new}}).
@@ -177,7 +177,7 @@ Content-Type: application/alto-propmap+json
 }
 ~~~
 
-## Example: Multipart Endpoint Cost Resource ##
+## Example: Multipart Endpoint Cost Resource
 
 The following examples demonstrate the request to the `endpoint-cost-pv`
 resource and the corresponding response.
@@ -186,8 +186,8 @@ The request uses the path vector cost type in the `cost-type` field, and
 queries the Maximum Reservable Bandwidth ANE property and the Persistent Entity
 property.
 
-The response consists of two parts. The first part returns the array of ANE
-identifiers for each valid source and destination pair.
+The response consists of two parts. The first part returns the array of ANEName
+for each valid source and destination pair.
 
 The second part returns the requested properties of ANEs in the first part. The
 "ane:NET001" element contains an HTTP proxy entity, which can be further used by

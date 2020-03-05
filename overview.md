@@ -1,180 +1,204 @@
 # Overview {#Overview}
 
-This section gives a top-down overview of approaches adopted by the Path Vector
-extension, with discussions to fully explore the design space. It is assumed
-that readers are familiar with both the base protocol {{RFC7285}} and the
-Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
+This section gives a non-normative overview of the Path Vector extension. It is
+assumed that readers are familiar with both the base protocol {{RFC7285}} and
+the Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
 
-## Workflow {#design-workflow}
+Fundamentally, this extension provides the abstract internal network state with
+two pieces of information:
 
-The workflow of the base ALTO protocol consists of one round of communication:
-An ALTO client sends a request to an ALTO server, and the ALTO server returns a
-response, as shown in {{fig-workflow}}. Each response contains only one type of ALTO
-resources, e.g., network maps, cost maps, or property maps.
+1. The abstract internal network: The abstract internal network is modeled as an
+   annotated graph, where each node is an Abstract Network Element (ANE) and
+   each annotation is a property associated with an ANE.
+
+2. Routing information: The routing information is modeled as an array of nodes
+   in the annotated graph that is traversed by the traffic between a source and
+   a destination.
+
+However, it can be observed that the routing information already conveys the
+connectivity of the abstract internal network. Thus, this extensions allows an
+ALTO server to provide the routing information and the association between ANEs
+and their properties, which is sufficient for an ALTO client to reconstruct
+fine-grained abstract internal network state for a set of <source, destination>
+pairs. Specifically, this document uses the following designs:
+
+1. This extension conveys the routing information in the abstract internal
+   network in an ALTO Cost Map or Endpoint Cost Map which accepts a Path
+   Vector, i.e., a JSON array of ANEs traversed by the traffic between a source
+   and a destination, as the cost value. With the Path Vectors, an ALTO client
+   can simultaneously reconstruct the structure of the abstract internal network
+   and the routing for the traffic between endpoints.
+
+2. This extension uses the ALTO Unified Property Map to convey the properties
+   associated with the ANEs, which offers more fine-grained internal network
+   state for overlay applications.
+
+3. This extension uses the multipart message [](TBD-ALTO-MULTIPART) to include
+   both information resources in the same Path Vector response.
+
+## Abstract Network Element {#ane-design}
+
+This extension introduce Abstract Network Element (ANE) as an indirect and
+network-agnostic way to specify an aggregation of internal network components
+which can be treated as if they are placed in the same location in the network,
+based on geo-location, OSPF domain, service type, algebraic properties, or other
+criteria.
+
+### ANE Name
+
+Each ANE is uniquely identified by a string of type ANEName as specified in
+{{ane-name-spec}}. An important observation is that for different requests, an
+ALTO server may selectively apply different methods to create the abstract
+internal network state based on confidentiality and performance considerations.
+Thus, the ANEs inside the abstract internal network may be constructed on
+demand. This indicates that the scope of an ANEName is limited to the Path Vector
+response.
+
+Since each ANE is also an entity in the Unified Property Map, the ANE Name MUST
+conform to the encoding of an Entity Identifier. Thus, this document also
+specifies a new EntityDomainName following the instructions in
+{{I-D.ietf-alto-unified-props-new}}.
+
+### ANE Properties
+
+In this extension, the associations between ANE and the properties are conveyed
+in a Unified Property Map. Thus, they MUST follow the mechanisms specified in
+the {{I-D.ietf-alto-unified-props-new}} with some additional considerations.
+
+1. As a property may not exist in every ANE, it must be interpreted in the same
+   way by the ALTO server and the ALTO client. Thus, when an ANE property is
+   specified, its intended semantics MUST specify how to interpret the case that
+   a requested ANE property does not exist in an ANE.
+
+2. As each ANE is an aggregation of multiple network components, its properties
+   are the aggregated results of the components' properties. For different ALTO
+   server implementations, different properties MAY have different rules when
+   they are aggregated into a single ANE. For example, if an ANE is the
+   aggregation of two networks where each network contains a CDN, an ALTO server
+   may selectively expose one CDN, expose none, or expose both in the ANE,
+   according to its own aggregation policies.
+
+   However, it is common that an ALTO client needs to compute the aggregated
+   property value of some ANEs, e.g., to infer the end-to-end property for a
+   <source, destination> pair. It is RECOMMENDED that the intended
+   semantics of an ANE property specifies how to compute the aggregated value
+   without loss of information. Thus, the information is interpreted by the ALTO
+   server and the ALTO client in the same way. For example, properties with
+   algebraic properties can be aggregated following the algebraic rules
+   {{TON2019}}.
+
+   NOTE: The aggregation rule ONLY specifies how to compute the aggregated
+   property for a Path Vector, NOT how the ANEs can be aggregated in the Path
+   Vector response. This is because the change of Path Vectors may change the
+   routing information and the internal network topology, leading to inaccurate
+   results.
+
+3. An ALTO Path Vector resource MAY only support a set of ANE properties.
+   Meanwhile, an ALTO client MAY only require a subset of the available
+   properties. Thus, a property negotiation process is required.
+
+   This document uses a similar approach as the negotiation process of cost
+   types: the available properties for a given resource are announced in the
+   Information Resource Directory as a new capability called
+   `ane-property-names`; the selected properties SHOULD be specified in a new
+   filter called `ane-property-names` in the request body; the response MUST
+   return and only return the selected properties for the ANEs in the response,
+   if applicable.
+
+## Path Vector {#path-vector-design}
+
+For an ALTO client to correctly interpret the Path Vector, this extension
+specifies a new cost type called the Path Vector cost type, which MUST be
+included both in the Information Resource Directory and the ALTO Cost Map or
+Endpoint Cost Map so that an ALTO client can correct interpret the cost values.
+
+The Path Vector cost type MUST convey both the interpretation and semantics in
+the "cost-mode" and "cost-metric" respectively. Unfortunately, a single
+"cost-mode" value cannot fully specify the interpretation of a Path Vector,
+which is a compound data type. For example, in programming languages such as
+Java, a Path Vector will have the type of JSONArray[ANEName].
+
+Instead of extending the "type system" of ALTO, this document takes a simple
+and backward compatible approach. Specifically, the "cost-mode" of the Path
+Vector cost type is "array", which indicates the value is a JSON array. Then, an
+ATLO client MUST check the value of the "cost-metric". If the value is
+"ane-path", meaning the JSON array should be further interpreted as a path of
+ANENames.
+
+The Path Vector cost type is specified in {{cost-type-spec}}
+
+## Multipart Path Vector Response
+
+For a basic ALTO information resource, the response contains only one type of
+ALTO resources, e.g., Network Map, Cost Map, or Property Map. Thus, only one
+round of communication is required: An ALTO client sends a request to an ALTO
+server, and the ALTO server returns a response, as shown in {{fig-alto}}.
 
 ~~~~~~~~~~ drawing
-+-------------+                          +-------------+
-| ALTO Client |                          | ALTO Server |
-+-------------+                          +-------------+
-       |               Request                  |
-       |--------------------------------------->|
-       |                                        |
-       |               Response                 |
-       |<---------------------------------------|
-       |                                        |
-       .                   .                    .
-       .                   .                    .
-       .                   .                    .
-       |              PV Request                |
-       |--------------------------------------->|
-       |                                        |
-       |       PV Response (Cost Map Part)      |
-       |<---------------------------------------|
-       |                                        |
-       |      PV Response (Property Map Part)   |
-       |<---------------------------------------|
-       |                                        |
+  ALTO Client                              ALTO Server
+       |-------------- Request ---------------->|
+       |<------------- Response ----------------|
 ~~~~~~~~~~
-{: #fig-workflow artwork-align="center" title="Information Exchange Process of the base ALTO Protocol and the Path Vector Extension"}
+{: #fig-alto artwork-align="center" title="A Typical ALTO Request and Response"}
+
+~~~~~~~~~~ drawing
+  ALTO Client                              ALTO Server
+       |------------- PV Request -------------->|
+       |<----- PV Response (Cost Map Part) -----|
+       |<--- PV Response (Property Map Part) ---|
+~~~~~~~~~~
+{: #fig-pv artwork-align="center" title="The Path Vector Extension Request and Response"}
 
 The Path Vector extension, on the other hand, involves two types of information
-resources. First, Path Vectors, which represent the correlations of network
-paths for all <source, destination> pairs in the request, are encoded as an
-(endpoint) cost map with an extended cost type. Second, properties associated
-with the ANEs are encoded as a property map.
+resources: Path Vectors conveyed in a Cost Map or an Endpoint Cost Map, and ANE
+properties conveyed in a Unified Property Map. Instead of two consecutive
+message exchanges, the Path Vector extension enforces one round of
+communication. Specifically, the Path Vector extension requires the ALTO client
+to include the source and destination pairs and the requested ANE properties in
+a single request, and encapsulates both Path Vectors and properties associated
+with the ANEs in a single response, as shown in {{fig-pv}}.
 
-Instead of making two consecutive queries, however, the Path Vector extension
-adopts a workflow which also consists of only one round of communication, based
-on the following reasons:
+This design is based on the following considerations:
 
-1. ANE Computation Flexibility. For better scalability, flexibility and privacy,
-   Abstract Network Elements MAY be constructed on demand, and potentially based
-   on the properties (See {{design-ane}} for more details). If sources and
+1. Since ANEs MAY be constructed on demand, and potentially based on the
+   requested properties (See {{ane-design}} for more details). If sources and
    destinations are not in the same request as the properties, an ALTO server
    either CANNOT construct ANEs on-demand, or MUST wait until both requests are
    received.
 
-2. Server Scalability. As ANEs are constructed on demand, mappings of each ANE
-   to its underlying network devices and resources CAN be different in different
-   queries. In order to respond to the second request correctly, an ALTO server
-   MUST store the mapping of each Path Vector request until the client fully
-   retrieves the property information. The "stateful" behavior CAN substantially
-   harm the server scalability and potentially lead to Denial-of-Service
-   attacks.
+2. As ANEs MAY be constructed on demand, mappings of each ANE to its underlying
+   network devices and resources CAN be specific to the request. In order
+   to respond to the second request correctly, an ALTO server MUST store the
+   mapping of each Path Vector request until the client fully retrieves the
+   property information. The "stateful" behavior CAN substantially harm the
+   server scalability and potentially lead to Denial-of-Service attacks.
 
-Thus, the Path Vector extension encapsulates all essential information in one
-request, and returns both Path Vectors and properties associated with the ANEs
-in a single response. See {{design-msg}} for more details.
-
-## Abstract Network Element {#design-ane}
-
-A key design in the Path Vector extension is abstract network element. Abstract
-network elements can be statically generated, for example, based on
-geo-locations, OSPF areas, or simply the raw network topology. They CAN also be
-generated on demand based on a client's request. This on-demand ANE
-generation allows for better scalability, flexibility and privacy enhancement.
-
-Consider an extreme case where the client only queries the bandwidth between one
-source and one destination in the topology shown in {{fig-ane-tp}}. Without knowing
-in advance the desired property, an ALTO server MAY need to include all network
-components on the paths for high accuracy. However, with the prior knowledge
-that the client only asks for the bandwidth information, an ALTO server CAN
-either 1) selectively pick the link with the smallest available bandwidth, or 2)
-dynamically generate a new ANE whose available bandwidth is the smallest value
-of the links' on the path. Thus, an ALTO server can provide accurate information
-with very little leak of its internal network topology. For more general cases,
-ANEs MAY be constructed based on algebraic aggregations, please see {{TON2019}}
-for more details.
-
-~~~~~~~~~~ drawing
-      +-----+  +-----+       +-----+
-eh1 --| sw1 |--| sw2 |--...--| swN |-- eh2
-      +-----+  +-----+       +-----+
-~~~~~~~~~~
-{:center #fig-ane-tp title="Topology for Dynamic ANE Example."}
-
-An ANE is uniquely identified by an ANE identifier (see {{ane-id}}) in the
-same response. However, since ANEs CAN be generated dynamically, an ALTO client
-MUST NOT assume that ANEs with the same identifier but from different queries
-refer to the same aggregation of network components. This approach simplifies
-the management of ANE identifiers at ALTO servers, and increases the difficulty
-to infer the real network topology with cross queries. It is RECOMMENDED that
-the identifiers of statically generated ANEs be anonymized in the Path Vector
-response, for example, by shuffling the ANEs and shrinking their identifier
-space to \[1, N\], where N is the number of ANEs etc.
-
-## Protocol Extensions {#design-msg}
-
-{{design-workflow}} has well articulated the reasons to complete the
-information exchange in a single round of communication. This section introduces
-the three major extended components to the base ALTO protocol and the Unified
-Property Map extension, as shown in {{tab-ext}}.
-
-| Component             | IRD | Request | Response |
-|-----------------------|-----|---------|----------|
-| Path Vector Cost Type | Yes | Yes     | Yes      |
-| Property Negotiation  | Yes | Yes     | Yes      |
-| Multipart Message     | Yes | No      | Yes      |
-{:center #tab-ext title="Extended Components and Where They Apply."}
-
-### Path Vector Cost Type
-
-Existing cost modes defined in {{RFC7285}} allow only scalar cost values.
-However, the Path Vector extension MUST convey vector format information. To
-fulfill this requirement, this document defines a new cost mode named `array`,
-which indicates that the cost value MUST be interpreted as an array of
-JSONValue. This document also introduces a new cost metric `ane-path` to convey
-an array of ANE identifiers.
-
-The combination of the `array` cost mode and the `ane-path` cost metric also
-complies best with the ALTO base protocol, where cost mode specifies the
-interpretation of a cost value, and cost metric conveys the meaning.
-
-### Property Negotiation
-
-Similar to cost types, an ALTO server MAY only support a given set of ANE
-properties in a Path Vector information resource. Meanwhile, an ALTO client MAY
-only require a subset of the available properties. Thus, a property negotiation
-process is required.
-
-This document uses a similar approach as the negotiation process of cost types:
-the available properties for a given resource are announced in the Information
-Resource Directory and more specifically, in a new capability called
-`ane-properties`; the selected properties SHOULD be specified in a new filter
-called `ane-properties` in the request body; the response MUST return and only
-return the selected properties for the ANEs in the response, if applicable.
-
-### Multipart/Related Message
-
-Path Vectors and the property map containing the ANEs are two different types
-of objects, but they need to be encoded in one message. One approach is to
-define a new media type to contain both objects, but this violates modular
-design.
-
-This document uses standard-conforming usage of `multipart/related` media type
-defined in {{RFC2387}} to elegantly combine the objects. Path Vectors are
-encoded as a cost map or an endpoint cost map, and the property map is encoded
-as a Unified Propert Map. They are encapsulated as parts of a multipart message.
-The modular composition allows ALTO servers and clients to reuse the data models
-of the existing information resources. Specifically, this document addresses the
+One approach to realize the one-round communication is to define a new media
+type to contain both objects, but this violates modular design. This document
+uses standard-conforming usage of `multipart/related` media type defined in
+{{RFC2387}} to elegantly combine the objects. Path Vectors are encoded as a Cost
+Map or an Endpoint Cost Map, and the Property Map is encoded as a Unified
+Propert Map. They are encapsulated as parts of a multipart message. The modular
+composition allows ALTO servers and clients to reuse the data models of the
+existing information resources. Specifically, this document addresses the
 following practical issues using `multipart/related`.
 
-#### Identifying the Media Type of the Root Object
+### Identifying the Media Type of the Root Object
 
 ALTO uses media type to indicate the type of an entry in the Information
-Resource Directory (IRD) (e.g., `application/alto-costmap+json` for cost map
-and `application/alto-endpointcost+json` for endpoint cost map). Simply
+Resource Directory (IRD) (e.g., `application/alto-costmap+json` for Cost Map
+and `application/alto-endpointcost+json` for Endpoint Cost Map). Simply
 putting `multipart/related` as the media type, however, makes it impossible
 for an ALTO client to identify the type of service provided by related
 entries.
 
 To address this issue, this document uses the `type` parameter to indicate the
-root object of a multipart/related message. For a cost map resource, the
+root object of a multipart/related message. For a Cost Map resource, the
 `media-type` in the IRD entry MUST be `multipart/related` with the parameter
 `type=application/alto-costmap+json`; for an Endpoint Cost Service, the
 parameter MUST be `type=application/alto-endpointcost+json`.
 
-#### References to Part Messages {#design-rpm}
+### References to Part Messages {#ref-partmsg-design}
 
 The ALTO SSE extension (see {{I-D.ietf-alto-incr-update-sse}}) uses
 `client-id` to demultiplex push updates. However, `client-id` is provided
@@ -183,9 +207,9 @@ resource.
 
 To address this issue, an ALTO server MUST assign a unique identifier to each
 part of the `multipart/related` response message. This identifier, referred to
-as a Part Resource ID (See {{mpri}} for details), MUST be present in the part
-message's `Resource-Id` header. The MIME part header MUST also contain the
-`Content-Type` header, whose value is the media type of the part (e.g.,
+as a Part Resource ID (See {{part-rid-spec}} for details), MUST be present in
+the part message's `Resource-Id` header. The MIME part header MUST also contain
+the `Content-Type` header, whose value is the media type of the part (e.g.,
 `application/alto-costmap+json`, `application/alto-endpointcost+json`, or
 `application/alto-propmap+json`).
 
@@ -213,7 +237,7 @@ where pv-resource-id is the resource ID of the Path Vector resource in the IRD
 entry, and the part-resource-id has the same value as the `Resource-Id` header
 of the part.
 
-#### Order of Part Messages
+### Order of Part Messages
 
 According to RFC 2387 {{RFC2387}}, the Path Vector part, whose media type is
 the same as the `type` parameter of the multipart response message, is the root
