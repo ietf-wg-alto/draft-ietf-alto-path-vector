@@ -51,7 +51,7 @@ vector extension. Some critical modifications include:
       "accepts": "application/alto-costmapfilter+json",
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
-        "ane-properties": [ "maxresbw" ]
+        "ane-property-names": [ "maxresbw" ]
       },
       "uses": [ "my-default-networkmap" ]
     },
@@ -72,7 +72,7 @@ vector extension. Some critical modifications include:
       "accepts": "application/alto-endpointcostparams+json",
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
-        "ane-properties": [ "maxresbw", "persistent-entities" ]
+        "ane-property-names": [ "maxresbw", "persistent-entities" ]
       },
       "uses": [ "http-proxy-props" ]
     },
@@ -95,7 +95,7 @@ The following examples demonstrate the request to the `cost-map-pv` resource and
 the corresponding response.
 
 The request uses the path vector cost type in the `cost-type` field. The
-`ane-properties` field is missing, indicating that the client only requests for
+`ane-property-names` field is missing, indicating that the client only requests for
 the path vector but not the ANE properties.
 
 The response consists of two parts. The first part returns the array of ANEName
@@ -215,7 +215,7 @@ Content-Type: application/alto-endpointcostparams+json
               "ipv4:203.0.113.45",
               "ipv6:2001:db8::10" ]
   },
-  "ane-properties": [ "maxresbw", "persistent-entities" ]
+  "ane-property-names": [ "maxresbw", "persistent-entities" ]
 }
 ~~~
 

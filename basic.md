@@ -74,11 +74,11 @@ not support bandwidth reservation, the value MUST be present and be set to 0.
 The aggregated value of a Path Vector is the minimum value of all the ANEs in
 the Path Vector.
 
-### ANE Property: Persistent Entity
+### ANE Property: Persistent Entities {#persistent-entities}
 
-The persistent entity property conveys the physical or logical network entities
+The persistent entities property conveys the physical or logical network entities
 (e.g., links, in-network caching service) that are contained by an ANE. It is
-indicated by the property name `persistent-entity`. The value is encoded as a
+indicated by the property name `persistent-entities`. The value is encoded as a
 JSON array of entity identifiers ({{I-D.ietf-alto-unified-props-new}}). These
 entity identifiers are persistent so that a client CAN further query their
 properties for future use.

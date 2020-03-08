@@ -4,34 +4,31 @@ This section gives a non-normative overview of the Path Vector extension. It is
 assumed that readers are familiar with both the base protocol {{RFC7285}} and
 the Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
 
-Fundamentally, this extension provides the abstract internal network state with
-two pieces of information:
+Fundamentally, this extension conveys two pieces of information:
 
-1. The abstract internal network: The abstract internal network is modeled as an
+1. The abstract network state: The abstract network state is modeled as an
    annotated graph, where each node is an Abstract Network Element (ANE) and
    each annotation is a property associated with an ANE.
 
 2. Routing information: The routing information is modeled as an array of nodes
-   in the annotated graph that is traversed by the traffic between a source and
+   in the annotated graph that is traversed by the path between a source and
    a destination.
 
 However, it can be observed that the routing information already conveys the
-connectivity of the abstract internal network. Thus, this extensions allows an
-ALTO server to provide the routing information and the association between ANEs
-and their properties, which is sufficient for an ALTO client to reconstruct
-fine-grained abstract internal network state for a set of <source, destination>
-pairs. Specifically, this document uses the following designs:
+connectivity of the abstract network. Thus, this extensions allows an ALTO
+server to provide the routing information and the association between ANEs and
+their properties. Specifically, this document uses the following designs:
 
-1. This extension conveys the routing information in the abstract internal
-   network in an ALTO Cost Map or Endpoint Cost Map which accepts a Path
-   Vector, i.e., a JSON array of ANEs traversed by the traffic between a source
-   and a destination, as the cost value. With the Path Vectors, an ALTO client
-   can simultaneously reconstruct the structure of the abstract internal network
-   and the routing for the traffic between endpoints.
+1. This extension conveys the routing information in the abstract network in an
+   ALTO Cost Map or Endpoint Cost Map which accepts a Path Vector, i.e., a JSON
+   array of ANEs traversed by the path between a source and a destination, as
+   the cost value. With the Path Vectors, an ALTO client can simultaneously
+   reconstruct the structure of the abstract network and the routing
+   for the paths between endpoints.
 
 2. This extension uses the ALTO Unified Property Map to convey the properties
-   associated with the ANEs, which offers more fine-grained internal network
-   state for overlay applications.
+   associated with the ANEs, which offers more fine-grained abstract
+   network state for overlay applications.
 
 3. This extension uses the multipart message [](TBD-ALTO-MULTIPART) to include
    both information resources in the same Path Vector response.
@@ -39,7 +36,7 @@ pairs. Specifically, this document uses the following designs:
 ## Abstract Network Element {#ane-design}
 
 This extension introduce Abstract Network Element (ANE) as an indirect and
-network-agnostic way to specify an aggregation of internal network components
+network-agnostic way to specify an aggregation of intermediate network components
 which can be treated as if they are placed in the same location in the network,
 based on geo-location, OSPF domain, service type, algebraic properties, or other
 criteria.
@@ -49,10 +46,9 @@ criteria.
 Each ANE is uniquely identified by a string of type ANEName as specified in
 {{ane-name-spec}}. An important observation is that for different requests, an
 ALTO server may selectively apply different methods to create the abstract
-internal network state based on confidentiality and performance considerations.
-Thus, the ANEs inside the abstract internal network may be constructed on
-demand. This indicates that the scope of an ANEName is limited to the Path Vector
-response.
+network state based on confidentiality and performance considerations. Thus, the
+ANEs inside the abstract network may be constructed on demand. This indicates
+that the scope of an ANEName is limited to the Path Vector response.
 
 Since each ANE is also an entity in the Unified Property Map, the ANE Name MUST
 conform to the encoding of an Entity Identifier. Thus, this document also
@@ -90,7 +86,7 @@ the {{I-D.ietf-alto-unified-props-new}} with some additional considerations.
    NOTE: The aggregation rule ONLY specifies how to compute the aggregated
    property for a Path Vector, NOT how the ANEs can be aggregated in the Path
    Vector response. This is because the change of Path Vectors may change the
-   routing information and the internal network topology, leading to inaccurate
+   routing information and the abstract network topology, leading to inaccurate
    results.
 
 3. An ALTO Path Vector resource MAY only support a set of ANE properties.

@@ -157,15 +157,16 @@ information (Section 15.3 of {{RFC7285}}) and availability of ALTO service
 For confidentiality of ALTO information, a network operator should be aware of
 that this extension may introduce a new risk: the path vector information may
 make network attacks easier. For example, as the path vector information may
-reveal more network internal structures than the base protocol, an ALTO client
-may detect the bottleneck link and start a distributed denial-of-service (DDoS)
-attack involving minimal flows to conduct the in-network congestion.
+reveal more fine-grained internal network structures than the base protocol, an
+ALTO client may detect the bottleneck link and start a distributed
+denial-of-service (DDoS) attack involving minimal flows to conduct the
+in-network congestion.
 
 To mitigate this risk, the ALTO server should consider protection mechanisms to
 reduce information exposure or obfuscate the real information, in particular,
 in settings where the network and the application do not belong to the same
 trust domain. But the implementation of path vector extension involving
-reduction or obfuscation should guarantees the constraints on the requested
+reduction or obfuscation should guarantee the constraints on the requested
 properties are still accurate.
 
 <!--
@@ -195,8 +196,8 @@ revised version of {{RFC7285}} or in another future extension.
 
 ## ALTO Entity Domain Registry ##
 
-As proposed in Section 9.2 of {{I-D.ietf-alto-unified-props-new}}, `ALTO Domain
-Entity Registry` is requested. Besides, a new domain is to be registered, listed in
+This document registers a new entry to the ALTO Domain Entity Registry, as
+instructed by Section 9.2 of {{I-D.ietf-alto-unified-props-new}}. See below in
 {{tbl-entity-domain}}.
 
 
@@ -207,14 +208,14 @@ Entity Registry` is requested. Besides, a new domain is to be registered, listed
 
 ## ALTO Entity Property Type Registry ##
 
-The `ALTO Entity Property Type Registry` is required by the
-ALTO Domain `ane`, listed in {{tbl-prop-type-reg}}.
+Two initial entries are registered to the ALTO Domain `ane` in the `ALTO Entity
+Property Type Registry`. See below in {{tbl-prop-type-reg}}.
 
-| Identifier              | Intended Semantics                                                   |
-|-------------------------|----------------------------------------------------------------------|
-| ane:maxresbw            | The maximum reservable bandwidth                                     |
-| ane:persistent-entities | An array of identifiers of persistent entities that reside in an ANE |
-{: #tbl-prop-type-reg title="ALTO Entity Property Types"}
+| Identifier              | Intended Semantics          |
+|-------------------------|-----------------------------|
+| ane:maxresbw            | See {{maxresbw}}            |
+| ane:persistent-entities | See {{persistent-entities}} |
+{: #tbl-prop-type-reg title="Initial Entries for ane Domain in the ALTO Entity Property Types Registry"}
 
 ## ALTO Resource Entity Domain Export Registries ##
 

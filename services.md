@@ -58,6 +58,16 @@ cost-type-names:
   Path Vector cost type MUST be defined in the `cost-types` of the Information
   Resource Directory's `meta` field.
 
+cost-constraints:
+: If the `cost-type-names` field includes the Path Vector cost type,
+  `cost-constraints` field MUST be `false` or not present unless specifically
+  instructed by a future document.
+
+testable-cost-type-names:
+: If the `cost-type-names` field includes the Path Vector cost type, the Path
+  Vector cost type MUST NOT be included in the `testable-cost-type-names` field
+  unless specifically instructed by a future document.
+
 ane-property-names:
 : Defines a list of ANE properties that can be returned. If the field is NOT
   present, it MUST be interpreted as an empty list, indicating the ALTO server
