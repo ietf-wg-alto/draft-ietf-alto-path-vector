@@ -14,48 +14,54 @@ express other performance metrics {{I-D.ietf-alto-performance-metrics}}, to
 query multiple costs simultaneously {{RFC8189}}, and to obtain the time-varying
 values {{I-D.ietf-alto-cost-calendar}}.
 
-However, existing ATLO services provide only information for the end-to-end path
-of each <source, destination> communicating pair. However, the QoE of many
-overlay applications depends not only on the end-to-end properties, but also on
-some intermediate network components and their properties. For example, the QoE
-of a large scale data analytics application, job completion time, is relevant to
-the shared bottlenecks inside the carrier network.
+Existing ALTO services provide only cost information on an end-to-end path
+defined by its <source, destination> endpoints. However, the QoE of many
+overlay applications depends not only on the end-to-end costs, but also on some
+intermediate network components and their properties. For example, job
+completion time, which is an important QoE metric for a large scale data
+analytics application, is impacted by shared bottlenecks inside the carrier
+network.
 
 Predicting such information can be very complex without the help of the ISP
-{{AAAI2019}}. On the other hand, to infer the desired information, the overlay
-application may make multiple ALTO queries, which in return compromises the
-confidentiality of the ISP and service capability of the ALTO server.
+{{AAAI2019}}. On the other hand, ISPs are not likely to expose details on their
+network paths: first for the sake of confidentiality, second because it may
+represent a huge volume and overhead and last, because it is difficult for ISPs
+to figure out what information and what details an application needs. Likewise,
+applications do not necessarily need all the network path details and are likely
+not able to understand them.
 
-Thus, it is beneficial for both parties that an ALTO server proactively provides
-to ALTO clients the abstract network state, i.e., a selected set of abstract
-intermediate network components traversed by the paths between <source,
-destination> pairs and their properties which are relevant to the overlay
-applications' QoE. The overlay applications (i.e., ALTO clients) can save the
-efforts to infer the desired information and potentially get more accurate
-results. The ISP (i.e., the ALTO server) can potentially achieve better
-confidentiality and resource utilization by appropriately guiding the
-applications' traffic distribution. Also, the pressure on the server scalability
-can also be reduced as multiple potential queries are packed into a single
-query.
+It may be helpful as well for ISPs if applications could avoid using bottlenecks
+or challenging the network with poorly scheduled traffic. Therefore, it is
+beneficial for both parties if an ALTO server provides ALTO clients with an
+"abstract network state" that provides the necessary details to applications,
+while hiding the network complexity and confidential information. An "abstract
+network state" is a selected set of abstract representations of intermediate
+network components traversed by the paths between <source, destination> pairs
+combined with properties of these components that are relevant to the overlay
+applications' QoE. Both an application via its ALTO Client and the ISP via the
+ALTO server can achieve better confidentiality and resource utilization by
+appropriately abstracting relevant path components. The pressure on the server
+scalability can also be reduced by abstracting components and their properties
+and combining them in a single response.
 
-This document extends {{RFC7285}} to allow an ALTO server convey abstract
-intermediate network components, as path vectors, for a set of <source,
-destination> pairs. Each element in the path vector is referred to as an
-Abstract Network Element (ANE). An ANE represents an abstract intermediate
-component traversed by the path between a <source, destination> pair, and can be
+This document extends {{RFC7285}} to allow an ALTO server convey "abstract
+network state", for paths defined by their <source, destination> pairs. To this
+end, it introduces a new cost type called "Path Vector". A Path Vector is an
+array of identifiers of so-called Abstract Network Element (ANE). An ANE
+represents an abstract intermediate component traversed by a path. It can be
 associated with various properties. The associations between ANEs and their
-properties are encoded in a Unified Property Map
-{{I-D.ietf-alto-unified-props-new}}.
+properties are encoded in an ALTO information resource called Unified Property
+Map, which is specified in {{I-D.ietf-alto-unified-props-new}}.
 
 For better confidentiality, this document aims to minimize information exposure.
-In particular, this document enables and recommends that 1) ANEs are constructed
-on demand, and 2) an ANE is only associated with attributes that are requested
-by an ALTO client. Thus, the two maps involved with a single Path Vector query,
-i.e., the (Endpoint) Cost Map that contains the Path Vector results and the
-Unified Property Map that contains the association between ANEs and their
-properties, are tightly coupled. To enforce consistency and improve server
-scalability, this document uses the [TBD-ID-MULTIPART]() extension to return
-the two maps in a single response.
+In particular, this document enables and recommends that first ANEs are
+constructed on demand, and second an ANE is only associated with properties that
+are requested by an ALTO client. A Path Vector response involved two ALTO Maps:
+the Cost Map that contains the Path Vector results and the up to date Unified
+Property Map that contains the properties requested for these ANEs. To enforce
+consistency and improve server scalability, this document uses the
+`multipart/related` message defined in {{RFC2387}} to return the two maps in a
+single response.
 
 The rest of the document are organized as follows. {{Overview}} gives an
 overview of the protocol design. {{Basic}} and {{Services}} specify the Path
@@ -64,7 +70,96 @@ concrete examples presented in {{Examples}}. {{Compatibility}} discusses the
 backward compatibility with the base protocol and existing extensions. Security
 and IANA considerations are discussed in {{Security}} and {{IANA}} respectively.
 
-## Recent Use Cases {#usecases}
+# Use Cases {#usecases}
+
+## Capacity Region for Multi-Flow Scheduling
+
+Assume that an application has control over a set of flows, which may go through
+shared links or switches and share a bottleneck. The application hopes to
+schedule the traffic among multiple flows to get better performance. The
+capacity region information for those flows will benefit the scheduling.
+However, existing cost maps can not reveal such information.
+
+Specifically, consider a network as shown in {{fig-dumbbell}}. The network has 7
+switches (sw1 to sw7) forming a dumb-bell topology. Switches sw1/sw3 provide
+access on one side, sw2/sw4 provide access on the other side, and sw5-sw7 form
+the backbone. Endhosts eh1 to eh4 are connected to access switches sw1 to sw4
+respectively. Assume that the bandwidth of link eh1 -> sw1 and link sw1 -> sw5
+are 150 Mbps, and the bandwidth of the rest links are 100 Mbps.
+
+~~~~ drawing
+                                  +------+
+                                  |      |
+                                --+ sw6  +--
+                              /   |      |  \
+        PID1 +-----+         /    +------+   \          +-----+  PID2
+        eh1__|     |_       /                 \     ____|     |__eh2
+             | sw1 | \   +--|---+         +---|--+ /    | sw2 |
+             +-----+  \  |      |         |      |/     +-----+
+                       \_| sw5  +---------+ sw7  |
+        PID3 +-----+   / |      |         |      |\     +-----+  PID4
+        eh3__|     |__/  +------+         +------+ \____|     |__eh4
+             | sw3 |                                    | sw4 |
+             +-----+                                    +-----+
+~~~~~
+{: #fig-dumbbell title="Raw Network Topology"}
+
+The single-node ALTO topology abstraction of the network is shown in
+{{fig-base}}.
+
+~~~~ drawing
+                          +----------------------+
+                 {eh1}    |                      |     {eh2}
+                 PID1     |                      |     PID2
+                   +------+                      +------+
+                          |                      |
+                          |                      |
+                 {eh3}    |                      |     {eh4}
+                 PID3     |                      |     PID4
+                   +------+                      +------+
+                          |                      |
+                          +----------------------+
+~~~~
+{: #fig-base title="Base Single-Node Topology Abstraction"}
+
+Consider an application overlay (e.g., a large data analysis system)
+which wants to schedule the traffic among a set of end host source-
+destination pairs, say eh1 -> eh2 and eh1 -> eh4.  The application
+can request a cost map providing end-to-end available bandwidth,
+using "availbw" as cost-metric and "numerical" as cost-mode.
+
+The application will receive from ALTO server that the bandwidth of
+eh1 -> eh2 and eh1 -> eh4 are both 100 Mbps.  But this information is
+not enough.  Consider the following two cases:
+
+- Case 1: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw6 ->
+  sw7 -> sw2 -> eh2 and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 ->
+  sw7 -> sw4 -> eh4, then the application will obtain 150 Mbps at
+  most.
+
+- Case 2: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw7 ->
+  sw2 -> eh2 and eh1 -> eh4 uses the path eh1 -> sw1 -> sw5 -> sw7
+  -> sw4 -> eh4, then the application will obtain only 100 Mbps at
+  most.
+
+To allow applications to distinguish the two aforementioned cases,
+the network needs to provide more details.  In particular:
+
+- The network needs to expose more detailed routing information to
+  show the shared bottlenecks.
+
+- The network needs to provide the necessary abstraction to hide the
+  real topology information while providing enough information to
+  applications.
+
+The path vector extension defined in this document propose a solution to provide
+these details.
+
+## Recent Use Cases
+
+This section highlights some recent use cases that are reported in IETF and ALTO
+working group. See {{I-D.bernstein-alto-topo}} for a more comprehensive survey
+of use cases where extended network topology information is needed.
 
 ### Large-scale Data Analytics
 
@@ -104,36 +199,6 @@ plans. Otherwise, the ALTO client may have to make multiple queries and
 potentially with the complete list of CDNs and/or service edges. While both
 approaches offer the same information, making multiple queries introduce larger
 delay and more overhead on both the ALTO server and the ALTO client.
-
-### Multi-domain Resource Discovery
-
-Another potential use case is to use ALTO for multi-domain resource discovery,
-as reported in a recent document [TBD-ALTO-MULTIDOMAIN](). In such a scenario,
-the Path Vector extension is essential. Consider the scenario in
-{{fig-multidomain}} and assume only Network D can provide 100 GB in-network
-storage. If the ALTO server in Network A discovers in-network storage
-capabilities from Network B and Network C, with only end-to-end results, it may
-mistakenly think there are 200 GB in-network storage available. What is worse,
-when it broadcasts the 200 GB storage to its neighbors, Network B and
-Network C may again mistakenly update their own information, which results in an
-infinite loop.
-
-With the Path Vector extension, the ALTO server in Network A receives two Path
-Vectors from Network B and C respectively, which both contains an entry of
-Network D. Thus, the ALTO server in Network A can correctly conclude the total
-available in-network storage is 100 GB.
-
-~~~~~~~~ drawing
-                       +-----------+
-                /------| Network B |------\
-        +-----------+  +-----------+  +-----------+
-src ----| Network A |                 | Network D |---- dst
-        +-----------+  +-----------+  +-----------+
-                \------| Network C |------/
-                       +-----------+
-~~~~~~~~
-{: #fig-multidomain title="An Example Topology" artwork-align="center"}
-
 
 ## Terminology # {#term}
 

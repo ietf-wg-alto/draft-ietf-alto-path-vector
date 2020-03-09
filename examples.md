@@ -58,7 +58,7 @@ vector extension. Some critical modifications include:
     "http-proxy-props": {
       "uri": "http://alto.example.com/proxy-props",
       "media-type": "application/alto-propmap+json",
-      "accpets": "application/alto-propmapparams+json",
+      "accepts": "application/alto-propmapparams+json",
       "capabilities": {
         "mappings": {
           "http-proxy": [ "price" ]

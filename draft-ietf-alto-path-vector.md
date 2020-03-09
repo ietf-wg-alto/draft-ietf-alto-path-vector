@@ -78,7 +78,7 @@ normative:
   I-D.ietf-alto-performance-metrics:
 
 informative:
-
+  I-D.bernstein-alto-topo:
   I-D.ietf-dmm-5g-uplane-analysis:
   I-D.contreras-alto-service-edge:
   I-D.yang-alto-deliver-functions-over-networks:

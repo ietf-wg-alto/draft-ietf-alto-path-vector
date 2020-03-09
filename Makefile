@@ -9,3 +9,7 @@ else
 	git clone -q --depth 10 $(CLONE_ARGS) \
 	    -b master https://github.com/martinthomson/i-d-template $(LIBDIR)
 endif
+
+to-snlab:
+	cp *.md ../alto/ietf-drafts-and-slides/draft-pv
+	cp *.txt ../alto/ietf-drafts-and-slides/draft-pv
