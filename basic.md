@@ -1,4 +1,4 @@
-# Basic Data Types {#Basic}
+# Specification: Basic Data Types {#Basic}
 
 ## ANE Name {#ane-name-spec}
 
@@ -31,22 +31,6 @@ The entity identifier of ANE domain uses the same encoding as ANEName
 
 There is no hierarchy or inheritance for properties associated with ANEs.
 
-## New Resource-Specific Entity Domain Exports
-
-### ANE Domain of Cost Map Resource {#costmap-ede}
-
-If an ALTO Cost Map resource supports the Path Vector cost type, it can export an
-`ane` typed entity domain defined by the union of all sets of ANE names, where
-each set of ANE names are an `ane-path` metric cost value in this ALTO Cost Map
-resource.
-
-### ANE Domain of Endpoint Cost Service Resource {#ec-ede}
-
-If an ALTO Endpoint Cost Service resource supports the Path Vector cost type, it
-can export an `ane` typed entity domain defined by the union of all sets of ANE
-names, where each set of ANE names are an `ane-path` metric cost value in this
-ALTO Endpoint Cost Service resource.
-
 ## ANE Property Name {#ane-prop-name-spec}
 
 An ANE Property Name is encoded as an Entity Property Name (Section 3.2.2 of
@@ -56,8 +40,11 @@ An ANE Property Name is encoded as an Entity Property Name (Section 3.2.2 of
 
 - the EntityPropertyType part MUST be a valid property of an ANE entity, i.e.,
   the mapping of the ANE domain type and the Entity Property Type MUST be
-  registered to the ALTO Resource Entity Property Mapping Registries (Section
-  11.5 in {{I-D.ietf-alto-unified-props-new}}).
+  registered to the ALTO Resource Entity Property Mapping Registries as
+  instructed by Section 11.5 of {{I-D.ietf-alto-unified-props-new}}.
+
+In this document, two initial ANE properties are specified, see {{maxresbw}} and
+{{persistent-entities}} for details.
 
 ### ANE Property: Maximum Reservable Bandwidth {#maxresbw}
 
@@ -72,7 +59,22 @@ as that the ANE has sufficiently large bandwidth to be reserved. If the ANE does
 not support bandwidth reservation, the value MUST be present and be set to 0.
 
 The aggregated value of a Path Vector is the minimum value of all the ANEs in
-the Path Vector.
+the Path Vector. For example, assume a Path Vector response contains three ANEs
+with the following maxresbw values:
+
+| ANEName | maxresbw |
+|---------|----------|
+| ane:1   | 100 Gbps |
+| ane:2   |  10 Gbps |
+| ane:3   |  20 Gbps |
+
+The aggregated `maxresbw` for ["ane:1", "ane:2", "ane:3"] is calculated as follows:
+
+~~~
+  maxresbw(["ane:1", "ane:2", "ane:3"])
+= min(maxresbw("ane:1"), maxresbw("ane:2"), maxresbw("ane:3"))
+= min(100 Gbps, 10 Gbps, 20 Gbps) = 10 Gbps
+~~~
 
 ### ANE Property: Persistent Entities {#persistent-entities}
 
@@ -84,7 +86,30 @@ entity identifiers are persistent so that a client CAN further query their
 properties for future use.
 
 If this property is requested but is missing for a given ANE, it MUST be
-interpreted as that no such entities exist in this ANE.
+interpreted as an empty array which indicates that no such entities exist in
+this ANE.
+
+The aggregated value for the `persistent-entities` property of a Path Vector
+is the concatenation of the values of all the ANEs in the Path Vector. For
+example, assume a Path Vector response contains three ANEs with the following
+persistent-entities values:
+
+| ANEName | persistent-entities |
+|---------|---------------------|
+| ane:1   | ["dc:A", "dc:B"]    |
+| ane:2   | []                  |
+| ane:3   | ["dc:C"]            |
+
+The aggregated `persistent-entities` for ["ane:1", "ane:2", "ane:3"] is calculated
+as follows (for better readability, the `persistent-entities` property is
+abbreviated as PE):
+
+~~~
+  PE(["ane:1", "ane:2", "ane:3"])
+= concat(PE("ane:1"), PE("ane:2"), PE("ane:3"))
+= concat(["dc:A", "dc:B"], [], ["dc:C"])
+= ["dc:A", "dc:B", "dc:C"]
+~~~
 
 ## Path Vector Cost Type {#cost-type-spec}
 
@@ -112,7 +137,7 @@ JSON array of ANEName ({{ane-name-spec}}) when the cost metric is
 A Part Resource ID is encoded as a JSON string with the same format as that of the
 Resource ID (Section 10.2 of {{RFC7285}}).
 
-WARNING: Even though the client-id assigned to a Path Vector request and the
+NOTE: Even though the client-id assigned to a Path Vector request and the
 Part Resource ID MAY contain up to 64 characters by their own definition. Their
 concatenation (see {{ref-partmsg-design}}) MUST also conform to the same length
 constraint. The same requirement applies to the resource ID of the Path Vector

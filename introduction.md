@@ -1,5 +1,6 @@
 # Introduction
 
+<!-- ALTO can improve QoE of overlay applications. -->
 Network performance metrics are crucial to the Quality of Experience (QoE) of
 today's applications. The ALTO protocol allows Internet Service Providers (ISPs)
 to provide guidance, such as topological distance between different end
@@ -7,31 +8,38 @@ hosts, to overlay applications. Thus, the overlay applications can potentially
 improve the QoE by better orchestrating their traffic to utilize the resources
 in the underlying network infrastructure.
 
-The base protocol {{RFC7285}} defines Cost Map and Endpoint Cost Service that
-expose the topological distances of a set of <source, destination> pairs.
-Various extensions have been proposed extend the capability of these services to
-express other performance metrics {{I-D.ietf-alto-performance-metrics}}, to
-query multiple costs simultaneously {{RFC8189}}, and to obtain the time-varying
-values {{I-D.ietf-alto-cost-calendar}}.
+<!-- ALTO supports only cost information of end-to-end paths. -->
+Existing ALTO Cost Map and Endpoint Cost Service provide only cost information
+on an end-to-end path defined by its <source, destination> endpoints: The base
+protocol {{RFC7285}} allows the services to expose the topological distances of
+end-to-end paths, while various extensions have been proposed to extend the
+capability of these services, e.g., to express other performance metrics
+{{I-D.ietf-alto-performance-metrics}}, to query multiple costs simultaneously
+{{RFC8189}}, and to obtain the time-varying values
+{{I-D.ietf-alto-cost-calendar}}.
 
-Existing ALTO services provide only cost information on an end-to-end path
-defined by its <source, destination> endpoints. However, the QoE of many
-overlay applications depends not only on the end-to-end costs, but also on some
-intermediate network components and their properties. For example, job
-completion time, which is an important QoE metric for a large scale data
-analytics application, is impacted by shared bottlenecks inside the carrier
-network.
+<!-- However, the QoE also depends on intermediate components. -->
+While the existing extensions are sufficient for many overlay applications,
+however, the QoE of some overlay applications depends not only on the cost
+information of end-to-end paths, but also on some intermediate network
+components and their properties. For example, job completion time, which is an
+important QoE metric for a large-scale data analytics application, is impacted
+by shared bottlenecks inside the carrier network.
 
 Predicting such information can be very complex without the help of the ISP
-{{AAAI2019}}. On the other hand, ISPs are not likely to expose details on their
+{{AAAI2019}}. With proper guidance from the ISP, an overlay application may be
+able to schedule its traffic for better QoE. In the meantime, it may be helpful
+as well for ISPs if applications could avoid using bottlenecks or challenging
+the network with poorly scheduled traffic.
+
+Despite the benefits, ISPs are not likely to expose details on their
 network paths: first for the sake of confidentiality, second because it may
-represent a huge volume and overhead and last, because it is difficult for ISPs
+result in a huge volume and overhead, and last because it is difficult for ISPs
 to figure out what information and what details an application needs. Likewise,
 applications do not necessarily need all the network path details and are likely
 not able to understand them.
 
-It may be helpful as well for ISPs if applications could avoid using bottlenecks
-or challenging the network with poorly scheduled traffic. Therefore, it is
+Therefore, it is
 beneficial for both parties if an ALTO server provides ALTO clients with an
 "abstract network state" that provides the necessary details to applications,
 while hiding the network complexity and confidential information. An "abstract
@@ -57,22 +65,64 @@ For better confidentiality, this document aims to minimize information exposure.
 In particular, this document enables and recommends that first ANEs are
 constructed on demand, and second an ANE is only associated with properties that
 are requested by an ALTO client. A Path Vector response involved two ALTO Maps:
-the Cost Map that contains the Path Vector results and the up to date Unified
+the Cost Map that contains the Path Vector results and the up-to-date Unified
 Property Map that contains the properties requested for these ANEs. To enforce
 consistency and improve server scalability, this document uses the
 `multipart/related` message defined in {{RFC2387}} to return the two maps in a
 single response.
 
-The rest of the document are organized as follows. {{Overview}} gives an
-overview of the protocol design. {{Basic}} and {{Services}} specify the Path
-Vector extension to the ALTO IRD and the information resources, with some
-concrete examples presented in {{Examples}}. {{Compatibility}} discusses the
-backward compatibility with the base protocol and existing extensions. Security
-and IANA considerations are discussed in {{Security}} and {{IANA}} respectively.
+The rest of the document are organized as follows. {{term}} introduces the extra
+terminologies that are used in this document. {{usecases}} uses an illustrative
+example to allow better understanding of the goal of this extension, and
+discusses potential use cases. {{Overview}} gives an overview of the protocol
+design. {{Basic}} and {{Services}} specify the Path Vector extension to the ALTO
+IRD and the information resources, with some concrete examples presented in
+{{Examples}}. {{Compatibility}} discusses the backward compatibility with the
+base protocol and existing extensions. Security and IANA considerations are
+discussed in {{Security}} and {{IANA}} respectively.
+
+# Terminology {#term}
+
+This document extends the ALTO base protocol {{RFC7285}} and the Unified
+Property Map extension {{I-D.ietf-alto-unified-props-new}}. In addition to
+the terms defined in these documents, this document also uses the following
+additional terms:
+
+- Abstract Network Element (ANE): An Abstract Network Element is an abstraction
+  representation of network components. It can be a link, a middlebox, a
+  virtualized network function (VNF), etc., or their aggregations. An ANE can be
+  constructed either statically in advance or on demand based on the requested
+  information. In a response, each ANE is represented by a unique ANE
+  Name. Note that an ALTO client MUST NOT assume ANEs in different
+  responses but with the same ANE Name refer to the same aggregation of
+  network components.
+
+- Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
+  Names. It conveys the information that the path between a source and a
+  destination traverses the ANEs in the same order as they appear in the Path
+  Vector.
+
+- Path Vector resource: A Path Vector resource refers to an ALTO resource which
+  supports the extension defined in this document.
+
+- Path Vector cost type: The Path Vector cost type is a special cost type, which
+  is specified in {{cost-type-spec}}. When this cost type is present in an IRD
+  entry, it indicates that the information resource is a Path Vector resource.
+  When this cost type is present in a Cost Map or an Endpoint Cost Map, it
+  indicates each cost value must be interpreted as a Path Vector.
+
+- Path Vector request: A Path Vector request refers to the POST message sent to
+  an ALTO Path Vector resource.
+
+- Path Vector response: A Path Vector response refers to the multipart/related
+  message returned by a Path Vector resource.
 
 # Use Cases {#usecases}
 
 ## Capacity Region for Multi-Flow Scheduling
+
+This section gives an illustrative example of how an overlay application can
+benefit from the Path Vector extension.
 
 Assume that an application has control over a set of flows, which may go through
 shared links or switches and share a bottleneck. The application hopes to
@@ -122,15 +172,15 @@ The single-node ALTO topology abstraction of the network is shown in
 ~~~~
 {: #fig-base title="Base Single-Node Topology Abstraction"}
 
-Consider an application overlay (e.g., a large data analysis system)
-which wants to schedule the traffic among a set of end host source-
-destination pairs, say eh1 -> eh2 and eh1 -> eh4.  The application
-can request a cost map providing end-to-end available bandwidth,
-using "availbw" as cost-metric and "numerical" as cost-mode.
+Consider an application overlay (e.g., a large-scale data analytics system)
+which wants to optimize the total throughput of the traffic among a set of end
+host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4. The application
+can request a cost map providing end-to-end available bandwidth, using "availbw"
+as cost-metric and "numerical" as cost-mode.
 
-The application will receive from ALTO server that the bandwidth of
-eh1 -> eh2 and eh1 -> eh4 are both 100 Mbps.  But this information is
-not enough.  Consider the following two cases:
+The application will receive from ALTO server that the bandwidth of eh1 -> eh2
+and eh1 -> eh4 are both 100 Mbps. But this information is not enough. Consider
+the following two cases:
 
 - Case 1: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw6 ->
   sw7 -> sw2 -> eh2 and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 ->
@@ -157,9 +207,9 @@ these details.
 
 ## Recent Use Cases
 
-This section highlights some recent use cases that are reported in IETF and ALTO
-working group. See {{I-D.bernstein-alto-topo}} for a more comprehensive survey
-of use cases where extended network topology information is needed.
+This section highlights some real use cases that are recently reported. See
+{{I-D.bernstein-alto-topo}} for a more comprehensive survey of use cases where
+extended network topology information is needed.
 
 ### Large-scale Data Analytics
 
@@ -176,12 +226,13 @@ network resource utilization.
 ### Context-aware Data Transfer
 
 It is sometimes important to know how the capabilities of various network
-components between two end hosts. With the Path Vector extension, an ALTO client
-may query the "network context" information, i.e., whether the two hosts are
-connected to the access network through a wireless link or a wire, and the
-capabilities of the access network. Thus, the client may use different data
-transfer mechanisms, or even deploy different 5G User Plane Functions (UPF)
-{{I-D.ietf-dmm-5g-uplane-analysis}} to optimize the data transfer.
+components between two end hosts, especially in the mobile environment. With the
+Path Vector extension, an ALTO client may query the "network context"
+information, i.e., whether the two hosts are connected to the access network
+through a wireless link or a wire, and the capabilities of the access network.
+Thus, the client may use different data transfer mechanisms, or even deploy
+different 5G User Plane Functions (UPF) {{I-D.ietf-dmm-5g-uplane-analysis}} to
+optimize the data transfer.
 
 ### CDN and Service Edge
 
@@ -197,41 +248,5 @@ and service edges that reside along the paths between different end hosts,
 together with their properties such as available Service Level Agreement (SLA)
 plans. Otherwise, the ALTO client may have to make multiple queries and
 potentially with the complete list of CDNs and/or service edges. While both
-approaches offer the same information, making multiple queries introduce larger
+approaches offer the same information, making multiple queries introduces larger
 delay and more overhead on both the ALTO server and the ALTO client.
-
-## Terminology # {#term}
-
-This document extends the ALTO base protocol [](#RFC7285) and the Unified
-Property Map extension [](#I-D.ietf-alto-unified-props-new). In addition to
-the terms defined in these documents, this document also uses the following
-additional terms:
-
-- Abstract Network Element (ANE): An Abstract Network Element is an abstraction
-  representation of network components. It can be a link, a middlebox, a
-  virtualized network function (VNF), etc., or their aggregations. An ANE can be
-  constructed either statically in advance or on demand based on the requested
-  information. In a response, each ANE is represented by a unique ANE
-  Name. Note that an ALTO client MUST NOT assume ANEs in different
-  responses but with the same ANE Name refer to the same aggregation of
-  network components.
-
-- Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
-  Names. It conveys the information that the path between a source and a
-  destination traverses the ANEs in the same order as they appear in the Path
-  Vector.
-
-- Path Vector resource: A Path Vector resource refers to an ALTO resource which
-  supports the extension defined in this document.
-
-- Path Vector cost type: The Path Vector cost type is a special cost type, which
-  is specified in {{cost-type-spec}}. When this cost type is present in an IRD
-  entry, it indicates that the information resource is a Path Vector resource.
-  When this cost type is present in a Cost Map or an Endpoint Cost Map, it
-  indicates each cost value must be interpreted as a Path Vector.
-
-- Path Vector request: A Path Vector request refers to the POST message sent to
-  an ALTO Path Vector resource.
-
-- Path Vector response: A Path Vector response refers to the multipart/related
-  message returned by a Path Vector resource.

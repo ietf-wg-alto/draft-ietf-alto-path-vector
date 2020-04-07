@@ -1,4 +1,4 @@
-# Overview {#Overview}
+# Path Vector Extension: Overview {#Overview}
 
 This section gives a non-normative overview of the Path Vector extension. It is
 assumed that readers are familiar with both the base protocol {{RFC7285}} and
@@ -30,7 +30,7 @@ their properties. Specifically, this document uses the following designs:
    associated with the ANEs, which offers more fine-grained abstract
    network state for overlay applications.
 
-3. This extension uses the multipart message [](TBD-ALTO-MULTIPART) to include
+3. This extension uses the multipart message {{RFC2387}} to include
    both information resources in the same Path Vector response.
 
 ## Abstract Network Element {#ane-design}
@@ -101,7 +101,7 @@ the {{I-D.ietf-alto-unified-props-new}} with some additional considerations.
    return and only return the selected properties for the ANEs in the response,
    if applicable.
 
-## Path Vector {#path-vector-design}
+## Path Vector Cost Type {#path-vector-design}
 
 For an ALTO client to correctly interpret the Path Vector, this extension
 specifies a new cost type called the Path Vector cost type, which MUST be
@@ -121,11 +121,11 @@ ATLO client MUST check the value of the "cost-metric". If the value is
 "ane-path", meaning the JSON array should be further interpreted as a path of
 ANENames.
 
-The Path Vector cost type is specified in {{cost-type-spec}}
+The Path Vector cost type is specified in {{cost-type-spec}}.
 
 ## Multipart Path Vector Response
 
-For a basic ALTO information resource, the response contains only one type of
+For a basic ALTO information resource, a response contains only one type of
 ALTO resources, e.g., Network Map, Cost Map, or Property Map. Thus, only one
 round of communication is required: An ALTO client sends a request to an ALTO
 server, and the ALTO server returns a response, as shown in {{fig-alto}}.
@@ -137,14 +137,6 @@ server, and the ALTO server returns a response, as shown in {{fig-alto}}.
 ~~~~~~~~~~
 {: #fig-alto artwork-align="center" title="A Typical ALTO Request and Response"}
 
-~~~~~~~~~~ drawing
-  ALTO Client                              ALTO Server
-       |------------- PV Request -------------->|
-       |<----- PV Response (Cost Map Part) -----|
-       |<--- PV Response (Property Map Part) ---|
-~~~~~~~~~~
-{: #fig-pv artwork-align="center" title="The Path Vector Extension Request and Response"}
-
 The Path Vector extension, on the other hand, involves two types of information
 resources: Path Vectors conveyed in a Cost Map or an Endpoint Cost Map, and ANE
 properties conveyed in a Unified Property Map. Instead of two consecutive
@@ -153,6 +145,15 @@ communication. Specifically, the Path Vector extension requires the ALTO client
 to include the source and destination pairs and the requested ANE properties in
 a single request, and encapsulates both Path Vectors and properties associated
 with the ANEs in a single response, as shown in {{fig-pv}}.
+
+
+~~~~~~~~~~ drawing
+  ALTO Client                              ALTO Server
+       |------------- PV Request -------------->|
+       |<----- PV Response (Cost Map Part) -----|
+       |<--- PV Response (Property Map Part) ---|
+~~~~~~~~~~
+{: #fig-pv artwork-align="center" title="The Path Vector Extension Request and Response"}
 
 This design is based on the following considerations:
 
@@ -171,9 +172,9 @@ This design is based on the following considerations:
 
 One approach to realize the one-round communication is to define a new media
 type to contain both objects, but this violates modular design. This document
-uses standard-conforming usage of `multipart/related` media type defined in
-{{RFC2387}} to elegantly combine the objects. Path Vectors are encoded as a Cost
-Map or an Endpoint Cost Map, and the Property Map is encoded as a Unified
+follows the standard-conforming usage of `multipart/related` media type defined
+in {{RFC2387}} to elegantly combine the objects. Path Vectors are encoded as a
+Cost Map or an Endpoint Cost Map, and the Property Map is encoded as a Unified
 Propert Map. They are encapsulated as parts of a multipart message. The modular
 composition allows ALTO servers and clients to reuse the data models of the
 existing information resources. Specifically, this document addresses the
@@ -221,7 +222,7 @@ where pv-client-id is the client-id assigned to the Path Vector request, and
 part-resource-id is the `Resource-Id` header value of the part. The media-type
 MUST match the `Content-Type` of the part.
 
-The same problem happens inside the part messages as well. The two parts MUST
+The same problem applies to the part messages as well. The two parts MUST
 contain a version tag, which SHOULD contain a unique Resource ID. This document
 requires the resource-id in a Version Tag to have the following format:
 
@@ -235,7 +236,7 @@ of the part.
 
 ### Order of Part Messages
 
-According to RFC 2387 {{RFC2387}}, the Path Vector part, whose media type is
+According to {{RFC2387}}, the Path Vector part, whose media type is
 the same as the `type` parameter of the multipart response message, is the root
 object. Thus, it is the element the application processes first. Even though the
 `start` parameter allows it to be placed anywhere in the part sequence, it is

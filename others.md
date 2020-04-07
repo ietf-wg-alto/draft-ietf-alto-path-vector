@@ -27,10 +27,10 @@ backward compatible with the base ALTO protocol:
 
 <!-- FIXME: path-vector cannot be used in multi-cost, also no reason -->
 
-This document does not specify how to integrate the `path-vector` cost mode with
-the multi-cost extension {{RFC8189}}. Although there is no reason why somebody
-has to compound the path vectors with other cost types in a single query, there
-is no compatible issue doing it without constraint tests.
+This document does not specify how to integrate the Path Vector cost type with
+the multi-cost extension {{RFC8189}}. While it is not RECOMMENDED to put the
+Path Vector cost type with other cost types in a single query, there is no
+compatible issue.
 
 <!--
 As [](#fcm-cap) mentions, the syntax and semantics of whether `constraints` or
@@ -85,7 +85,7 @@ The two extensions combined together CAN provide the historical network
 correlation information for a set of source and destination pairs. A network
 broker or client MAY use this information to derive other resource requirements
 such as Time-Block-Maximum Bandwidth, Bandwidth-Sliding-Window, and
-Time-Bandwidth-Product (TBP) (See {{SENSE}} for details.)
+Time-Bandwidth-Product (TBP) (See {{SENSE}} for details).
 
 # General Discussions {#SecDisc}
 
@@ -121,15 +121,17 @@ already used in the ALTO protocol. {{RFC7285}} and {{RFC8189}} allow ALTO
 clients to specify the `constraints` and `or-constraints` tests to better
 filter the result.
 
-However, the current defined syntax is too simple and can only be used to test the
-scalar cost value. For more complex cost types, like the `array` mode defined
-in this document, it does not work well. It will be helpful to propose more
-general constraint tests to better perform the query.
+However, the current syntax can only be used to test scalar cost types, and
+cannot easily express constraints on complex cost types, e.g., the Path Vector
+cost type defined in this document.
 
-In practice, it is too complex to customize a language for the general-purpose
-boolean tests, and can be a duplicated work. So it may be a good idea to
-integrate some already defined and widely used query languages (or their
-subset) to solve this problem. The candidates can be XQuery and JSONiq.
+In practice, developing a language for general-purpose boolean tests can be
+complex and is likely to be a duplicated work. Thus, it is worth looking into
+the direction of integrating existing well-developed query languages, e.g.,
+XQuery and JSONiq, or their subset with ALTO.
+
+Filtering the Path Vector results or developing a more sophisticated filtering
+mechanism is beyond the scope of this document.
 
 ## General Multipart Resources Query ##
 
@@ -149,14 +151,14 @@ extension is provided by an ALTO server.
 
 <!-- ## Privacy Concerns { #pricon } -->
 
-The path vector extension requires additional considerations on two security
+The Path Vector extension requires additional considerations on two security
 considerations discussed in the base protocol: confidentiality of ALTO
 information (Section 15.3 of {{RFC7285}}) and availability of ALTO service
 (Section 15.5 of {{RFC7285}}).
 
 For confidentiality of ALTO information, a network operator should be aware of
-that this extension may introduce a new risk: the path vector information may
-make network attacks easier. For example, as the path vector information may
+that this extension may introduce a new risk: the Path Vector information may
+make network attacks easier. For example, as the Path Vector information may
 reveal more fine-grained internal network structures than the base protocol, an
 ALTO client may detect the bottleneck link and start a distributed
 denial-of-service (DDoS) attack involving minimal flows to conduct the
@@ -165,9 +167,9 @@ in-network congestion.
 To mitigate this risk, the ALTO server should consider protection mechanisms to
 reduce information exposure or obfuscate the real information, in particular,
 in settings where the network and the application do not belong to the same
-trust domain. But the implementation of path vector extension involving
-reduction or obfuscation should guarantee the constraints on the requested
-properties are still accurate.
+trust domain. But the implementation of Path Vector extension involving
+reduction or obfuscation should guarantee the requested properties are still
+accurate.
 
 <!--
 On the other hand, in a setting of the same trust domain, a key benefit
@@ -176,29 +178,22 @@ to the application.
 -->
 
 For availability of ALTO service, an ALTO server should be cognizant that using
-path vector extension might have a new risk: frequent requesting for path
+Path Vector extension might have a new risk: frequent requesting for path
 vectors might conduct intolerable increment of the server-side storage and
-break the ALTO server. It is known that the computation of path vectors is
+break the ALTO server. It is known that the computation of Path Vectors is
 unlikely to be cacheable, in that the results will depend on the particular
 requests (e.g., where the flows are distributed). Hence, the service providing
-path vectors may become an entry point for denial-of-service attacks on the
+Path Vectors may become an entry point for denial-of-service attacks on the
 availability of an ALTO server. To avoid this risk, authenticity and
 authorization of this ALTO service may need to be better protected.
 
 # IANA Considerations # {#IANA}
 
-## ALTO Cost Mode Registry ##
-
-This document specifies a new cost mode `path-vector`. However, the base ALTO protocol
-does not have a Cost Mode Registry where new cost mode can be registered. This
-new cost mode will be registered once the registry is defined either in a
-revised version of {{RFC7285}} or in another future extension.
-
 ## ALTO Entity Domain Registry ##
 
 This document registers a new entry to the ALTO Domain Entity Registry, as
-instructed by Section 9.2 of {{I-D.ietf-alto-unified-props-new}}. See below in
-{{tbl-entity-domain}}.
+instructed by Section 12.2 of {{I-D.ietf-alto-unified-props-new}}. The new entry
+is as shown below in {{tbl-entity-domain}}.
 
 
 | Identifier | Entity Address Encoding | Hierarchy &amp; Inheritance |
@@ -209,29 +204,47 @@ instructed by Section 9.2 of {{I-D.ietf-alto-unified-props-new}}. See below in
 ## ALTO Entity Property Type Registry ##
 
 Two initial entries are registered to the ALTO Domain `ane` in the `ALTO Entity
-Property Type Registry`. See below in {{tbl-prop-type-reg}}.
+Property Type Registry`, as instructed by Section 12.3 of
+{{I-D.ietf-alto-unified-props-new}}. The two new entries are shown below in
+{{tbl-prop-type-reg}}.
 
 | Identifier              | Intended Semantics          |
 |-------------------------|-----------------------------|
-| ane:maxresbw            | See {{maxresbw}}            |
-| ane:persistent-entities | See {{persistent-entities}} |
+| maxresbw                | See {{maxresbw}}            |
+| persistent-entities     | See {{persistent-entities}} |
 {: #tbl-prop-type-reg title="Initial Entries for ane Domain in the ALTO Entity Property Types Registry"}
 
-## ALTO Resource Entity Domain Export Registries ##
+## ALTO Resource-Specific Entity Domain Export Registries ##
 
-### costmap
+This document registers the `ane` domain to the resource-specific entity domain
+export registries of Cost Map and Endpoint Cost Service, as instructed by
+Section 12.4 of {{I-D.ietf-alto-unified-props-new}}.
+
+### ANE Domain of Cost Map Resource {#costmap-ede}
+
+Media-type: application/alto-costmap+json
 
 | Entity Domain Type | Export Function     |
 |--------------------|---------------------|
-| ane                | See {{costmap-ede}} |
+| ane                | See below           |
 {: title="ALTO Cost Map Entity Domain Export"}
 
-### endpointcost
+If an ALTO Cost Map resource supports the Path Vector cost type, it can export an
+`ane` typed entity domain defined by the union of all ANE names that appear in
+the ALTO Cost Map resource.
+
+### ANE Domain of Endpoint Cost Service Resource {#ec-ede}
+
+Media-type: application/alto-endpointcost+json
 
 | Entity Domain Type | Export Function |
 |--------------------|-----------------|
-| ane                | See {{ec-ede}}  |
+| ane                | See below       |
 {: title="ALTO Endpoint Cost Entity Domain Export"}
+
+If an ALTO Endpoint Cost Service resource supports the Path Vector cost type, it
+can export an `ane` typed entity domain defined by the union of all ANE
+names that appear in the Path Vector part of the Path Vector request.
 
 # Acknowledgments #
 

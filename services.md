@@ -1,4 +1,4 @@
-# Service Extensions {#Services}
+# Specification: Service Extensions {#Services}
 
 ## Multipart Filtered Cost Map for Path Vector # {#pvcm-spec}
 
@@ -36,7 +36,7 @@ ane-property-names:
   list MUST match one of the supported ANE properties indicated in the
   resource's `ane-property-names` capability. If the field is NOT present, it
   MUST be interpreted as an empty list, indicating that the ALTO server MUST NOT
-  return any property in the unified property part.
+  return any property in the Unified Property part.
 
 ### Capabilities ## {#pvcm-cap}
 
@@ -80,7 +80,7 @@ map will be defined. If this resource supports `persistent-entities`, it MUST
 also include ALL the resources that exposes the entities that MAY appear in the
 response.
 
-### Response ##
+### Response ## {#pvcm-resp}
 
 The response MUST indicate an error, using ALTO protocol error handling, as
 defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
@@ -93,41 +93,44 @@ type:
   {{RFC2387}} permits both parameters with and without the double quotes.
 
 start:
-: The start parameter MUST be a quoted string where the quoted part has the same
-  value as the "Resource-ID" header in the first part.
+: The start parameter is as defined in {{RFC2387}}. If present, it MUST have the
+  same value as the `Resource-Id` header of the Path Vector part.
 
 boundary:
 : The boundary parameter is as defined in {{RFC2387}}.
 
-The body of the response consists of two parts.
+The body of the response consists of two parts:
 
-The first part MUST include `Resource-Id` and `Content-Type` in its header. The
-value of `Resource-Id` MUST has the format of a Part Resource ID. The
-`Content-Type` MUST be `application/alto-costmap+json`.
+- The Path Vector part MUST include `Resource-Id` and `Content-Type` in its
+  header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
+  The `Content-Type` MUST be `application/alto-costmap+json`.
 
-The body of the first part MUST be a JSON object with the same format as defined
-in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the `vtag`
-field in the `meta` field, which provides the version tag of the returned cost
-map. The resource ID of the version tag MUST follow the format
-in {{ref-partmsg-design}}. The `meta` field MUST also include the `dependent-vtags`
-field, whose value is a single-element array to indicate the version tag of the
-network map used, where the network map is specified in the `uses` attribute of
-the multipart filtered cost map resource in IRD.
+  The body of the Path Vector part MUST be a JSON object with the same format as
+  defined in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the
+  `vtag` field in the `meta` field, which provides the version tag of the
+  returned cost map. The resource ID of the version tag MUST follow the format in
+  {{ref-partmsg-design}}. The `meta` field MUST also include the `dependent-vtags`
+  field, whose value is a single-element array to indicate the version tag of the
+  network map used, where the network map is specified in the `uses` attribute of
+  the multipart filtered cost map resource in IRD.
 
-The second part MUST also include `Resource-Id` and `Content-Type` in its
-header. The value of `Resource-Id` has the format of a Part Resource ID. The
-`Content-Type` MUST be `application/alto-propmap+json`.
+- The Unified Property Map part MUST also include `Resource-Id` and
+  `Content-Type` in its header. The value of `Resource-Id` has the format of a
+  Part Resource ID. The `Content-Type` MUST be `application/alto-propmap+json`.
 
-The body of the second part MUST be a JSON object with the same format as
-defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The JSON object
-MUST include the `dependent-vtags` field in the `meta` field. The value of the
-`dependent-vtags` field MUST be an array of VersionTag objects as defined by
-Section 10.3 of {{RFC7285}}. The `vtag` of the first part MUST be included in
-the `dependent-vtags`. If `persistent-entities` is requested, the version tags
-of the dependent resources that MAY expose the entities in the response MUST
-also be included. The PropertyMapData has one member for each ANEName that
-appears in the first part, where the EntityProps has one member for each
-property requested by the client if applicable.
+  The body of the Unified Property Map part MUST be a JSON object with the same
+  format as defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The
+  JSON object MUST include the `dependent-vtags` field in the `meta` field. The
+  value of the `dependent-vtags` field MUST be an array of VersionTag objects as
+  defined by Section 10.3 of {{RFC7285}}. The `vtag` of the Path Vector part MUST
+  be included in the `dependent-vtags`. If `persistent-entities` is requested, the
+  version tags of the dependent resources that MAY expose the entities in the
+  response MUST also be included. The PropertyMapData has one member for each
+  ANEName that appears in the Path Vector part, where the EntityProps has one
+  member for each property requested by the client if applicable.
+
+If the `start` parameter is not present, the Path Vector part MUST be the first
+part in the multipart response.
 
 <!-- TODO: Error Handling -->
 
@@ -190,35 +193,38 @@ type:
 : The type parameter MUST be "application/alto-endpointcost+json".
 
 start:
-: The start parameter MUST be a quoted string where the quoted part has the same
-  value as the "Resource-ID" header in the first part.
+: The start parameter is as defined in {{pvcm-resp}}.
 
 boundary:
-: The boundary parameter is as defined in [RFC2387].
+: The boundary parameter is as defined in {{RFC2387}}.
 
 The body consists of two parts:
 
-The first part MUST include `Resource-Id` and `Content-Type` in its header. The
-value of `Resource-Id` MUST has the format of a Part Resource ID. The
-`Content-Type` MUST be `application/alto-endpointcost+json`.
+- The Path Vector part MUST include `Resource-Id` and `Content-Type` in its
+  header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
+  The `Content-Type` MUST be `application/alto-endpointcost+json`.
 
-The body of the first part MUST be a JSON object with the same format as defined
-in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the `vtag`
-field in the `meta` field, which provides the version tag of the returned
-endpoint cost map. The resource ID of the version tag MUST follow the format
-in {{ref-partmsg-design}}.
+  The body of the Path Vector part MUST be a JSON object with the same format as
+  defined in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the
+  `vtag` field in the `meta` field, which provides the version tag of the returned
+  endpoint cost map. The resource ID of the version tag MUST follow the format in
+  {{ref-partmsg-design}}.
 
-The second part MUST also include `Resource-Id` and `Content-Type` in its
-header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
-The `Content-Type` MUST be `application/alto-propmap+json`.
+- The Unified Property Map part MUST also include `Resource-Id` and
+  `Content-Type` in its header. The value of `Resource-Id` MUST has the format
+  of a Part Resource ID. The `Content-Type` MUST be
+  `application/alto-propmap+json`.
 
-The body of the second part MUST be a JSON object with the same format as
-defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The JSON object
-MUST include the `dependent-vtags` field in the `meta` field. The value of the
-`dependent-vtags` field MUST be an array of VersionTag objects as defined by
-Section 10.3 of {{RFC7285}}. The `vtag` of the first part MUST be included in
-the `dependent-vtags`. If `persistent-entities` is requested, the version tags
-of the dependent resources that MAY expose the entities in the response MUST
-also be included. The PropertyMapData has one member for each ANEName that
-appears in the first part, where the EntityProps has one member for each
-property requested by the client if applicable.
+  The body of the Unified Property Map part MUST be a JSON object with the same
+  format as defined in Section 4.6 of {{I-D.ietf-alto-unified-props-new}}. The
+  JSON object MUST include the `dependent-vtags` field in the `meta` field. The
+  value of the `dependent-vtags` field MUST be an array of VersionTag objects as
+  defined by Section 10.3 of {{RFC7285}}. The `vtag` of the Path Vector part MUST
+  be included in the `dependent-vtags`. If `persistent-entities` is requested, the
+  version tags of the dependent resources that MAY expose the entities in the
+  response MUST also be included. The PropertyMapData has one member for each
+  ANEName that appears in the Path Vector part, where the EntityProps has one
+  member for each property requested by the client if applicable.
+
+If the `start` parameter is not present, the Path Vector part MUST be the first
+part in the multipart response.
