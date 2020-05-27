@@ -69,6 +69,7 @@ author:
     email: jingxuan.n.zhang@gmail.com
 
 normative:
+  RFC2119:
   RFC7285:
   RFC2387:
   RFC8189:
@@ -177,7 +178,6 @@ ALTO request to a Property Map. An ALTO Property Map is an extension to the ALTO
 protocol, that is specified in another document entitled "Unified Properties for
 the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
-
 --- middle
 
 {::include introduction.md}
@@ -194,12 +194,29 @@ the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
 --- back
 
+
+# Changes since -10
+
+Revision -11
+
+- replaces "part"  with "components" in the abstract;
+- identifies additional requirements (AR) derived from the flow scheduling
+  example, and introduces how the extension addresses the additional
+  requirements
+- fixes the inconsistent use of "start" parameter in multipart responses;
+- specifies explicitly how to handle "cost-constraints";
+- uses the latest IANA registration mechanism defined in
+  {{I-D.ietf-alto-unified-props-new}}.
+
 # Changes since -09
 
-This revision
+Revision -10
 
-- extends the scope where the PV extension can be applied beyond the "path
-  correlation" information
+- revises the introduction which
+  - extends the scope where the PV extension can be applied beyond the "path
+    correlation" information
+- brings back the capacity region use case to better illustrate the problem
+- revises the overview to explain and defend the concepts and decision choices
 - fixes inconsistent terms, typos
 
 # Changes since -08

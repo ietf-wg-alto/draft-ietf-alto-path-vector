@@ -1,0 +1,150 @@
+
+Dear Jensen, Kai and Richard,
+
+First of all, great thanks to Jensen and Kai for their contribution.  As tomorrow,  we will only have 30 minutes to discuss the UP updates, I have gathered comments and questions in the present text document. 
+I really need to clarify these points before being able to progress and try to moderate my time consumption.    
+May I kindly ask you to read the comments below with a special focus:
+
+- For Jensen :  === Questions on 3.6 and related ===
+- For Kai: === Path-Vector related questions ===
+
+Actually thoughts from all three of you, Richard, Jensen and Kai would be highly welcome, especially for 3.6 and related. 
+I have attached the related document version by Jensen. It does not include my updates on section 1 to 3.5, which are out of scope of tomorrow's discussion.  
+
+Thanks a lot in advance,
+Sabine
+
+
+----- Terminology  in my comments ---------------------
+- IR = information resource
+- ED = Entity Domain
+- I use the term "specific information resource" or "specific resource". This term refers to an IR wrt which reources specific entity domains or properties are defined. Example: network map, path-vector cost map. 
+Such a term is useful in the document. If you find it clear, we may add it to the terminology section. Otherwise we should pick another term.
+
+
+==============================
+Misc questions (not urgent)
+==============================
+----- TITLE 
+Side-question: the draft is currently entitled "Unified Properties for the ALTO Protocol". The term "unified" reflects I believe the fact that the initial design only uses resource-agnostic entities and properties. In the meantime we found out that this causes an inflation or queries if resource specific entities or properties are queried. So the title could be changed to "ALTO Entity Property Maps".
+
+----- Terminology section: will be added in next versions
+
+---------- Section 2.1: 
+lists examples of entities, among which: "a routing element, that is specified in [RFC7921]... ". Entities are listed in 2.1 with a hint on how to identify them. We need to be more specific about what information on a routing element [RFC7921] specifies that can be used to identify it. Also, for my own record, how would this RE differ from an ANE? what type/functionality of a RE do you have in mind that may be of interest for applications? 
+I looked at the definition in section 1.2 of [RFC7921] but did not find out.  
+https://tools.ietf.org/html/rfc7921#page-26, section 6.4, 
+
+==============================
+Questions on 3.6 and related
+==============================
+
+First of all, thank you for the impressive effort and contribution.  
+
+---------- Section 3.6
+This section seems to explain the need for IANA registries. To start with, 
+*** Please see Section 14.3 ALTO Endpoint Property Type Registry, that the UP draft should mention
+*** Also see section 11.4.1.6 P.59, to stick to the initial terminology: Endpoint Property Map resource or Endpoint Property Service
+
+Is the point of this section 3.6 to say that a Client needs to know where to get information on entities and properties from?  And say that, to this end,  it is necessary to indicate:
+1 - by what information resource (IR) an entity domain  (ED) type can be exported
+(eg: network map exports PID, ipv4, ipv6, other address types such as mac and ecgi, )
+
+2 - what entity domain types are intrinsically resources dependent?  
+(eg: ED type "pid" depends on network maps, type"ane" depends on Cost Maps returning arrays of ANEs, ...)
+
+3 - what property types are intrinsically IR dependent
+(eg: "pid" prop type depends on network map. 
+ 
+----- para 1: 
+do you mean to say the following? :
+"it is necessary to specify how entities of a resource-specific domain and resource-specific properties can be accessed by a Client." 
+If yes, I gather that a base protocol client already knows this when the "specific resource" is a network map, as it is able to query the "pid" property for endpoints. 
+the 2 bullet examples are fine.   
+
+Using database terminology, how a resource-specific entity domain and a resource-specific property can be exported from an information resource". 
+
+What is the relation between para(graph) 1-3 and para 4? 
+----- In para 4: 
+- connection between what and what? 
+- What is the first IANA registry? what is the second? how to they help? 
+- sentence "... to explain what is an resource-specific entity domain... ": do you mean when ED type or prop type is resource specific, the IANA description should mention it and list all the types of specific IRs ?  
+
+---------- Section 6 Entity Domains and Property Mappings in Information Resources
+
+I figure this section is about the need for mappings between entity domain types and property types are defined in Property Map resources capabilities and specifies how they are done.  But understanding it is a challenge. 
+While I understand the need to specify ED type/Prop type mappings, why do we need to specify features such as "Resource-Specific Entity Domain Export" (assuming this term is understandable) ? 
+
+- Concepts such as "export" that are hard to map with specific actions and methods of the protocol, although I know its relation to DBs. Besides, while doing this, it revisits RFC7285 for the specification of Network Maps, see comments below.
+Reading in section 6.2.1.  Resource-Specific Entity Domain, upon sentence "An ALTO network map resource defines a "pid" domain, an "ipv4" domain and an "ipv6" domain by follows: ... ". 
+Does this mean we may replace term "export" by "defines" and say instead "an IR *defines* a given set of ED types or prop types"? 
+
+- Throughout section 6, text uses "resource-specific" in a very confusing manner and is hard to understand. 
+EG in second bullet: "all possible types of resource-specific entity properties for each possible type resource-specific entity domain", where as previous sections have defined and explained the difference between property type and resource-specific property. 
+
+---- 6.1.  Information Resource Export
+"Each information resource MUST export a set of entity domains and entity property mappings (which can be empty)".
+- what does "export" mean in this protocol extension?  exportation is the job of a DB. An ALTO Server exposes responses encoded in JSON, wrt a format specified for example in RFC7285 for JSON object structure in Server responses for Endpoint Property Map similarly to  RFC7285? The same holds for Network Maps and Cost Maps.  
+
+- I don't understand this sentence. What is the point of a MUST when the list can be empty?  What action in the protocol does "export" refer to? I understand this is a common database term. 
+Does it mean : "Each information resource MUST expose a set of mappings between entity domains  and entity properties applicable to these domains?  (which can be empty)" ? 
+
+6.1.1.  Resource-Specific Entity Domain Export
+Term "resource-specific" is misleading as it is used for other purposes in this document. 
+Does it mean "Entity Domain Export by Information Resources" ?  
+The use of keywords MAY in a sentence like "... if this type of information resource MAY export..."  should be avoided. 
+
+----- para 1, 
+Sentence: "For example, a network map resource MUST export a "pid" domain, an "ipv4" domain and an "ipv6" domain (which may be empty)":
+Why do we need and mandate that an information resource registers in the IANA the list of ED types it can export, as ED types supported by an IR can evolve ? 
+
+In RFC7285, section 11.2.2 (p46) "Mapping IP Addresses to PIDs for ’ipv4’/’ipv6’ Network Maps",  says : 
+"... For network maps containing the "ipv4" and "ipv6" address types defined in this document, ...". 
+Unless I missed something, this means (to me) that it is *not* mandatory for a Network Map to export ipv4 addresses. 
+
+Same RFC7285, in section 10.4 defines ipv4 and ipv6 adresses, but does not mandate the presence of ipv4 adresses in network maps, see also section 2.2 "Endpoint Address" that writes:
+"Common forms of endpoint addresses include IP addresses,
+Media Access Control (MAC) addresses, and overlay IDs. An endpoint
+address can be network-attachment based (e.g., IP address) or
+network-attachment agnostic (e.g., MAC address)."
+
+---------- 6.1.2.  Entity Property Mapping Export
+----- last para: "the corresponding document MUST define how to export such type of an entity property"
+- again what does this mean? see question above
+
+---------- 12.4
+We should stick to the resource names as initially defined, eg Endpoint Cost Map
+ 
+==============================
+Path-Vector related questions
+==============================
+--------------- 10.3.  Properties for Abstract Network Elements
+Nice example for those familiar with PV. I will need to add some explanations and references on ANE concepts and "Value-added services". Maybe we will have to minimize the number of example entities and properties, for the sake of clarity and successful review, because  a lot of text is usually required to explain how the examples are fictitious.   No worries, updating the text will be simple. 
+
+----- para 1:  what is a "facilitated" entity domain ? 
+-----  item "Value-added services" in sentence: ""persistent-entities", which contains information that points to the entry point of the service." :  what is "entry point of the service"? 
+
+---------- Section 10.4.  Information Resource Directory (IRD)
+
+IRD has a resource "path-vector-map" and I don't agree with this IR description in terms of property maps. I would define the following 2 resources in the IRD, with some explanation text, and use fictitious properties "aneprop1" and "aneprop2" and references to the PV draft :
+
+1) a specific cost map resource conveying path vectors, listed with the other specific resources such as network maps, as follows:
+"path-vector-map-10": {
+   "uri": "http://alto.example.com/costmap/pv",
+   "media-type": "multipart/related;type=applicatoin/alto-costmap+json"
+}
+
+2) an ANE property map, with the other prop maps, looking like:
+"ane-property-map": {
+   "uri": "http://alto.exmaple.com/propmap/pv-map10/ane-props",
+   "media-type": "application/alto-propmap+json",
+   "accepts": "application/alto-propmapparams+json",
+   "uses" : [ "path-vector-map-10" ],
+   "capabilities": {
+      "mappings": {
+         "path-vector-map-10.ane": [ ".aneprop1", ".aneprop2" ]
+      }
+   }
+},
+
+

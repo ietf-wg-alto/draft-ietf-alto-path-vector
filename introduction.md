@@ -72,14 +72,25 @@ consistency and improve server scalability, this document uses the
 single response.
 
 The rest of the document are organized as follows. {{term}} introduces the extra
-terminologies that are used in this document. {{usecases}} uses an illustrative
-example to allow better understanding of the goal of this extension, and
+terminologies that are used in this document. {{probstat}} uses an illustrative
+example to introduce the additional requirements of the ALTO framework, and
 discusses potential use cases. {{Overview}} gives an overview of the protocol
 design. {{Basic}} and {{Services}} specify the Path Vector extension to the ALTO
 IRD and the information resources, with some concrete examples presented in
 {{Examples}}. {{Compatibility}} discusses the backward compatibility with the
 base protocol and existing extensions. Security and IANA considerations are
 discussed in {{Security}} and {{IANA}} respectively.
+
+
+# Requirements Languages
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}}
+when, and only when, they appear in all capitals, as shown here.
+
+When the words appear in lower case, they are to be interpreted with their
+natural language meanings.
 
 # Terminology {#term}
 
@@ -117,9 +128,9 @@ additional terms:
 - Path Vector response: A Path Vector response refers to the multipart/related
   message returned by a Path Vector resource.
 
-# Use Cases {#usecases}
+# Problem Statement {#probstat}
 
-## Capacity Region for Multi-Flow Scheduling
+## Design Requirements
 
 This section gives an illustrative example of how an overlay application can
 benefit from the Path Vector extension.
@@ -178,9 +189,9 @@ host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4. The application
 can request a cost map providing end-to-end available bandwidth, using "availbw"
 as cost-metric and "numerical" as cost-mode.
 
-The application will receive from ALTO server that the bandwidth of eh1 -> eh2
-and eh1 -> eh4 are both 100 Mbps. But this information is not enough. Consider
-the following two cases:
+The application will receive from the ALTO server that the bandwidth of eh1 ->
+eh2 and eh1 -> eh4 are both 100 Mbps. But this information is not enough to
+determine the optimal total throughput. Consider the following two cases:
 
 - Case 1: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw6 ->
   sw7 -> sw2 -> eh2 and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 ->
@@ -195,21 +206,46 @@ the following two cases:
 To allow applications to distinguish the two aforementioned cases,
 the network needs to provide more details.  In particular:
 
-- The network needs to expose more detailed routing information to
-  show the shared bottlenecks.
+- For eh1 -> eh2, the ALTO server must give more details which is critical for
+  the overlay application to distinguish between Case 1 and Case 2 and to
+  compute the optimal total throughput accordingly.
 
-- The network needs to provide the necessary abstraction to hide the
-  real topology information while providing enough information to
-  applications.
+- The ALTO server must allow the client to distinguish the common network
+  components shared by eh1 -> eh2 and eh1 -> eh4, e.g., eh1 - sw1 and sw1 - sw5
+  in Case 1.
 
-The path vector extension defined in this document propose a solution to provide
+- The ALTO server must give details on the properties of the network components
+  used by eh1 -> eh2 and eh1 -> eh4, e.g., the available bandwidth between eh1 -
+  sw1, sw1 - sw5, sw5 - sw7, sw5 - sw6, sw6 - sw7, sw7 - sw2, sw7 - sw4, sw2 -
+  eh2, sw4 - eh4 in Case 1.
+
+In general, we can conclude that to support the multiple flow scheduling
+use case, the ALTO framework must be extended to satisfy the following
+additional requirements:
+
+AR1:
+: An ALTO server must provide essential information on intermediate network
+  components on the path of a <source, destination> pair that are critical to
+  the QoE of the overlay application.
+
+AR2:
+: An ALTO server must provide essential information on how the paths of
+  different <source, destination> pairs share a common network component.
+
+AR3:
+: An ALTO server must provide essential information on the properties associated
+  to the network components.
+
+The Path Vector extension defined in this document propose a solution to provide
 these details.
 
 ## Recent Use Cases
 
-This section highlights some real use cases that are recently reported. See
-{{I-D.bernstein-alto-topo}} for a more comprehensive survey of use cases where
-extended network topology information is needed.
+While the multiple flow scheduling problem is used to help identify the
+additional requirements, the Path Vector extension can be applied to a wide
+range of applications. This section highlights some real use cases that are
+recently reported. See {{I-D.bernstein-alto-topo}} for a more comprehensive
+survey of use cases where extended network topology information is needed.
 
 ### Large-scale Data Analytics
 

@@ -1,6 +1,6 @@
 # Examples {#Examples}
 
-This section lists some examples of path vector queries and the corresponding
+This section lists some examples of Path Vector queries and the corresponding
 responses. Some long lines are truncated for better readability.
 
 ## Example: Information Resource Directory {#example-ird}
@@ -11,8 +11,8 @@ vector extension. Some critical modifications include:
 - The `path-vector` cost type ({{cost-type-spec}}) is defined in the
   `cost-types` of the `meta` field.
 
-- The `cost-map-pv` information resource provides a multipart filtered cost map
-  resource, which exposes the Maximum Reservable Bandwidth (`maxresbw`)
+- The `filtered-cost-map-pv` information resource provides a multipart filtered
+  cost map resource, which exposes the Maximum Reservable Bandwidth (`maxresbw`)
   property.
 
 - The `http-proxy-props` information resource provides a filtered unified
@@ -41,11 +41,11 @@ vector extension. Some critical modifications include:
   },
   "resources": {
     "my-default-networkmap": {
-      "uri" : "http://alto.example.com/networkmap",
+      "uri" : "https://alto.example.com/networkmap",
       "media-type" : "application/alto-networkmap+json"
     },
-    "cost-map-pv": {
-      "uri": "http://alto.example.com/costmap/pv",
+    "filtered-cost-map-pv": {
+      "uri": "https://alto.example.com/costmap/pv",
       "media-type": "multipart/related;
                      type=application/alto-costmap+json",
       "accepts": "application/alto-costmapfilter+json",
@@ -56,7 +56,7 @@ vector extension. Some critical modifications include:
       "uses": [ "my-default-networkmap" ]
     },
     "http-proxy-props": {
-      "uri": "http://alto.example.com/proxy-props",
+      "uri": "https://alto.example.com/proxy-props",
       "media-type": "application/alto-propmap+json",
       "accepts": "application/alto-propmapparams+json",
       "capabilities": {
@@ -66,7 +66,7 @@ vector extension. Some critical modifications include:
       }
     },
     "endpoint-cost-pv": {
-      "uri": "http://alto.exmaple.com/endpointcost/pv",
+      "uri": "https://alto.exmaple.com/endpointcost/pv",
       "media-type": "multipart/related;
                      type=application/alto-endpointcost+json",
       "accepts": "application/alto-endpointcostparams+json",
@@ -77,7 +77,7 @@ vector extension. Some critical modifications include:
       "uses": [ "http-proxy-props" ]
     },
     "update-pv": {
-      "uri": "http://alto.example.com/updates/pv",
+      "uri": "https://alto.example.com/updates/pv",
       "media-type": "text/event-stream",
       "uses": [ "endpoint-cost-pv" ],
       "accepts": "application/alto-updatestreamparams+json",
@@ -91,19 +91,20 @@ vector extension. Some critical modifications include:
 
 ## Example: Multipart Filtered Cost Map
 
-The following examples demonstrate the request to the `cost-map-pv` resource and
-the corresponding response.
+The following examples demonstrate the request to the `filtered-cost-map-pv`
+resource and the corresponding response.
 
-The request uses the path vector cost type in the `cost-type` field. The
+The request uses the "path-vector" cost type in the `cost-type` field. The
 `ane-property-names` field is missing, indicating that the client only requests for
-the path vector but not the ANE properties.
+the Path Vector but not the ANE properties.
 
 The response consists of two parts. The first part returns the array of ANEName
 for each source and destination pair. There are three ANEs, where `ane:L001` is
 shared by traffic from `PID1` to both `PID2` and `PID3`.
 
-The second part returns an empty property map. Note that the ANE entries are
-omitted since they have no properties (See Section 3.1 of {{I-D.ietf-alto-unified-props-new}}).
+The second part returns an empty Property Map. Note that the ANE entries are
+omitted since they have no properties (See Section 3.1 of
+{{I-D.ietf-alto-unified-props-new}}).
 
 ~~~
 POST /costmap/pv HTTP/1.1
@@ -138,7 +139,7 @@ Content-Type: application/alto-costmap+json
 {
   "meta": {
     "vtag": {
-      "resource-id": "cost-map-pv.costmap",
+      "resource-id": "filtered-cost-map-pv.costmap",
       "tag": "d827f484cb66ce6df6b5077cb8562b0a"
     },
     "dependent-vtags": [
@@ -167,7 +168,7 @@ Content-Type: application/alto-propmap+json
   "meta": {
     "dependent-vtags": [
       {
-        "resource-id": "cost-map-pv.costmap",
+        "resource-id": "filtered-cost-map-pv.costmap",
         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
       }
     ]
@@ -306,7 +307,7 @@ Connection: keep-alive
 Content-Type: text/event-stream
 
 event: application/alto-updatestreamcontrol+json
-data: {"control-uri": "http://alto.example.com/updates/streams/1414"}
+data: {"control-uri": "https://alto.example.com/updates/streams/123"}
 
 event: multipart/related;boundary=example-3;
        type=application/alto-endpointcost+json,ecspvsub1

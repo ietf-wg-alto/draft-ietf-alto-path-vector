@@ -12,10 +12,9 @@ format.
 
 ## ANE Domain {#ane-domain-spec}
 
-This document specifies a new ALTO entity domain called `ane` in addition to the
-ones in {{I-D.ietf-alto-unified-props-new}}. The ANE domain associates property
-values with the ANEs in a network. The entity in ANE domain is often used in the
-Path Vector by Cost Map or Endpoint Cost Service resources. Accordingly, the ANE
+The ANE domain associates property values with the Abstract Network Elements
+contained in a Path Vector response, which can either be a Cost Map
+({{pvcm-spec}}) or an Endpoint Cost Service ({{pvecs-spec}}). Thus, the ANE
 domain always depends on a Cost Map or an Endpoint Cost Map.
 
 ### Entity Domain Type ##
@@ -24,8 +23,7 @@ ane
 
 ### Domain-Specific Entity Identifier ## {#entity-address}
 
-The entity identifier of ANE domain uses the same encoding as ANEName
-({{ane-name-spec}}).
+The entity identifiers are the ANE names contained in a Path Vector response.
 
 ### Hierarchy and Inheritance
 
@@ -119,13 +117,14 @@ Vector extension.
 
 ### Cost Metric: ane-path {#metric-spec}
 
-This cost metric conveys an array of ANE names, where each ANE name uniquely
-represents an ANE traversed by traffic from a source to a destination.
+The cost metric "ane-path" indicates the value of such a cost type conveys an
+array of ANE names, where each ANE name uniquely represents an ANE traversed by
+traffic from a source to a destination.
 
 ### Cost Mode: array {#mode-spec}
 
-This cost mode indicates that every cost value in a Cost Map or an Endpoint Cost
-Map MUST be interpreted as a JSON array object.
+The cost mode "array" indicates that every cost value in a Cost Map or an
+Endpoint Cost Map MUST be interpreted as a JSON array object.
 
 Note that this cost mode only requires the cost value to be a JSON array of
 JSONValue. However, an ALTO server that enables this extension MUST return a

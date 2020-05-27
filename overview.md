@@ -4,20 +4,28 @@ This section gives a non-normative overview of the Path Vector extension. It is
 assumed that readers are familiar with both the base protocol {{RFC7285}} and
 the Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
 
-Fundamentally, this extension conveys two pieces of information:
+To satisfies the additional requirements, this extension:
 
-1. The abstract network state: The abstract network state is modeled as an
-   annotated graph, where each node is an Abstract Network Element (ANE) and
-   each annotation is a property associated with an ANE.
+1. introduces Abstract Network Element (ANE) as the abstraction of intermediate
+   network components inside the underlying network,
 
-2. Routing information: The routing information is modeled as an array of nodes
-   in the annotated graph that is traversed by the path between a source and
-   a destination.
+2. extends the Cost Map and Endpoint Cost Service to convey the intermediate
+   network components traversed by the path of a <source, destination> pair as
+   Path Vectors,
 
-However, it can be observed that the routing information already conveys the
-connectivity of the abstract network. Thus, this extensions allows an ALTO
-server to provide the routing information and the association between ANEs and
-their properties. Specifically, this document uses the following designs:
+3. uses the Unified Property Map to convey the association between the
+   intermediate network components and their properties.
+
+Thus, an ALTO client can learn about the intermediate network components that
+are critical to the QoE of a <source, destination> pair by investigating the
+corresponding Path Vector value (AR1), identify common network components if an
+ANE appears in the Path Vectors of multiple <source, destination> pairs (AR2),
+and retrieve the properties of the network components by searching the Unified
+Property Map (AR3).
+
+Besides the additional requirements, this extension also adopts several design
+choices to address practical issues. Specifically, this document uses the
+following designs:
 
 1. This extension conveys the routing information in the abstract network in an
    ALTO Cost Map or Endpoint Cost Map which accepts a Path Vector, i.e., a JSON
@@ -160,14 +168,14 @@ This design is based on the following considerations:
 1. Since ANEs MAY be constructed on demand, and potentially based on the
    requested properties (See {{ane-design}} for more details). If sources and
    destinations are not in the same request as the properties, an ALTO server
-   either CANNOT construct ANEs on-demand, or MUST wait until both requests are
+   either cannot construct ANEs on-demand, or must wait until both requests are
    received.
 
 2. As ANEs MAY be constructed on demand, mappings of each ANE to its underlying
-   network devices and resources CAN be specific to the request. In order
-   to respond to the second request correctly, an ALTO server MUST store the
-   mapping of each Path Vector request until the client fully retrieves the
-   property information. The "stateful" behavior CAN substantially harm the
+   network devices and resources can be specific to the request. In order
+   to respond to the Property Map request correctly, an ALTO server MUST store
+   the mapping of each Path Vector request until the client fully retrieves the
+   property information. The "stateful" behavior may substantially harm the
    server scalability and potentially lead to Denial-of-Service attacks.
 
 One approach to realize the one-round communication is to define a new media
