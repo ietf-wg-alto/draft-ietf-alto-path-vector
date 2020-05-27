@@ -38,6 +38,31 @@ ane-property-names:
   MUST be interpreted as an empty list, indicating that the ALTO server MUST NOT
   return any property in the Unified Property part.
 
+Example: Consider the network in {{fig-dumbbell}}. If a client wants to query the
+`max-reservable-bandwidth` between PID1 and PID2, it can submit the following
+request.
+
+~~~
+   POST /costmap/pv HTTP/1.1
+   Host: alto.example.com
+   Accept: multipart/related;type=application/alto-costmap+json,
+           application/alto-error+json
+   Content-Length: [TBD]
+   Content-Type: application/alto-costmapfilter+json
+
+   {
+     "cost-type": {
+       "cost-mode": "array",
+       "cost-metric": "ane-path"
+     },
+     "pids": {
+       "srcs": [ "PID1" ],
+       "dsts": [ "PID2" ]
+     },
+     "ane-property-names": [ "max-reservable-bandwidth" ]
+   }
+~~~
+
 ### Capabilities ## {#pvcm-cap}
 
 The multipart filtered cost map resource extends the capabilities defined
@@ -75,15 +100,14 @@ ane-property-names:
 
 ### Uses ##
 
-The resource ID of the network map based on which the PIDs in the returned cost
-map will be defined. If this resource supports `persistent-entities`, it MUST
-also include ALL the resources that exposes the entities that MAY appear in the
-response.
+This member MUST include the resource ID of the network map based on which the
+PIDs are defined. If this resource supports `persistent-entities`, it MUST also
+include the originating resources of entities that appear in the response.
 
 ### Response ## {#pvcm-resp}
 
 The response MUST indicate an error, using ALTO protocol error handling, as
-defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
+defined in Section 8.5 of {{RFC7285}}, if the request does no.
 
 The "Content-Type" header of the response MUST be `multipart/related` as defined
 by {{RFC2387}} with the following parameters:
@@ -132,6 +156,56 @@ The body of the response consists of two parts:
 If the `start` parameter is not present, the Path Vector part MUST be the first
 part in the multipart response.
 
+Example: Consider the network in {{fig-dumbbell}}. The response of the example
+request in {{pvcm-accept}} is as follows.
+
+~~~
+   HTTP/1.1 200 OK
+   Content-Length: [TBD]
+   Content-Type: multipart/related; boundary=example-1;
+                 type=application/alto-costmap+json
+
+   --example-1
+   Resource-Id: costmap
+   Content-Type: application/alto-costmap+json
+
+   {
+     "meta": {
+       "vtag": {
+         "resource-id": "filtered-cost-map-pv.costmap",
+         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+       },
+       "dependent-vtags": [
+         {
+           "resource-id": "my-default-networkmap",
+           "tag": "75ed013b3cb58f896e839582504f6228"
+         }
+       ],
+       "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
+     },
+     "cost-map": {
+       "PID1": { "PID2": ["ane:1"] }
+     }
+   }
+   --example-1
+   Resource-Id: propmap
+   Content-Type: application/alto-propmap+json
+
+   {
+     "meta": {
+       "dependent-vtags": [
+         {
+           "resource-id": "filtered-cost-map-pv.costmap",
+           "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+         }
+       ]
+     },
+     "property-map": {
+       "ane:1": { "max-reservable-bandwidth": 100000000 }
+     }
+   }
+~~~
+
 <!-- TODO: Error Handling -->
 
 ## Multipart Endpoint Cost Service for Path Vector # {#pvecs-spec}
@@ -169,6 +243,30 @@ ane-property-names:
 : This document defines the `ane-property-names` in PVReqEndpointcost as the
   same as in PVReqFilteredCostMap. See {{pvcm-accept}}.
 
+Example: Consider the network in {{fig-dumbbell}}. If a client wants to query the
+`max-reservable-bandwidth` between eh1 and eh2, it can submit the following
+request.
+
+~~~
+   POST /ecs/pv HTTP/1.1
+   Host: alto.example.com
+   Accept: multipart/related;type=application/alto-endpointcost+json,
+           application/alto-error+json
+   Content-Length: [TBD]
+   Content-Type: application/alto-endpointcostparams+json
+
+   {
+     "cost-type": {
+       "cost-mode": "array",
+       "cost-metric": "ane-path"
+     },
+     "endpoints": {
+       "srcs": [ "ipv4:1.2.3.4" ],
+       "dsts": [ "ipv4:2.3.4.5" ]
+     },
+     "ane-property-names": [ "max-reservable-bandwidth" ]
+   }
+~~~
 ### Capabilities ##
 
 The capabilities of the multipart endpoint cost resource are defined by a JSON
@@ -177,9 +275,8 @@ PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
 
 ### Uses ##
 
-If a multipart endpoint cost resource supports `persistent-entities`, the `uses`
-field in its IRD entry MUST include ALL the resources which exposes the entities
-that MAY appear in the response.
+If this resource supports `persistent-entities`, it MUST include the originating
+resources of entities that appear in the response.
 
 ### Response ##
 
@@ -228,3 +325,54 @@ The body consists of two parts:
 
 If the `start` parameter is not present, the Path Vector part MUST be the first
 part in the multipart response.
+
+
+Example: Consider the network in {{fig-dumbbell}}. The response of the example
+request in {{pvecs-accept}} is as follows.
+
+~~~
+   HTTP/1.1 200 OK
+   Content-Length: [TBD]
+   Content-Type: multipart/related; boundary=example-1;
+                 type=application/alto-endpointcost+json
+
+   --example-1
+   Resource-Id: ecs
+   Content-Type: application/alto-endpointcost+json
+
+   {
+     "meta": {
+       "vtag": {
+         "resource-id": "ecs-pv.costmap",
+         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+       },
+       "dependent-vtags": [
+         {
+           "resource-id": "my-default-networkmap",
+           "tag": "75ed013b3cb58f896e839582504f6228"
+         }
+       ],
+       "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
+     },
+     "cost-map": {
+       "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ane:1"] }
+     }
+   }
+   --example-1
+   Resource-Id: propmap
+   Content-Type: application/alto-propmap+json
+
+   {
+     "meta": {
+       "dependent-vtags": [
+         {
+           "resource-id": "ecs-pv.costmap",
+           "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+         }
+       ]
+     },
+     "property-map": {
+       "ane:1": { "max-reservable-bandwidth": 100000000 }
+     }
+   }
+~~~

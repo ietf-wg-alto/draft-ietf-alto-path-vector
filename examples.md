@@ -12,7 +12,7 @@ vector extension. Some critical modifications include:
   `cost-types` of the `meta` field.
 
 - The `filtered-cost-map-pv` information resource provides a multipart filtered
-  cost map resource, which exposes the Maximum Reservable Bandwidth (`maxresbw`)
+  cost map resource, which exposes the Maximum Reservable Bandwidth (`max-reservable-bandwidth`)
   property.
 
 - The `http-proxy-props` information resource provides a filtered unified
@@ -21,7 +21,7 @@ vector extension. Some critical modifications include:
   entity domain yet and is used here only for demonstration.
 
 - The `endpoint-cost-pv` information resource provides a multipart endpoint cost
-  resource. It exposes the Maximum Reservable Bandwidth (`maxresbw`)
+  resource. It exposes the Maximum Reservable Bandwidth (`max-reservable-bandwidth`)
   property and the Persistent Entity property (`persistent-entities`). The
   persistent entities MAY come from the `http-proxy-props` resource.
 
@@ -51,7 +51,7 @@ vector extension. Some critical modifications include:
       "accepts": "application/alto-costmapfilter+json",
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
-        "ane-property-names": [ "maxresbw" ]
+        "ane-property-names": [ "max-reservable-bandwidth" ]
       },
       "uses": [ "my-default-networkmap" ]
     },
@@ -72,7 +72,7 @@ vector extension. Some critical modifications include:
       "accepts": "application/alto-endpointcostparams+json",
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
-        "ane-property-names": [ "maxresbw", "persistent-entities" ]
+        "ane-property-names": [ "max-reservable-bandwidth", "persistent-entities" ]
       },
       "uses": [ "http-proxy-props" ]
     },
@@ -192,9 +192,9 @@ for each valid source and destination pair.
 
 The second part returns the requested properties of ANEs in the first part. The
 "ane:NET001" element contains an HTTP proxy entity, which can be further used by
-the client. Since it does not contain a `maxresbw` property, the client SHOULD
+the client. Since it does not contain a `max-reservable-bandwidth` property, the client SHOULD
 assume it does NOT support bandwidth reservation but will NOT become a traffic
-bottleneck, as specified in {{maxresbw}}.
+bottleneck, as specified in {{max-reservable-bandwidth}}.
 
 ~~~
 POST /endpointcost/pv HTTP/1.1
@@ -216,7 +216,7 @@ Content-Type: application/alto-endpointcostparams+json
               "ipv4:203.0.113.45",
               "ipv6:2001:db8::10" ]
   },
-  "ane-property-names": [ "maxresbw", "persistent-entities" ]
+  "ane-property-names": [ "max-reservable-bandwidth", "persistent-entities" ]
 }
 ~~~
 
@@ -269,8 +269,8 @@ Content-Type: application/alto-propmap+json
     "ane:NET001": {
       "persistent-entities": [ "http-proxy:192.0.2.1" ]
     },
-    "ane:L002": { "maxresbw": 48000000 },
-    "ane:L003": { "maxresbw": 35000000 }
+    "ane:L002": { "max-reservable-bandwidth": 48000000 },
+    "ane:L003": { "max-reservable-bandwidth": 35000000 }
   }
 }
 ~~~

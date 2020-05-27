@@ -2,8 +2,8 @@
 
 ## ANE Name {#ane-name-spec}
 
-An ANE Name is encoded as a JSON string, which has the same format as
-EntityIdentifer (Section 3.1.3 of [I-D.ietf-alto-unified-props-new]) and the
+An ANE Name is encoded as a JSON string with the same format as that of the type
+EntityIdentifer (Section 3.1.3 of [I-D.ietf-alto-unified-props-new]) where the
 EntityDomainName MUST be "ane", indicating that this entity belongs to the "ane"
 Entity Domain.
 
@@ -29,63 +29,101 @@ The entity identifiers are the ANE names contained in a Path Vector response.
 
 There is no hierarchy or inheritance for properties associated with ANEs.
 
+### Originating Information Resource
+
+The ANE domain has two originating information resources:
+
+- Cost Map
+- Endpoint Cost Map
+
+For each Path Vector request to an originating information resource, the `ane`
+domain is defined by the ANE names contained in the corresponding Path Vector
+response.
+
 ## ANE Property Name {#ane-prop-name-spec}
 
-An ANE Property Name is encoded as an Entity Property Name (Section 3.2.2 of
-{{I-D.ietf-alto-unified-props-new}}) where
+An ANE Property Name is encoded as a JSON string with the same format as that of
+Entity Property Name (Section TBD of {{I-D.ietf-alto-unified-props-new}}).
 
-- the ResourceID part of an ANE Property Name MUST be empty;
+## Initial ANE Property Types
 
-- the EntityPropertyType part MUST be a valid property of an ANE entity, i.e.,
-  the mapping of the ANE domain type and the Entity Property Type MUST be
-  registered to the ALTO Resource Entity Property Mapping Registries as
-  instructed by Section 11.5 of {{I-D.ietf-alto-unified-props-new}}.
+In this document, two initial ANE property types are specified,
+`max-reservable-bandwidth` and `persistent-entities`.
 
-In this document, two initial ANE properties are specified, see {{maxresbw}} and
-{{persistent-entities}} for details.
+Note that the two property types defined in this document do not depend on any
+information resource, so their ResourceID part must be empty.
 
-### ANE Property: Maximum Reservable Bandwidth {#maxresbw}
+### ANE Property Type: Maximum Reservable Bandwidth {#maxresbw}
 
-The maximum reservable bandwidth property conveys the maximum bandwidth that can
-be reserved for all the traffic that traverses an ANE. The Entity Property Type
-of the maximum reservable bandwidth is "maxresbw", and the value MUST be encoded
-as a non-negative numerical cost value as defined in Section 6.1.2.1 of
-{{RFC7285}} and the unit is bit per second.
+The `maximum reservable bandwidth` property stands for the maximum bandwidth that
+can be reserved for all the traffic that traverses an ANE. The Entity Property
+Type of the maximum reservable bandwidth is "max-reservable-bandwidth", and the
+value MUST be encoded as a non-negative numerical cost value as defined in
+Section 6.1.2.1 of {{RFC7285}} and the unit is bit per second.
 
 If this property is requested but not present in an ANE, it MUST be interpreted
-as that the ANE has sufficiently large bandwidth to be reserved. If the ANE does
-not support bandwidth reservation, the value MUST be present and be set to 0.
+as that the ANE does not support bandwidth reservation.
 
 The aggregated value of a Path Vector is the minimum value of all the ANEs in
 the Path Vector. For example, assume a Path Vector response contains three ANEs
 with the following maxresbw values:
 
-| ANEName | maxresbw |
+| ANEName | max-reservabe-bandwidth |
 |---------|----------|
 | ane:1   | 100 Gbps |
 | ane:2   |  10 Gbps |
 | ane:3   |  20 Gbps |
 
-The aggregated `maxresbw` for ["ane:1", "ane:2", "ane:3"] is calculated as follows:
+The aggregated `max-reservable-bandwidth` (abbreviated as MRB) for ["ane:1", "ane:2", "ane:3"] is
+calculated as follows:
 
 ~~~
-  maxresbw(["ane:1", "ane:2", "ane:3"])
-= min(maxresbw("ane:1"), maxresbw("ane:2"), maxresbw("ane:3"))
+  MRB(["ane:1", "ane:2", "ane:3"])
+= min(MRB("ane:1"), MRB("ane:2"), MRB("ane:3"))
 = min(100 Gbps, 10 Gbps, 20 Gbps) = 10 Gbps
 ~~~
 
-### ANE Property: Persistent Entities {#persistent-entities}
+### ANE Property Type: Persistent Entities {#persistent-entities}
 
-The persistent entities property conveys the physical or logical network entities
-(e.g., links, in-network caching service) that are contained by an ANE. It is
+The `persistent entities` property stands for the physical or logical network
+entities (e.g., links, in-network services) that are contained by an ANE. It is
 indicated by the property name `persistent-entities`. The value is encoded as a
-JSON array of entity identifiers ({{I-D.ietf-alto-unified-props-new}}). These
-entity identifiers are persistent so that a client CAN further query their
-properties for future use.
+JSON array of JSON strings that have the same format as that of the type
+EntityIdentifiers. These EntityIdentifiers are persistent so that a client can
+further query their properties for future use.
 
-If this property is requested but is missing for a given ANE, it MUST be
-interpreted as an empty array which indicates that no such entities exist in
-this ANE.
+~~~~~~~~~~ drawing
+       PID1   +---------------+         +---------------+    PID3
+3.3.3.0/24+---+ +-----------+ +---------+               +---+5.5.5.0/24
+              | | WebCache1 | |         |               |
+              | +-----------+ |   +-----+               |
+       PID2   |               |   |     +---------------+
+4.4.4.0/24+---+ +-----------+ |   |           ANE 3
+              | | WebCache2 | |   |
+              | +-----------+ |   |
+              +---------------+   |
+                   ANE 1          |
+                           +---------------+
+                           | +-----------+ |   PID4
+                           | | WebCache3 | +---+6.6.6.0/24
+                           | +-----------+ |
+                           +---------------+
+                                 ANE 2
+~~~~~~~~~~
+{: #fig-pe artwork-align="center" title="Examples of Persistent Entities"}
+
+To better clarify the use of persistent entities, consider the network in
+{{fig-pe}} where the 3 ANEs are defined, for example, based on the geo-location.
+Assume the ALTO server wants to expose web caches deployed in the network to
+users to allow faster data access and to save its inbound traffic. Thus,
+WebCache1 and WebCache2 are announced as `persistent-entities` in ANE1, and
+WebCache3 is announced as `persistent-entities` in ANE2. The clients can use the
+entity identifiers of these web caches to query the detailed information in
+another Unified Property Map.
+
+If this property is requested but is missing for a an ANE entity, it MUST be
+interpreted as an empty array which indicates that no persistent entities are
+defined within the scope of this ANE.
 
 The aggregated value for the `persistent-entities` property of a Path Vector
 is the concatenation of the values of all the ANEs in the Path Vector. For
@@ -134,10 +172,10 @@ JSON array of ANEName ({{ane-name-spec}}) when the cost metric is
 ## Part Resource ID {#part-rid-spec}
 
 A Part Resource ID is encoded as a JSON string with the same format as that of the
-Resource ID (Section 10.2 of {{RFC7285}}).
+type ResourceID (Section 10.2 of {{RFC7285}}).
 
 NOTE: Even though the client-id assigned to a Path Vector request and the
-Part Resource ID MAY contain up to 64 characters by their own definition. Their
+Part Resource ID MAY contain up to 64 characters by their own definition, their
 concatenation (see {{ref-partmsg-design}}) MUST also conform to the same length
 constraint. The same requirement applies to the resource ID of the Path Vector
 resource, too. Thus, it is RECOMMENDED to limit the length of resource ID and
