@@ -157,53 +157,54 @@ If the `start` parameter is not present, the Path Vector part MUST be the first
 part in the multipart response.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
-request in {{pvcm-accept}} is as follows.
+request in {{pvcm-accept}} is as follows, where `ane:1` represents the
+aggregation of all the switches in the network.
 
 ~~~
-   HTTP/1.1 200 OK
-   Content-Length: [TBD]
-   Content-Type: multipart/related; boundary=example-1;
-                 type=application/alto-costmap+json
+HTTP/1.1 200 OK
+Content-Length: [TBD]
+Content-Type: multipart/related; boundary=example-1;
+              type=application/alto-costmap+json
 
-   --example-1
-   Resource-Id: costmap
-   Content-Type: application/alto-costmap+json
+--example-1
+Resource-Id: costmap
+Content-Type: application/alto-costmap+json
 
-   {
-     "meta": {
-       "vtag": {
-         "resource-id": "filtered-cost-map-pv.costmap",
-         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-       },
-       "dependent-vtags": [
-         {
-           "resource-id": "my-default-networkmap",
-           "tag": "75ed013b3cb58f896e839582504f6228"
-         }
-       ],
-       "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
-     },
-     "cost-map": {
-       "PID1": { "PID2": ["ane:1"] }
-     }
-   }
-   --example-1
-   Resource-Id: propmap
-   Content-Type: application/alto-propmap+json
+{
+  "meta": {
+    "vtag": {
+      "resource-id": "filtered-cost-map-pv.costmap",
+      "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+    },
+    "dependent-vtags": [
+      {
+        "resource-id": "my-default-networkmap",
+        "tag": "75ed013b3cb58f896e839582504f6228"
+      }
+    ],
+    "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
+  },
+  "cost-map": {
+    "PID1": { "PID2": ["ane:1"] }
+  }
+}
+--example-1
+Resource-Id: propmap
+Content-Type: application/alto-propmap+json
 
-   {
-     "meta": {
-       "dependent-vtags": [
-         {
-           "resource-id": "filtered-cost-map-pv.costmap",
-           "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-         }
-       ]
-     },
-     "property-map": {
-       "ane:1": { "max-reservable-bandwidth": 100000000 }
-     }
-   }
+{
+  "meta": {
+    "dependent-vtags": [
+      {
+        "resource-id": "filtered-cost-map-pv.costmap",
+        "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+      }
+    ]
+  },
+  "property-map": {
+    "ane:1": { "max-reservable-bandwidth": 100000000 }
+  }
+}
 ~~~
 
 <!-- TODO: Error Handling -->
@@ -248,24 +249,24 @@ Example: Consider the network in {{fig-dumbbell}}. If a client wants to query th
 request.
 
 ~~~
-   POST /ecs/pv HTTP/1.1
-   Host: alto.example.com
-   Accept: multipart/related;type=application/alto-endpointcost+json,
-           application/alto-error+json
-   Content-Length: [TBD]
-   Content-Type: application/alto-endpointcostparams+json
+POST /ecs/pv HTTP/1.1
+Host: alto.example.com
+Accept: multipart/related;type=application/alto-endpointcost+json,
+        application/alto-error+json
+Content-Length: [TBD]
+Content-Type: application/alto-endpointcostparams+json
 
-   {
-     "cost-type": {
-       "cost-mode": "array",
-       "cost-metric": "ane-path"
-     },
-     "endpoints": {
-       "srcs": [ "ipv4:1.2.3.4" ],
-       "dsts": [ "ipv4:2.3.4.5" ]
-     },
-     "ane-property-names": [ "max-reservable-bandwidth" ]
-   }
+{
+  "cost-type": {
+    "cost-mode": "array",
+    "cost-metric": "ane-path"
+  },
+  "endpoints": {
+    "srcs": [ "ipv4:1.2.3.4" ],
+    "dsts": [ "ipv4:2.3.4.5" ]
+  },
+  "ane-property-names": [ "max-reservable-bandwidth" ]
+}
 ~~~
 ### Capabilities ##
 
@@ -331,48 +332,48 @@ Example: Consider the network in {{fig-dumbbell}}. The response of the example
 request in {{pvecs-accept}} is as follows.
 
 ~~~
-   HTTP/1.1 200 OK
-   Content-Length: [TBD]
-   Content-Type: multipart/related; boundary=example-1;
-                 type=application/alto-endpointcost+json
+HTTP/1.1 200 OK
+Content-Length: [TBD]
+Content-Type: multipart/related; boundary=example-1;
+              type=application/alto-endpointcost+json
 
-   --example-1
-   Resource-Id: ecs
-   Content-Type: application/alto-endpointcost+json
+--example-1
+Resource-Id: ecs
+Content-Type: application/alto-endpointcost+json
 
-   {
-     "meta": {
-       "vtag": {
-         "resource-id": "ecs-pv.costmap",
-         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-       },
-       "dependent-vtags": [
-         {
-           "resource-id": "my-default-networkmap",
-           "tag": "75ed013b3cb58f896e839582504f6228"
-         }
-       ],
-       "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
-     },
-     "cost-map": {
-       "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ane:1"] }
-     }
-   }
-   --example-1
-   Resource-Id: propmap
-   Content-Type: application/alto-propmap+json
+{
+  "meta": {
+    "vtag": {
+      "resource-id": "ecs-pv.costmap",
+      "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+    },
+    "dependent-vtags": [
+      {
+        "resource-id": "my-default-networkmap",
+        "tag": "75ed013b3cb58f896e839582504f6228"
+      }
+    ],
+    "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
+  },
+  "cost-map": {
+    "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ane:1"] }
+  }
+}
+--example-1
+Resource-Id: propmap
+Content-Type: application/alto-propmap+json
 
-   {
-     "meta": {
-       "dependent-vtags": [
-         {
-           "resource-id": "ecs-pv.costmap",
-           "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-         }
-       ]
-     },
-     "property-map": {
-       "ane:1": { "max-reservable-bandwidth": 100000000 }
-     }
-   }
+{
+  "meta": {
+    "dependent-vtags": [
+      {
+        "resource-id": "ecs-pv.costmap",
+        "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+      }
+    ]
+  },
+  "property-map": {
+    "ane:1": { "max-reservable-bandwidth": 100000000 }
+  }
+}
 ~~~

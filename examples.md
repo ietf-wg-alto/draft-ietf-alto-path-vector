@@ -225,7 +225,10 @@ Content-Type: application/alto-endpointcostparams+json
     "srcs": [ "ipv4:1.2.3.4", "ipv4:2.3.4.5" ],
     "dsts": [ "ipv4:3.4.5.6" ]
   },
-  "ane-property-names": [ "max-reservable-bandwidth", "persistent-entities" ]
+  "ane-property-names": [
+    "max-reservable-bandwidth",
+    "persistent-entities"
+  ]
 }
 ~~~
 
@@ -279,7 +282,10 @@ Content-Type: application/alto-propmap+json
   "property-map": {
     "ane:NET1": {
       "max-reservable-bandwidth": 50000000000,
-      "persistent-entities": [ "web-cache:cache1", "web-cache:cache2" ]
+      "persistent-entities": [
+        "web-cache:cache1",
+        "web-cache:cache2"
+      ]
     },
     "ane:AGGR": {
       "max-reservable-bandwidth": 10000000000

@@ -148,19 +148,19 @@ Internet-Draft                   ALTO-PV                        May 2020
      8.4.  Example: Incremental Updates  . . . . . . . . . . . . . .  36
    9.  Compatibility . . . . . . . . . . . . . . . . . . . . . . . .  37
      9.1.  Compatibility with Legacy ALTO Clients/Servers  . . . . .  37
-     9.2.  Compatibility with Multi-Cost Extension . . . . . . . . .  37
-     9.3.  Compatibility with Incremental Update . . . . . . . . . .  37
+     9.2.  Compatibility with Multi-Cost Extension . . . . . . . . .  38
+     9.3.  Compatibility with Incremental Update . . . . . . . . . .  38
      9.4.  Compatibility with Cost Calendar  . . . . . . . . . . . .  38
    10. General Discussions . . . . . . . . . . . . . . . . . . . . .  38
-     10.1.  Constraint Tests for General Cost Types  . . . . . . . .  38
+     10.1.  Constraint Tests for General Cost Types  . . . . . . . .  39
      10.2.  General Multipart Resources Query  . . . . . . . . . . .  39
    11. Security Considerations . . . . . . . . . . . . . . . . . . .  39
-   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  39
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  40
      12.1.  ALTO Entity Domain Registry  . . . . . . . . . . . . . .  40
      12.2.  ALTO Entity Property Type Registry . . . . . . . . . . .  40
      12.3.  ALTO Resource-Specific Entity Domain Export
-            Registries . . . . . . . . . . . . . . . . . . . . . . .  40
-       12.3.1.  ANE Domain of Cost Map Resource  . . . . . . . . . .  40
+            Registries . . . . . . . . . . . . . . . . . . . . . . .  41
+       12.3.1.  ANE Domain of Cost Map Resource  . . . . . . . . . .  41
        12.3.2.  ANE Domain of Endpoint Cost Service Resource . . . .  41
 
 
@@ -170,15 +170,15 @@ Gao, et al.             Expires 29 November 2020                [Page 3]
 Internet-Draft                   ALTO-PV                        May 2020
 
 
-   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  41
-   14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  41
-     14.1.  Normative References . . . . . . . . . . . . . . . . . .  41
+   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  42
+   14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  42
+     14.1.  Normative References . . . . . . . . . . . . . . . . . .  42
      14.2.  Informative References . . . . . . . . . . . . . . . . .  43
    Appendix A.  Changes since -10  . . . . . . . . . . . . . . . . .  44
    Appendix B.  Changes since -09  . . . . . . . . . . . . . . . . .  44
-   Appendix C.  Changes since -08  . . . . . . . . . . . . . . . . .  44
+   Appendix C.  Changes since -08  . . . . . . . . . . . . . . . . .  45
    Appendix D.  Changes Since Version -06  . . . . . . . . . . . . .  45
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  46
 
 1.  Introduction
 
@@ -366,19 +366,19 @@ Internet-Draft                   ALTO-PV                        May 2020
    the bandwidth of link eh1 -> sw1 and link sw1 -> sw5 are 150 Mbps,
    and the bandwidth of the rest links are 100 Mbps.
 
-                                     +------+
-                                     |      |
-                                   --+ sw6  +--
-                                 /   |      |  \
-           PID1 +-----+         /    +------+   \          +-----+  PID2
-           eh1__|     |_       /                 \     ____|     |__eh2
-       1.2.3.4  | sw1 | \   +--|---+         +---|--+ /    | sw2 |  2.3.4.5
-                +-----+  \  |      |         |      |/     +-----+
-                          \_| sw5  +---------+ sw7  |
-           PID3 +-----+   / |      |         |      |\     +-----+  PID4
-           eh3__|     |__/  +------+         +------+ \____|     |__eh4
-       3.4.5.6  | sw3 |                                    | sw4 |  4.5.6.7
-                +-----+                                    +-----+
+                                 +------+
+                                 |      |
+                               --+ sw6  +--
+                             /   |      |  \
+       PID1 +-----+         /    +------+   \          +-----+  PID2
+       eh1__|     |_       /                 \     ____|     |__eh2
+   1.2.3.4  | sw1 | \   +--|---+         +---|--+ /    | sw2 |  2.3.4.5
+            +-----+  \  |      |         |      |/     +-----+
+                      \_| sw5  +---------+ sw7  |
+       PID3 +-----+   / |      |         |      |\     +-----+  PID4
+       eh3__|     |__/  +------+         +------+ \____|     |__eh4
+   3.4.5.6  | sw3 |                                    | sw4 |  4.5.6.7
+            +-----+                                    +-----+
 
                        Figure 1: Raw Network Topology
 
@@ -1317,8 +1317,8 @@ Internet-Draft                   ALTO-PV                        May 2020
    the first part in the multipart response.
 
    Example: Consider the network in Figure 1.  The response of the
-   example request in Section 7.1.3 is as follows.
-
+   example request in Section 7.1.3 is as follows, where "ane:1"
+   represents the aggregation of all the switches in the network.
 
 
 
@@ -1346,50 +1346,50 @@ Gao, et al.             Expires 29 November 2020               [Page 24]
 Internet-Draft                   ALTO-PV                        May 2020
 
 
-      HTTP/1.1 200 OK
-      Content-Length: [TBD]
-      Content-Type: multipart/related; boundary=example-1;
-                    type=application/alto-costmap+json
+   HTTP/1.1 200 OK
+   Content-Length: [TBD]
+   Content-Type: multipart/related; boundary=example-1;
+                 type=application/alto-costmap+json
 
-      --example-1
-      Resource-Id: costmap
-      Content-Type: application/alto-costmap+json
+   --example-1
+   Resource-Id: costmap
+   Content-Type: application/alto-costmap+json
 
-      {
-        "meta": {
-          "vtag": {
-            "resource-id": "filtered-cost-map-pv.costmap",
-            "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-          },
-          "dependent-vtags": [
-            {
-              "resource-id": "my-default-networkmap",
-              "tag": "75ed013b3cb58f896e839582504f6228"
-            }
-          ],
-          "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
-        },
-        "cost-map": {
-          "PID1": { "PID2": ["ane:1"] }
-        }
-      }
-      --example-1
-      Resource-Id: propmap
-      Content-Type: application/alto-propmap+json
+   {
+     "meta": {
+       "vtag": {
+         "resource-id": "filtered-cost-map-pv.costmap",
+         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+       },
+       "dependent-vtags": [
+         {
+           "resource-id": "my-default-networkmap",
+           "tag": "75ed013b3cb58f896e839582504f6228"
+         }
+       ],
+       "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
+     },
+     "cost-map": {
+       "PID1": { "PID2": ["ane:1"] }
+     }
+   }
+   --example-1
+   Resource-Id: propmap
+   Content-Type: application/alto-propmap+json
 
-      {
-        "meta": {
-          "dependent-vtags": [
-            {
-              "resource-id": "filtered-cost-map-pv.costmap",
-              "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-            }
-          ]
-        },
-        "property-map": {
-          "ane:1": { "max-reservable-bandwidth": 100000000 }
-        }
-      }
+   {
+     "meta": {
+       "dependent-vtags": [
+         {
+           "resource-id": "filtered-cost-map-pv.costmap",
+           "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+         }
+       ]
+     },
+     "property-map": {
+       "ane:1": { "max-reservable-bandwidth": 100000000 }
+     }
+   }
 
 
 
@@ -1458,24 +1458,24 @@ Gao, et al.             Expires 29 November 2020               [Page 26]
 Internet-Draft                   ALTO-PV                        May 2020
 
 
-      POST /ecs/pv HTTP/1.1
-      Host: alto.example.com
-      Accept: multipart/related;type=application/alto-endpointcost+json,
-              application/alto-error+json
-      Content-Length: [TBD]
-      Content-Type: application/alto-endpointcostparams+json
+   POST /ecs/pv HTTP/1.1
+   Host: alto.example.com
+   Accept: multipart/related;type=application/alto-endpointcost+json,
+           application/alto-error+json
+   Content-Length: [TBD]
+   Content-Type: application/alto-endpointcostparams+json
 
-      {
-        "cost-type": {
-          "cost-mode": "array",
-          "cost-metric": "ane-path"
-        },
-        "endpoints": {
-          "srcs": [ "ipv4:1.2.3.4" ],
-          "dsts": [ "ipv4:2.3.4.5" ]
-        },
-        "ane-property-names": [ "max-reservable-bandwidth" ]
-      }
+   {
+     "cost-type": {
+       "cost-mode": "array",
+       "cost-metric": "ane-path"
+     },
+     "endpoints": {
+       "srcs": [ "ipv4:1.2.3.4" ],
+       "dsts": [ "ipv4:2.3.4.5" ]
+     },
+     "ane-property-names": [ "max-reservable-bandwidth" ]
+   }
 
    ### Capabilities ##
 
@@ -1570,50 +1570,50 @@ Gao, et al.             Expires 29 November 2020               [Page 28]
 Internet-Draft                   ALTO-PV                        May 2020
 
 
-      HTTP/1.1 200 OK
-      Content-Length: [TBD]
-      Content-Type: multipart/related; boundary=example-1;
-                    type=application/alto-endpointcost+json
+   HTTP/1.1 200 OK
+   Content-Length: [TBD]
+   Content-Type: multipart/related; boundary=example-1;
+                 type=application/alto-endpointcost+json
 
-      --example-1
-      Resource-Id: ecs
-      Content-Type: application/alto-endpointcost+json
+   --example-1
+   Resource-Id: ecs
+   Content-Type: application/alto-endpointcost+json
 
-      {
-        "meta": {
-          "vtag": {
-            "resource-id": "ecs-pv.costmap",
-            "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-          },
-          "dependent-vtags": [
-            {
-              "resource-id": "my-default-networkmap",
-              "tag": "75ed013b3cb58f896e839582504f6228"
-            }
-          ],
-          "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
-        },
-        "cost-map": {
-          "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ane:1"] }
-        }
-      }
-      --example-1
-      Resource-Id: propmap
-      Content-Type: application/alto-propmap+json
+   {
+     "meta": {
+       "vtag": {
+         "resource-id": "ecs-pv.costmap",
+         "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+       },
+       "dependent-vtags": [
+         {
+           "resource-id": "my-default-networkmap",
+           "tag": "75ed013b3cb58f896e839582504f6228"
+         }
+       ],
+       "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
+     },
+     "cost-map": {
+       "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ane:1"] }
+     }
+   }
+   --example-1
+   Resource-Id: propmap
+   Content-Type: application/alto-propmap+json
 
-      {
-        "meta": {
-          "dependent-vtags": [
-            {
-              "resource-id": "ecs-pv.costmap",
-              "tag": "d827f484cb66ce6df6b5077cb8562b0a"
-            }
-          ]
-        },
-        "property-map": {
-          "ane:1": { "max-reservable-bandwidth": 100000000 }
-        }
-      }
+   {
+     "meta": {
+       "dependent-vtags": [
+         {
+           "resource-id": "ecs-pv.costmap",
+           "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+         }
+       ]
+     },
+     "property-map": {
+       "ane:1": { "max-reservable-bandwidth": 100000000 }
+     }
+   }
 
 
 
@@ -1884,7 +1884,10 @@ Internet-Draft                   ALTO-PV                        May 2020
        "srcs": [ "ipv4:1.2.3.4", "ipv4:2.3.4.5" ],
        "dsts": [ "ipv4:3.4.5.6" ]
      },
-     "ane-property-names": [ "max-reservable-bandwidth", "persistent-entities" ]
+     "ane-property-names": [
+       "max-reservable-bandwidth",
+       "persistent-entities"
+     ]
    }
 
    HTTP/1.1 200 OK
@@ -1896,9 +1899,6 @@ Internet-Draft                   ALTO-PV                        May 2020
    Resource-Id: ecs
    Content-Type: application/alto-endpointcost+json
 
-   {
-     "meta": {
-
 
 
 Gao, et al.             Expires 29 November 2020               [Page 34]
@@ -1906,6 +1906,8 @@ Gao, et al.             Expires 29 November 2020               [Page 34]
 Internet-Draft                   ALTO-PV                        May 2020
 
 
+   {
+     "meta": {
        "vtags": {
          "resource-id": "endpoint-cost-pv.ecs",
          "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
@@ -1944,16 +1946,14 @@ Internet-Draft                   ALTO-PV                        May 2020
      "property-map": {
        "ane:NET1": {
          "max-reservable-bandwidth": 50000000000,
-         "persistent-entities": [ "web-cache:cache1", "web-cache:cache2" ]
+         "persistent-entities": [
+           "web-cache:cache1",
+           "web-cache:cache2"
+         ]
        },
        "ane:AGGR": {
          "max-reservable-bandwidth": 10000000000
        }
-     }
-   }
-
-   After the client obtains "web-cache:cache1" and "web-cache:cache2",
-
 
 
 
@@ -1962,6 +1962,10 @@ Gao, et al.             Expires 29 November 2020               [Page 35]
 Internet-Draft                   ALTO-PV                        May 2020
 
 
+     }
+   }
+
+   After the client obtains "web-cache:cache1" and "web-cache:cache2",
    it can query the "web-cache-props" resource to get the properties of
    the web caches.
 
@@ -1990,6 +1994,30 @@ Internet-Draft                   ALTO-PV                        May 2020
    "control-uri" first using Server-Sent Event (SSE), followed by the
    full response of the multipart message.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 36]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
    HTTP/1.1 200 OK
    Connection: keep-alive
    Content-Type: text/event-stream
@@ -2010,13 +2038,6 @@ Internet-Draft                   ALTO-PV                        May 2020
    data:
    data: <property-map-entry>
    data: --example-3--
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 36]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
    When the contents change, the ALTO server will publish the updates
    for each node in this tree separately.
@@ -2040,6 +2061,19 @@ Internet-Draft                   ALTO-PV                        May 2020
    client does not support them, the ALTO client will ignore the
    resources without conducting any incompatibility.
 
+
+
+
+
+
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 37]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
 9.2.  Compatibility with Multi-Cost Extension
 
    This document does not specify how to integrate the Path Vector cost
@@ -2058,21 +2092,6 @@ Internet-Draft                   ALTO-PV                        May 2020
    ALTO clients and servers MUST follow the specifications given in this
    document to ensure compatibility with the incremental update
    extension.
-
-
-
-
-
-
-
-
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 37]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
 9.4.  Compatibility with Cost Calendar
 
@@ -2097,6 +2116,20 @@ Internet-Draft                   ALTO-PV                        May 2020
 
 10.  General Discussions
 
+
+
+
+
+
+
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 38]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
 10.1.  Constraint Tests for General Cost Types
 
    The constraint test is a simple approach to query the data.  It
@@ -2117,18 +2150,6 @@ Internet-Draft                   ALTO-PV                        May 2020
 
    Filtering the Path Vector results or developing a more sophisticated
    filtering mechanism is beyond the scope of this document.
-
-
-
-
-
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 38]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
 10.2.  General Multipart Resources Query
 
@@ -2157,6 +2178,14 @@ Internet-Draft                   ALTO-PV                        May 2020
    the bottleneck link and start a distributed denial-of-service (DDoS)
    attack involving minimal flows to conduct the in-network congestion.
 
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 39]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
    To mitigate this risk, the ALTO server should consider protection
    mechanisms to reduce information exposure or obfuscate the real
    information, in particular, in settings where the network and the
@@ -2177,14 +2206,6 @@ Internet-Draft                   ALTO-PV                        May 2020
    authorization of this ALTO service may need to be better protected.
 
 12.  IANA Considerations
-
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 39]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
 12.1.  ALTO Entity Domain Registry
 
@@ -2208,6 +2229,19 @@ Internet-Draft                   ALTO-PV                        May 2020
    of [I-D.ietf-alto-unified-props-new].  The two new entries are shown
    below in Table 4.
 
+
+
+
+
+
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 40]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
              +--------------------------+--------------------+
              | Identifier               | Intended Semantics |
              +==========================+====================+
@@ -2229,18 +2263,6 @@ Internet-Draft                   ALTO-PV                        May 2020
 12.3.1.  ANE Domain of Cost Map Resource
 
    Media-type: application/alto-costmap+json
-
-
-
-
-
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 40]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
                  +--------------------+-----------------+
                  | Entity Domain Type | Export Function |
@@ -2268,6 +2290,14 @@ Internet-Draft                   ALTO-PV                        May 2020
                     Table 6: ALTO Endpoint Cost Entity
                               Domain Export
 
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 41]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
    If an ALTO Endpoint Cost Service resource supports the Path Vector
    cost type, it can export an "ane" typed entity domain defined by the
    union of all ANE names that appear in the Path Vector part of the
@@ -2290,14 +2320,6 @@ Internet-Draft                   ALTO-PV                        May 2020
               Schwan, "Application-Layer Traffic Optimization (ALTO)
               Cost Calendar", Work in Progress, Internet-Draft, draft-
               ietf-alto-cost-calendar-21, 17 March 2020,
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 41]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
-
               <http://www.ietf.org/internet-drafts/draft-ietf-alto-cost-
               calendar-21.txt>.
 
@@ -2324,6 +2346,14 @@ Internet-Draft                   ALTO-PV                        May 2020
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 42]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
@@ -2345,14 +2375,6 @@ Internet-Draft                   ALTO-PV                        May 2020
               Application-Layer Traffic Optimization (ALTO)", RFC 8189,
               DOI 10.17487/RFC8189, October 2017,
               <https://www.rfc-editor.org/info/rfc8189>.
-
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 42]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
 14.2.  Informative References
 
@@ -2379,6 +2401,15 @@ Internet-Draft                   ALTO-PV                        May 2020
    [I-D.huang-alto-mowie-for-network-aware-app]
               "TBD", 2020.
 
+
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 43]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
    [I-D.ietf-dmm-5g-uplane-analysis]
               Homma, S., Miyasaka, T., Matsushima, S., and D. Voyer,
               "User Plane Protocol and Architectural Analysis on 3GPP 5G
@@ -2402,14 +2433,6 @@ Internet-Draft                   ALTO-PV                        May 2020
 
    [TON2019]  Gao, K., Xiang, Q., Wang, X., Yang, Y.R., and J. Bi, "An
               objective-driven on-demand network abstraction for
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 43]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
-
               adaptive applications", IEEE/ACM Transactions on
               Networking (TON) Vol 27, no. 2 (2019): 805-818., 2019.
 
@@ -2435,6 +2458,14 @@ Appendix B.  Changes since -09
 
    Revision -10
 
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 44]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
    *  revises the introduction which
 
       -  extends the scope where the PV extension can be applied beyond
@@ -2456,15 +2487,6 @@ Appendix C.  Changes since -08
 
    *  emphasizes that abstract network elements can be generated on
       demand in both introduction and motivating use cases
-
-
-
-
-
-Gao, et al.             Expires 29 November 2020               [Page 44]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
 
 Appendix D.  Changes Since Version -06
 
@@ -2492,6 +2514,14 @@ Appendix D.  Changes Since Version -06
    *  Register an additional ANE property (i.e., persistent-entities) to
       cover all use cases mentioned in the draft.
 
+
+
+
+Gao, et al.             Expires 29 November 2020               [Page 45]
+
+Internet-Draft                   ALTO-PV                        May 2020
+
+
 Authors' Addresses
 
    Kai Gao
@@ -2516,12 +2546,6 @@ Authors' Addresses
    Email: sabine.randriamasy@nokia-bell-labs.com
 
 
-
-Gao, et al.             Expires 29 November 2020               [Page 45]
-
-Internet-Draft                   ALTO-PV                        May 2020
-
-
    Yang Richard Yang
    Yale University
    51 Prospect Street
@@ -2539,30 +2563,6 @@ Internet-Draft                   ALTO-PV                        May 2020
    Tongji University
 
    Email: jingxuan.n.zhang@gmail.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
