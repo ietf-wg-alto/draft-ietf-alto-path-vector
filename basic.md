@@ -53,6 +53,33 @@ In this document, two initial ANE property types are specified,
 Note that the two property types defined in this document do not depend on any
 information resource, so their ResourceID part must be empty.
 
+~~~~~~~~~~ drawing
+                                    ----- L1
+                                   /
+       PID1   +---------------+ 10 Gbps +----------+    PID3
+1.2.3.0/24+---+ +-----------+ +---------+          +---+3.4.5.0/24
+              | | WebCache1 | |         |          |
+              | +-----------+ |   +-----+          |
+       PID2   |               |   |     +----------+
+2.3.4.0/24+---+ +-----------+ |   |         NET3
+              | | WebCache2 | |   | 15 Gbps
+              | +-----------+ |   |        \
+              +---------------+   |         -------- L2
+                    NET1          |
+                           +---------------+
+                           | +-----------+ |   PID4
+                           | | WebCache3 | +---+4.5.6.0/24
+                           | +-----------+ |
+                           +---------------+
+                                 NET2
+~~~~~~~~~~
+{: #fig-pe artwork-align="center" title="Examples of ANE Properties"}
+
+In this document, {{fig-pe}} is used to illustrate the use of the two initial
+ANE property types. There are 3 sub-networks (NET1, NET2 and NET3) and two
+interconnection links (L1 and L2). It is assumed that each sub-network has
+sufficiently large bandwidth to be reserved.
+
 ### ANE Property Type: Maximum Reservable Bandwidth {#maxresbw}
 
 The `maximum reservable bandwidth` property stands for the maximum bandwidth that
@@ -60,6 +87,10 @@ can be reserved for all the traffic that traverses an ANE. The Entity Property
 Type of the maximum reservable bandwidth is "max-reservable-bandwidth", and the
 value MUST be encoded as a non-negative numerical cost value as defined in
 Section 6.1.2.1 of {{RFC7285}} and the unit is bit per second.
+
+To illustrate the use of `max-reservable-bandwidth`, consider the network in
+{{fig-pe}}. An ALTO server can create an ANE for each interconnection link,
+where the initial value for `max-reservable-bandwidth` is the link capacity.
 
 If this property is requested but not present in an ANE, it MUST be interpreted
 as that the ANE does not support bandwidth reservation.
@@ -92,34 +123,14 @@ JSON array of JSON strings that have the same format as that of the type
 EntityIdentifiers. These EntityIdentifiers are persistent so that a client can
 further query their properties for future use.
 
-~~~~~~~~~~ drawing
-       PID1   +---------------+         +---------------+    PID3
-3.3.3.0/24+---+ +-----------+ +---------+               +---+5.5.5.0/24
-              | | WebCache1 | |         |               |
-              | +-----------+ |   +-----+               |
-       PID2   |               |   |     +---------------+
-4.4.4.0/24+---+ +-----------+ |   |           ANE 3
-              | | WebCache2 | |   |
-              | +-----------+ |   |
-              +---------------+   |
-                   ANE 1          |
-                           +---------------+
-                           | +-----------+ |   PID4
-                           | | WebCache3 | +---+6.6.6.0/24
-                           | +-----------+ |
-                           +---------------+
-                                 ANE 2
-~~~~~~~~~~
-{: #fig-pe artwork-align="center" title="Examples of Persistent Entities"}
-
-To better clarify the use of persistent entities, consider the network in
-{{fig-pe}} where the 3 ANEs are defined, for example, based on the geo-location.
-Assume the ALTO server wants to expose web caches deployed in the network to
-users to allow faster data access and to save its inbound traffic. Thus,
-WebCache1 and WebCache2 are announced as `persistent-entities` in ANE1, and
-WebCache3 is announced as `persistent-entities` in ANE2. The clients can use the
-entity identifiers of these web caches to query the detailed information in
-another Unified Property Map.
+To illustrate the use of persistent entities, consider the network in
+{{fig-pe}}. An ALTO server can create an ANE for each sub-network. Assume the
+ALTO server wants to expose web caches deployed in the network to users to allow
+faster data access and to save its inbound traffic. Thus, WebCache1 and
+WebCache2 are announced as `persistent-entities` in ANE1, and WebCache3 is
+announced as `persistent-entities` in ANE2. The clients can use the entity
+identifiers of these web caches to query the detailed information in another
+Unified Property Map.
 
 If this property is requested but is missing for a an ANE entity, it MUST be
 interpreted as an empty array which indicates that no persistent entities are

@@ -223,7 +223,7 @@ The media type of the multipart endpoint cost resource is
 
 The multipart endpoint cost resource is requested using the HTTP POST method.
 
-### Accept Input Parameters ##
+### Accept Input Parameters ## {#pvecs-accept}
 
 The input parameters of the multipart endpoint cost resource are supplied in the
 body of an HTTP POST request. This document extends the input parameters to an
