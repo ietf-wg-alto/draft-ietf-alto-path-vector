@@ -1,15 +1,5 @@
 # Specification: Basic Data Types {#Basic}
 
-## ANE Name {#ane-name-spec}
-
-An ANE Name is encoded as a JSON string with the same format as that of the type
-EntityIdentifer (Section 3.1.3 of [I-D.ietf-alto-unified-props-new]) where the
-EntityDomainName MUST be "ane", indicating that this entity belongs to the "ane"
-Entity Domain.
-
-The type ANEName is used in this document to indicate a string of this
-format.
-
 ## ANE Domain {#ane-domain-spec}
 
 The ANE domain associates property values with the Abstract Network Elements
@@ -21,7 +11,15 @@ domain always depends on a Cost Map or an Endpoint Cost Map.
 
 ane
 
-### Domain-Specific Entity Identifier ## {#entity-address}
+### Entity Identifier ## {#entity-address}
+
+An ANE Name is encoded as a JSON string with the same format as that of the type
+EntityIdentifer (Section 3.1.3 of [I-D.ietf-alto-unified-props-new]) where the
+EntityDomainName MUST be "ane", indicating that this entity belongs to the "ane"
+Entity Domain.
+
+The type ANEName is used in this document to indicate a string of this
+format.
 
 The entity identifiers are the ANE names contained in a Path Vector response.
 

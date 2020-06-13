@@ -99,14 +99,13 @@ Property Map extension {{I-D.ietf-alto-unified-props-new}}. In addition to
 the terms defined in these documents, this document also uses the following
 additional terms:
 
-- Abstract Network Element (ANE): An Abstract Network Element is an abstraction
+- Abstract Network Element (ANE): An Abstract Network Element is a
   representation of network components. It can be a link, a middlebox, a
   virtualized network function (VNF), etc., or their aggregations. An ANE can be
   constructed either statically in advance or on demand based on the requested
   information. In a response, each ANE is represented by a unique ANE
-  Name. Note that an ALTO client MUST NOT assume ANEs in different
-  responses but with the same ANE Name refer to the same aggregation of
-  network components.
+  Name. Note that an ALTO client MUST NOT assume ANEs in different responses but
+  with the same ANE Name refer to the same network component(s).
 
 - Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
   Names. It conveys the information that the path between a source and a

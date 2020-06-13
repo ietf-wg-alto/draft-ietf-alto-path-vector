@@ -1,0 +1,47 @@
+
+
+---------- CURRENT Section 7.3  -------------------------------------------
+   {
+     "meta": {
+       "dependent-vtags": [
+         {
+           "resource-id": "endpoint-cost-pv.ecs",
+           "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+         },
+         {
+           "resource-id": "http-proxy-props",
+           "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
+         }
+       ]
+     },
+     "property-map": {
+       "ane:NET001": {
+         "persistent-entities": [ "http-proxy:192.0.2.1" ]
+       },
+       "ane:L002": { "maxresbw": 48000000 },
+       "ane:L003": { "maxresbw": 35000000 }
+     }
+   }
+---------- PROPOSED Section 7.3  -------------------------------------------
+(ALSO:  replacing "persistent-entities" with "persistent-entityID")
+   {
+     "meta": {
+       "dependent-vtags": [
+         {
+           "resource-id": "endpoint-cost-pv.ecs",
+           "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+         },
+         {
+           "resource-id": "fixed-ane-props-34",
+           "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
+         }
+       ]
+     },
+     "property-map": {
+       "ane:NET001": {
+         "persistent-entityID": [ "fixed-ane-props-34.ane:192.0.2.1" ]   //we could further add fictitious property "storage-capa" : 3000
+       },
+       "ane:L002": { "maxresbw": 48000000 },
+       "ane:L003": { "maxresbw": 35000000 }
+     }
+   }

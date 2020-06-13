@@ -7,7 +7,7 @@ the Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
 To satisfies the additional requirements, this extension:
 
 1. introduces Abstract Network Element (ANE) as the abstraction of intermediate
-   network components inside the underlying network,
+   network components,
 
 2. extends the Cost Map and Endpoint Cost Service to convey the intermediate
    network components traversed by the path of a <source, destination> pair as
@@ -43,11 +43,10 @@ following designs:
 
 ## Abstract Network Element {#ane-design}
 
-This extension introduce Abstract Network Element (ANE) as an indirect and
-network-agnostic way to specify an aggregation of intermediate network components
-which can be treated as if they are placed in the same location in the network,
-based on geo-location, OSPF domain, service type, algebraic properties, or other
-criteria.
+This extension introduces Abstract Network Element (ANE) as an indirect and
+network-agnostic way to specify an aggregation of intermediate network
+components between a source and a destination.
+
 
 ### ANE Name
 
@@ -70,9 +69,9 @@ in a Unified Property Map. Thus, they MUST follow the mechanisms specified in
 the {{I-D.ietf-alto-unified-props-new}} with some additional considerations.
 
 1. As a property may not exist in every ANE, it must be interpreted in the same
-   way by the ALTO server and the ALTO client. Thus, when an ANE property is
-   specified, its intended semantics MUST specify how to interpret the case that
-   a requested ANE property does not exist in an ANE.
+   way by the ALTO server and the ALTO client. Thus, for an ANE property type,
+   its intended semantics MUST specify how to interpret the case that a
+   requested property does not exist in an ANE.
 
 2. As each ANE is an aggregation of multiple network components, its properties
    are the aggregated results of the components' properties. For different ALTO
@@ -106,8 +105,7 @@ the {{I-D.ietf-alto-unified-props-new}} with some additional considerations.
    Information Resource Directory as a new capability called
    `ane-property-names`; the selected properties SHOULD be specified in a new
    filter called `ane-property-names` in the request body; the response MUST
-   return and only return the selected properties for the ANEs in the response,
-   if applicable.
+   return and only return the selected properties for the ANEs in the response.
 
 ## Path Vector Cost Type {#path-vector-design}
 
