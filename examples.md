@@ -6,7 +6,7 @@ responses. Some long lines are truncated for better readability.
 ## Example: Information Resource Directory {#example-ird}
 
 To give a comprehensive example of the Path Vector extension, we consider the
-network in {{fig-pe}}. The example ALTO server provides the following
+network in {{fig-pe}}. The example ALTO Server provides the following
 information resources:
 
 - `my-default-networkmap`: A Network Map resource which contains the PIDs in the
@@ -16,20 +16,16 @@ information resources:
   which exposes the `max-reservable-bandwidth` property for the PIDs in
   `my-default-networkmap`.
 
-- `web-cache-props`: A filtered Unified Property resource that exposes the
-  information for web caches that are deployed in the network. For illustration,
-  it is assumed that a new entity domain called `web-cache` is defined, and it
-  is associated with 3 properties: `ip`, `port` and `support-https` which
-  represents the IPv4 address, the TCP port, and HTTPS support status of a web
-  cache,
+- `ane-props`: A filtered Unified Property resource that exposes the
+  information for persistent ANEs in the network.
 
 - `endpoint-cost-pv`: A Multipart Endpoint Cost Service for Path Vector, which
-  exposes the `max-reservable-bandwidth` and the `persistent-entities` properties.
+  exposes the `max-reservable-bandwidth` and the `persistent-entity-id` properties.
 
 - `update-pv`: An Update Stream service, which provides the incremental update
   service for the `endpoint-cost-pv` service.
 
-Below is the Information Resource Directory of the example ALTO server. To
+Below is the Information Resource Directory of the example ALTO Server. To
 enable the Path Vector extension, the `path-vector` cost type
 ({{cost-type-spec}}) is defined in the `cost-types` of the `meta` field, and is
 included in the `cost-type-names` of resources `filetered-cost-map-pv` and
@@ -61,13 +57,13 @@ included in the `cost-type-names` of resources `filetered-cost-map-pv` and
       },
       "uses": [ "my-default-networkmap" ]
     },
-    "web-cache-props": {
-      "uri": "https://alto.example.com/proxy-props",
+    "ane-props": {
+      "uri": "https://alto.example.com/ane-props",
       "media-type": "application/alto-propmap+json",
       "accepts": "application/alto-propmapparams+json",
       "capabilities": {
         "mappings": {
-          "web-cache": [ "ip", "port", "support-https" ]
+          ".ane": [ "cpu" ]
         }
       }
     },
@@ -79,10 +75,10 @@ included in the `cost-type-names` of resources `filetered-cost-map-pv` and
       "capabilities": {
         "cost-type-names": [ "path-vector" ],
         "ane-property-names": [
-          "max-reservable-bandwidth", "persistent-entities"
+          "max-reservable-bandwidth", "persistent-entity-id"
         ]
       },
-      "uses": [ "web-cache-props" ]
+      "uses": [ "ane-props" ]
     },
     "update-pv": {
       "uri": "https://alto.example.com/updates/pv",
@@ -103,7 +99,7 @@ The following examples demonstrate the request to the `filtered-cost-map-pv`
 resource and the corresponding response.
 
 The request uses the "path-vector" cost type in the `cost-type` field. The
-`ane-property-names` field is missing, indicating that the client only requests
+`ane-property-names` field is missing, indicating that the Client only requests
 for the Path Vector but not the ANE properties.
 
 The response consists of two parts. The first part returns the array of ANEName
@@ -202,10 +198,11 @@ sub-network NET1, and `ane:AGGR` is the aggregation of L1 and NET3.
 
 The second part returns the requested properties of ANEs. Since NET1 has
 sufficient bandwidth, it sets the `max-reservable-bandwidth` to a sufficiently
-large number. It also has two web caches, identified by `web-cache:cache1` and
-`web-cache:cache2`. The aggregated `max-reservable-bandwidth` of ane:AGGR is
-constrained by the link capacity of L1. The `persistent-entities` property is
-omitted as both L1 and NET3 has no persistent entities.
+large number. It also represents a persistent ANE defined in the `ane-props`
+resource, identified by `ane-props.ane:datacenter1`. The aggregated
+`max-reservable-bandwidth` of ane:AGGR is constrained by the link capacity of
+L1. The `persistent-entity-id` property is omitted as both L1 and NET3 do not
+represent any persistent entity.
 
 ~~~
 POST /endpointcost/pv HTTP/1.1
@@ -227,7 +224,7 @@ Content-Type: application/alto-endpointcostparams+json
   },
   "ane-property-names": [
     "max-reservable-bandwidth",
-    "persistent-entities"
+    "persistent-entity-id"
   ]
 }
 ~~~
@@ -274,7 +271,7 @@ Content-Type: application/alto-propmap+json
         "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
       },
       {
-        "resource-id": "web-cache-props",
+        "resource-id": "ane-props",
         "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
       }
     ]
@@ -282,9 +279,8 @@ Content-Type: application/alto-propmap+json
   "property-map": {
     "ane:NET1": {
       "max-reservable-bandwidth": 50000000000,
-      "persistent-entities": [
-        "web-cache:cache1",
-        "web-cache:cache2"
+      "persistent-entity-id": [
+        "ane-props.ane:datacenter1",
       ]
     },
     "ane:AGGR": {
@@ -294,12 +290,12 @@ Content-Type: application/alto-propmap+json
 }
 ~~~
 
-After the client obtains `web-cache:cache1` and `web-cache:cache2`, it can query
-the `web-cache-props` resource to get the properties of the web caches.
+After the Client obtains `ane-props.ane:datacenter1`, it can query the
+`ane-props` resource to get the properties of the persistent ANE.
 
 ## Example: Incremental Updates
 
-In this example, an ALTO client subscribes to the incremental update for the
+In this example, an ALTO Client subscribes to the incremental update for the
 multipart endpoint cost resource `endpoint-cost-pv`.
 
 ~~~
@@ -319,7 +315,7 @@ Content-Length: [TBD]
 }
 ~~~
 
-Based on the server-side process defined in {{I-D.ietf-alto-incr-update-sse}}, the ALTO server will
+Based on the server-side process defined in {{I-D.ietf-alto-incr-update-sse}}, the ALTO Server will
 send the `control-uri` first using Server-Sent Event (SSE), followed by the full
 response of the multipart message.
 
@@ -346,7 +342,7 @@ data: <property-map-entry>
 data: --example-3--
 ~~~
 
-When the contents change, the ALTO server will publish the updates for each node
+When the contents change, the ALTO Server will publish the updates for each node
 in this tree separately.
 
 ~~~

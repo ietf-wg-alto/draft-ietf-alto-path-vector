@@ -185,7 +185,6 @@ the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
 {::include overview.md}
 
-
 {::include basic.md}
 
 {::include services.md}

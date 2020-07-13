@@ -40,19 +40,19 @@ applications do not necessarily need all the network path details and are likely
 not able to understand them.
 
 Therefore, it is
-beneficial for both parties if an ALTO server provides ALTO clients with an
+beneficial for both parties if an ALTO Server provides ALTO Clients with an
 "abstract network state" that provides the necessary details to applications,
 while hiding the network complexity and confidential information. An "abstract
 network state" is a selected set of abstract representations of intermediate
 network components traversed by the paths between <source, destination> pairs
 combined with properties of these components that are relevant to the overlay
 applications' QoE. Both an application via its ALTO Client and the ISP via the
-ALTO server can achieve better confidentiality and resource utilization by
+ALTO Server can achieve better confidentiality and resource utilization by
 appropriately abstracting relevant path components. The pressure on the server
 scalability can also be reduced by abstracting components and their properties
 and combining them in a single response.
 
-This document extends {{RFC7285}} to allow an ALTO server convey "abstract
+This document extends {{RFC7285}} to allow an ALTO Server convey "abstract
 network state", for paths defined by their <source, destination> pairs. To this
 end, it introduces a new cost type called "Path Vector". A Path Vector is an
 array of identifiers of so-called Abstract Network Element (ANE). An ANE
@@ -64,7 +64,7 @@ Map, which is specified in {{I-D.ietf-alto-unified-props-new}}.
 For better confidentiality, this document aims to minimize information exposure.
 In particular, this document enables and recommends that first ANEs are
 constructed on demand, and second an ANE is only associated with properties that
-are requested by an ALTO client. A Path Vector response involved two ALTO Maps:
+are requested by an ALTO Client. A Path Vector response involved two ALTO Maps:
 the Cost Map that contains the Path Vector results and the up-to-date Unified
 Property Map that contains the properties requested for these ANEs. To enforce
 consistency and improve server scalability, this document uses the
@@ -104,7 +104,7 @@ additional terms:
   virtualized network function (VNF), etc., or their aggregations. An ANE can be
   constructed either statically in advance or on demand based on the requested
   information. In a response, each ANE is represented by a unique ANE
-  Name. Note that an ALTO client MUST NOT assume ANEs in different responses but
+  Name. Note that an ALTO Client must not assume ANEs in different responses but
   with the same ANE Name refer to the same network component(s).
 
 - Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
@@ -188,7 +188,7 @@ host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4. The application
 can request a cost map providing end-to-end available bandwidth, using "availbw"
 as cost-metric and "numerical" as cost-mode.
 
-The application will receive from the ALTO server that the bandwidth of eh1 ->
+The application will receive from the ALTO Server that the bandwidth of eh1 ->
 eh2 and eh1 -> eh4 are both 100 Mbps. But this information is not enough to
 determine the optimal total throughput. Consider the following two cases:
 
@@ -205,15 +205,15 @@ determine the optimal total throughput. Consider the following two cases:
 To allow applications to distinguish the two aforementioned cases,
 the network needs to provide more details.  In particular:
 
-- For eh1 -> eh2, the ALTO server must give more details which is critical for
+- For eh1 -> eh2, the ALTO Server must give more details which is critical for
   the overlay application to distinguish between Case 1 and Case 2 and to
   compute the optimal total throughput accordingly.
 
-- The ALTO server must allow the client to distinguish the common network
+- The ALTO Server must allow the client to distinguish the common network
   components shared by eh1 -> eh2 and eh1 -> eh4, e.g., eh1 - sw1 and sw1 - sw5
   in Case 1.
 
-- The ALTO server must give details on the properties of the network components
+- The ALTO Server must give details on the properties of the network components
   used by eh1 -> eh2 and eh1 -> eh4, e.g., the available bandwidth between eh1 -
   sw1, sw1 - sw5, sw5 - sw7, sw5 - sw6, sw6 - sw7, sw7 - sw2, sw7 - sw4, sw2 -
   eh2, sw4 - eh4 in Case 1.
@@ -223,16 +223,16 @@ use case, the ALTO framework must be extended to satisfy the following
 additional requirements:
 
 AR1:
-: An ALTO server must provide essential information on intermediate network
+: An ALTO Server must provide essential information on intermediate network
   components on the path of a <source, destination> pair that are critical to
   the QoE of the overlay application.
 
 AR2:
-: An ALTO server must provide essential information on how the paths of
+: An ALTO Server must provide essential information on how the paths of
   different <source, destination> pairs share a common network component.
 
 AR3:
-: An ALTO server must provide essential information on the properties associated
+: An ALTO Server must provide essential information on the properties associated
   to the network components.
 
 The Path Vector extension defined in this document propose a solution to provide
@@ -252,7 +252,7 @@ One potential use case of the Path Vector extension is for large-scale data
 analytics such as {{SENSE}} and {{LHC}}, where data of Gigabytes, Terabytes and
 even Petabytes are transferred. For these applications, the QoE is usually
 measured as the job completion time, which is related to the completion time of
-the slowest data transfer. With the Path Vector extension, an ALTO client can
+the slowest data transfer. With the Path Vector extension, an ALTO Client can
 identify bottlenecks inside the network. Therefore, the overlay application can
 make optimal traffic distribution or resource reservation (i.e., proportional to
 the size of the transferred data), leading to optimal job completion time and
@@ -262,7 +262,7 @@ network resource utilization.
 
 It is sometimes important to know how the capabilities of various network
 components between two end hosts, especially in the mobile environment. With the
-Path Vector extension, an ALTO client may query the "network context"
+Path Vector extension, an ALTO Client may query the "network context"
 information, i.e., whether the two hosts are connected to the access network
 through a wireless link or a wire, and the capabilities of the access network.
 Thus, the client may use different data transfer mechanisms, or even deploy
@@ -278,10 +278,10 @@ AR/VR, and cloud gaming, as reported in various recent documents
 {{I-D.huang-alto-mowie-for-network-aware-app}}, and
 {{I-D.yang-alto-deliver-functions-over-networks}}).
 
-With the Path Vector extension, an ALTO server can selectively reveal the CDNs
+With the Path Vector extension, an ALTO Server can selectively reveal the CDNs
 and service edges that reside along the paths between different end hosts,
 together with their properties such as available Service Level Agreement (SLA)
-plans. Otherwise, the ALTO client may have to make multiple queries and
+plans. Otherwise, the ALTO Client may have to make multiple queries and
 potentially with the complete list of CDNs and/or service edges. While both
 approaches offer the same information, making multiple queries introduces larger
-delay and more overhead on both the ALTO server and the ALTO client.
+delay and more overhead on both the ALTO Server and the ALTO Client.

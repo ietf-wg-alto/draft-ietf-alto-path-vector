@@ -196,10 +196,14 @@ instructed by Section 12.2 of {{I-D.ietf-alto-unified-props-new}}. The new entry
 is as shown below in {{tbl-entity-domain}}.
 
 
-| Identifier | Entity Address Encoding | Hierarchy &amp; Inheritance |
-|------------|-------------------------|-----------------------------|
-| ane        | See {{entity-address}}  | None                        |
+| Registry | Value |
+|----------|-------|
+| Identifier | ane |
+| Entity Address Encoding | See {{entity-address}} |
+| Hierarchy \&amp; Inheritance | None |
+| Media Type of Defining Resource | application/alto-propmap+json |
 {: #tbl-entity-domain title="ALTO Entity Domain"}
+
 
 ## ALTO Entity Property Type Registry ##
 
@@ -211,40 +215,8 @@ Property Type Registry`, as instructed by Section 12.3 of
 | Identifier              | Intended Semantics          |
 |-------------------------|-----------------------------|
 | max-reservable-bandwidth | See {{maxresbw}}            |
-| persistent-entities     | See {{persistent-entities}} |
+| persistent-entity-id     | See {{persistent-entities}} |
 {: #tbl-prop-type-reg title="Initial Entries for ane Domain in the ALTO Entity Property Types Registry"}
-
-## ALTO Resource-Specific Entity Domain Export Registries ##
-
-This document registers the `ane` domain to the resource-specific entity domain
-export registries of Cost Map and Endpoint Cost Service, as instructed by
-Section 12.4 of {{I-D.ietf-alto-unified-props-new}}.
-
-### ANE Domain of Cost Map Resource {#costmap-ede}
-
-Media-type: application/alto-costmap+json
-
-| Entity Domain Type | Export Function     |
-|--------------------|---------------------|
-| ane                | See below           |
-{: title="ALTO Cost Map Entity Domain Export"}
-
-If an ALTO Cost Map resource supports the Path Vector cost type, it can export an
-`ane` typed entity domain defined by the union of all ANE names that appear in
-the ALTO Cost Map resource.
-
-### ANE Domain of Endpoint Cost Service Resource {#ec-ede}
-
-Media-type: application/alto-endpointcost+json
-
-| Entity Domain Type | Export Function |
-|--------------------|-----------------|
-| ane                | See below       |
-{: title="ALTO Endpoint Cost Entity Domain Export"}
-
-If an ALTO Endpoint Cost Service resource supports the Path Vector cost type, it
-can export an `ane` typed entity domain defined by the union of all ANE
-names that appear in the Path Vector part of the Path Vector request.
 
 # Acknowledgments #
 
