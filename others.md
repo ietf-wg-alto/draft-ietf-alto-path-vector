@@ -215,7 +215,7 @@ Property Type Registry`, as instructed by Section 12.3 of
 | Identifier              | Intended Semantics          |
 |-------------------------|-----------------------------|
 | max-reservable-bandwidth | See {{maxresbw}}            |
-| persistent-entity-id     | See {{persistent-entities}} |
+| persistent-entity-id     | See {{persistent-entity-id}} |
 {: #tbl-prop-type-reg title="Initial Entries for ane Domain in the ALTO Entity Property Types Registry"}
 
 # Acknowledgments #

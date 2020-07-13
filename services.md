@@ -38,9 +38,9 @@ ane-property-names:
   MUST be interpreted as an empty list, indicating that the ALTO server MUST NOT
   return any property in the Unified Property part.
 
-Example: Consider the network in {{fig-dumbbell}}. If a client wants to query the
-`max-reservable-bandwidth` between PID1 and PID2, it can submit the following
-request.
+Example: Consider the network in {{fig-dumbbell}}. If an ALTO client wants to
+query the `max-reservable-bandwidth` between PID1 and PID2, it can submit the
+following request.
 
 ~~~
    POST /costmap/pv HTTP/1.1
@@ -101,7 +101,7 @@ ane-property-names:
 ### Uses ##
 
 This member MUST include the resource ID of the network map based on which the
-PIDs are defined. If this resource supports `persistent-entities`, it MUST also
+PIDs are defined. If this resource supports `persistent-entity-id`, it MUST also
 include the originating resources of entities that appear in the response.
 
 ### Response ## {#pvcm-resp}
@@ -147,17 +147,17 @@ The body of the response consists of two parts:
   JSON object MUST include the `dependent-vtags` field in the `meta` field. The
   value of the `dependent-vtags` field MUST be an array of VersionTag objects as
   defined by Section 10.3 of {{RFC7285}}. The `vtag` of the Path Vector part MUST
-  be included in the `dependent-vtags`. If `persistent-entities` is requested, the
+  be included in the `dependent-vtags`. If `persistent-entity-id` is requested, the
   version tags of the dependent resources that MAY expose the entities in the
   response MUST also be included. The PropertyMapData has one member for each
   ANEName that appears in the Path Vector part, where the EntityProps has one
-  member for each property requested by the client if applicable.
+  member for each property requested by an ALTO client if applicable.
 
 If the `start` parameter is not present, the Path Vector part MUST be the first
 part in the multipart response.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
-request in {{pvcm-accept}} is as follows, where `ane:1` represents the
+request in {{pvcm-accept}} is as follows, where `ANE1` represents the
 aggregation of all the switches in the network.
 
 ~~~
@@ -185,7 +185,7 @@ Content-Type: application/alto-costmap+json
     "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
   },
   "cost-map": {
-    "PID1": { "PID2": ["ane:1"] }
+    "PID1": { "PID2": ["ANE1"] }
   }
 }
 --example-1
@@ -202,7 +202,7 @@ Content-Type: application/alto-propmap+json
     ]
   },
   "property-map": {
-    "ane:1": { "max-reservable-bandwidth": 100000000 }
+    ".ane:ANE1": { "max-reservable-bandwidth": 100000000 }
   }
 }
 ~~~
@@ -244,9 +244,9 @@ ane-property-names:
 : This document defines the `ane-property-names` in PVReqEndpointcost as the
   same as in PVReqFilteredCostMap. See {{pvcm-accept}}.
 
-Example: Consider the network in {{fig-dumbbell}}. If a client wants to query the
-`max-reservable-bandwidth` between eh1 and eh2, it can submit the following
-request.
+Example: Consider the network in {{fig-dumbbell}}. If an ALTO client wants to
+query the `max-reservable-bandwidth` between eh1 and eh2, it can submit the
+following request.
 
 ~~~
 POST /ecs/pv HTTP/1.1
@@ -268,18 +268,19 @@ Content-Type: application/alto-endpointcostparams+json
   "ane-property-names": [ "max-reservable-bandwidth" ]
 }
 ~~~
-### Capabilities ##
+
+### Capabilities {#pvecs-cap}
 
 The capabilities of the multipart endpoint cost resource are defined by a JSON
 object of type PVEndpointcostCapabilities, which is defined as the same as
 PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
 
-### Uses ##
+### Uses
 
-If this resource supports `persistent-entities`, it MUST include the originating
+If this resource supports `persistent-entity-id`, it MUST include the originating
 resources of entities that appear in the response.
 
-### Response ##
+### Response
 
 The response MUST indicate an error, using ALTO protocol error handling, as
 defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
@@ -318,11 +319,11 @@ The body consists of two parts:
   JSON object MUST include the `dependent-vtags` field in the `meta` field. The
   value of the `dependent-vtags` field MUST be an array of VersionTag objects as
   defined by Section 10.3 of {{RFC7285}}. The `vtag` of the Path Vector part MUST
-  be included in the `dependent-vtags`. If `persistent-entities` is requested, the
+  be included in the `dependent-vtags`. If `persistent-entity-id` is requested, the
   version tags of the dependent resources that MAY expose the entities in the
   response MUST also be included. The PropertyMapData has one member for each
   ANEName that appears in the Path Vector part, where the EntityProps has one
-  member for each property requested by the client if applicable.
+  member for each property requested by the ALTO client if applicable.
 
 If the `start` parameter is not present, the Path Vector part MUST be the first
 part in the multipart response.
@@ -356,7 +357,7 @@ Content-Type: application/alto-endpointcost+json
     "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
   },
   "cost-map": {
-    "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ane:1"] }
+    "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ANE1"] }
   }
 }
 --example-1
@@ -373,7 +374,7 @@ Content-Type: application/alto-propmap+json
     ]
   },
   "property-map": {
-    "ane:1": { "max-reservable-bandwidth": 100000000 }
+    ".ane:ANE1": { "max-reservable-bandwidth": 100000000 }
   }
 }
 ~~~

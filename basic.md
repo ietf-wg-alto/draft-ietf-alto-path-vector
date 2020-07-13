@@ -1,5 +1,13 @@
 # Specification: Basic Data Types {#Basic}
 
+## ANE Name {#ane-name-spec}
+
+An ANE Name is encoded as a JSON string with the same format as that of the type
+PIDName (Section 10.1 of {{RFC7285}}).
+
+The type ANEName is used in this document to indicate a string of this
+format.
+
 ## ANE Domain {#ane-domain-spec}
 
 The ANE domain associates property values with the Abstract Network Elements
@@ -58,7 +66,7 @@ Entity Property Name (Section TBD of {{I-D.ietf-alto-unified-props-new}}).
 ## Initial ANE Property Types
 
 In this document, two initial ANE property types are specified,
-`max-reservable-bandwidth` and `persistent-entities`.
+`max-reservable-bandwidth` and `persistent-entity-id`.
 
 Note that the two property types defined in this document do not depend on any
 information resource, so their ResourceID part must be empty.
@@ -124,23 +132,11 @@ calculated as follows:
 = min(100 Gbps, 10 Gbps, 20 Gbps) = 10 Gbps
 ~~~
 
-### New ANE Property Type: Persistent Entities {#persistent-entities}
+### New ANE Property Type: Persistent Entities {#persistent-entity-id}
 
-The scope of an ANE Name returned by a Server response in the first part of the
-multipart response is limited to the Path Vector response. One reason is that an
-ALTO Client is not necessarily interested in details on ANEs on a path but only
-needs to know their existence and impact on the connection performance.
-
-While ANEs returned by a PV response do not exist beyond this response, some of
-them may represent entities that are persistent and defined in a standalone
-property map. Indeed, it may be useful for Clients to occasionally query
-properties on persistent entities, without caring about the path that traverses
-them. Persistent entities have a persistent ID that is registered in a property
-map, together with their properties.
-
-Property "persistent-entityID" can be queried by a Client together with the
+Property `persistent-entity-id` can be queried by a client together with the
 “path-vector” metric. It defines the persistent entity ID for those ANEs in the
-path vector response for which the Server defines one.
+path vector response for which the server defines one.
 
 The value of this property is encoded with the format defined in the UP draft
 for an entity ID. (Section nb TBC, once UP dartf becomes an RFC)
@@ -153,7 +149,7 @@ In this format, the entity ID combines:
 
 - the persistent name of the ANE in this property map
 
-With this format, the Client has all the needed information for further
+With this format, the client has all the needed information for further
 standalone query properties on the ANE, without the need to query a path vector
 for it.
 
