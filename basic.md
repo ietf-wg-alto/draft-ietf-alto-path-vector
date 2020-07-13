@@ -13,7 +13,7 @@ format.
 The ANE domain associates property values with the Abstract Network Elements in
 a Property Map. Accordingly, the ANE domain always depends on a Property Map.
 
-### Entity Domain Type ##
+### Entity Domain Type ## {#domain-type}
 
 ane
 
@@ -25,7 +25,7 @@ The entity identifiers are the ANE Names in the associated Property Map.
 
 There is no hierarchy or inheritance for properties associated with ANEs.
 
-### Media Type of Defining Resource
+### Media Type of Defining Resource {#domain-defining}
 
 When resource specific domains are defined with entities of domain type `ane`,
 the defining resource for entity domain type `pid` MUST be a Property Map. The

@@ -96,7 +96,7 @@ testable-cost-type-names:
 ane-property-names:
 : Defines a list of ANE properties that can be returned. If the field is NOT
   present, it MUST be interpreted as an empty list, indicating the ALTO server
-  CANNOT provide any ANE property.
+  cannot provide any ANE property.
 
 ### Uses ##
 

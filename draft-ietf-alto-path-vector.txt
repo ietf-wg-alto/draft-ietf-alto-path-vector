@@ -172,12 +172,11 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  39
      14.1.  Normative References . . . . . . . . . . . . . . . . . .  39
-     14.2.  Informative References . . . . . . . . . . . . . . . . .  40
-   Appendix A.  Changes since -11  . . . . . . . . . . . . . . . . .  42
-   Appendix B.  Changes since -10  . . . . . . . . . . . . . . . . .  42
-   Appendix C.  Changes since -09  . . . . . . . . . . . . . . . . .  42
-   Appendix D.  Changes since -08  . . . . . . . . . . . . . . . . .  43
-   Appendix E.  Changes Since Version -06  . . . . . . . . . . . . .  43
+     14.2.  Informative References . . . . . . . . . . . . . . . . .  41
+   Appendix A.  Changes since -10  . . . . . . . . . . . . . . . . .  42
+   Appendix B.  Changes since -09  . . . . . . . . . . . . . . . . .  42
+   Appendix C.  Changes since -08  . . . . . . . . . . . . . . . . .  43
+   Appendix D.  Changes Since Version -06  . . . . . . . . . . . . .  43
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  43
 
 1.  Introduction
@@ -218,6 +217,7 @@ Internet-Draft                   ALTO-PV                       July 2020
    Despite the benefits, ISPs are not likely to expose details on their
    network paths: first for the sake of confidentiality, second because
    it may result in a huge volume and overhead, and last because it is
+   difficult for ISPs to figure out what information and what details an
 
 
 
@@ -226,7 +226,6 @@ Gao, et al.              Expires 15 January 2021                [Page 4]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-   difficult for ISPs to figure out what information and what details an
    application needs.  Likewise, applications do not necessarily need
    all the network path details and are likely not able to understand
    them.
@@ -274,6 +273,7 @@ Internet-Draft                   ALTO-PV                       July 2020
    cases.  Section 5 gives an overview of the protocol design.
    Section 6 and Section 7 specify the Path Vector extension to the ALTO
    IRD and the information resources, with some concrete examples
+   presented in Section 8.  Section 9 discusses the backward
 
 
 
@@ -282,7 +282,6 @@ Gao, et al.              Expires 15 January 2021                [Page 5]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-   presented in Section 8.  Section 9 discusses the backward
    compatibility with the base protocol and existing extensions.
    Security and IANA considerations are discussed in Section 11 and
    Section 12 respectively.
@@ -329,7 +328,8 @@ Internet-Draft                   ALTO-PV                       July 2020
       present in a Cost Map or an Endpoint Cost Map, it indicates each
       cost value must be interpreted as a Path Vector.
 
-
+   *  Path Vector request: A Path Vector request refers to the POST
+      message sent to an ALTO Path Vector resource.
 
 
 
@@ -337,9 +337,6 @@ Gao, et al.              Expires 15 January 2021                [Page 6]
 
 Internet-Draft                   ALTO-PV                       July 2020
 
-
-   *  Path Vector request: A Path Vector request refers to the POST
-      message sent to an ALTO Path Vector resource.
 
    *  Path Vector response: A Path Vector response refers to the
       multipart/related message returned by a Path Vector resource.
@@ -384,6 +381,9 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    The single-node ALTO topology abstraction of the network is shown in
    Figure 2.
+
+
+
 
 
 
@@ -1151,7 +1151,7 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    ane-property-names:  Defines a list of ANE properties that can be
       returned.  If the field is NOT present, it MUST be interpreted as
-      an empty list, indicating the ALTO server CANNOT provide any ANE
+      an empty list, indicating the ALTO server cannot provide any ANE
       property.
 
 7.1.5.  Uses
@@ -2130,6 +2130,16 @@ Gao, et al.              Expires 15 January 2021               [Page 38]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
+   Identifier:  See Section 6.2.1.
+
+   Entity Identifier Encoding:  See Section 6.2.2.
+
+   Hierarchy:  None
+
+   Inheritance:  None
+
+   Media Type of Defining Resource:  See Section 6.2.4.
+
    Security Considerations:  In some usage scenarios, ANE addresses
       carried in ALTO Protocol messages may reveal information about an
       ALTO client or an ALTO service provider.  Applications and ALTO
@@ -2167,6 +2177,15 @@ Internet-Draft                   ALTO-PV                       July 2020
 
 14.1.  Normative References
 
+
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 39]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
+
    [I-D.ietf-alto-cost-calendar]
               Randriamasy, S., Yang, Y., WU, Q., Lingli, D., and N.
               Schwan, "Application-Layer Traffic Optimization (ALTO)
@@ -2178,14 +2197,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    [I-D.ietf-alto-incr-update-sse]
               Roome, W. and Y. Yang, "ALTO Incremental Updates Using
               Server-Sent Events (SSE)", Work in Progress, Internet-
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 39]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
               Draft, draft-ietf-alto-incr-update-sse-22, 20 March 2020,
               <http://www.ietf.org/internet-drafts/draft-ietf-alto-incr-
               update-sse-22.txt>.
@@ -2223,6 +2234,14 @@ Internet-Draft                   ALTO-PV                       July 2020
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 40]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
+
    [RFC8189]  Randriamasy, S., Roome, W., and N. Schwan, "Multi-Cost
               Application-Layer Traffic Optimization (ALTO)", RFC 8189,
               DOI 10.17487/RFC8189, October 2017,
@@ -2233,15 +2252,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    [AAAI2019] Xiang, Q., Yu, H., Aspnes, J., Le, F., Kong, L., and Y.R.
               Yang, "Optimizing in the dark: Learning an optimal
               solution through a simple request interface", Proceedings
-
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 40]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
               of the AAAI Conference on Artificial Intelligence 33,
               1674-1681 , 2019.
 
@@ -2260,7 +2270,12 @@ Internet-Draft                   ALTO-PV                       July 2020
               contreras-alto-service-edge-00.txt>.
 
    [I-D.huang-alto-mowie-for-network-aware-app]
-              "TBD", 2020.
+              Huang, W., Zhang, Y., Yang, R., Xiong, C., Lei, Y., Han,
+              Y., and G. Li, "MoWIE for Network Aware Application", Work
+              in Progress, Internet-Draft, draft-huang-alto-mowie-for-
+              network-aware-app-00, 9 March 2020, <http://www.ietf.org/
+              internet-drafts/draft-huang-alto-mowie-for-network-aware-
+              app-00.txt>.
 
    [I-D.ietf-dmm-5g-uplane-analysis]
               Homma, S., Miyasaka, T., Matsushima, S., and D. Voyer,
@@ -2275,6 +2290,14 @@ Internet-Draft                   ALTO-PV                       July 2020
               "Delivering Functions over Networks: Traffic and
               Performance Optimization for Edge Computing using ALTO",
               Work in Progress, Internet-Draft, draft-yang-alto-deliver-
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 41]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
+
               functions-over-networks-01, 13 July 2020,
               <http://www.ietf.org/internet-drafts/draft-yang-alto-
               deliver-functions-over-networks-01.txt>.
@@ -2288,30 +2311,7 @@ Internet-Draft                   ALTO-PV                       July 2020
               adaptive applications", IEEE/ACM Transactions on
               Networking (TON) Vol 27, no. 2 (2019): 805-818., 2019.
 
-
-
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 41]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
-Appendix A.  Changes since -11
-
-   Revision -12
-
-   *  renames "persistent-entities" to "persistent-entity-id";
-
-   *  makes "application/alto-propmap+json" as the media type of
-      defining resources for the "ane" domain;
-
-   *  updates the examples;
-
-   *  adds the discussion on ephemeral and persistent ANEs.
-
-Appendix B.  Changes since -10
+Appendix A.  Changes since -10
 
    Revision -11
 
@@ -2327,9 +2327,18 @@ Appendix B.  Changes since -10
    *  specifies explicitly how to handle "cost-constraints";
 
    *  uses the latest IANA registration mechanism defined in
-      [I-D.ietf-alto-unified-props-new].
+      [I-D.ietf-alto-unified-props-new];
 
-Appendix C.  Changes since -09
+   *  renames "persistent-entities" to "persistent-entity-id";
+
+   *  makes "application/alto-propmap+json" as the media type of
+      defining resources for the "ane" domain;
+
+   *  updates the examples;
+
+   *  adds the discussion on ephemeral and persistent ANEs.
+
+Appendix B.  Changes since -09
 
    Revision -10
 
@@ -2337,6 +2346,13 @@ Appendix C.  Changes since -09
 
       -  extends the scope where the PV extension can be applied beyond
          the "path correlation" information
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 42]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
 
    *  brings back the capacity region use case to better illustrate the
       problem
@@ -2346,15 +2362,7 @@ Appendix C.  Changes since -09
 
    *  fixes inconsistent terms, typos
 
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 42]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
-Appendix D.  Changes since -08
+Appendix C.  Changes since -08
 
    This revision
 
@@ -2363,7 +2371,7 @@ Appendix D.  Changes since -08
    *  emphasizes that abstract network elements can be generated on
       demand in both introduction and motivating use cases
 
-Appendix E.  Changes Since Version -06
+Appendix D.  Changes Since Version -06
 
    *  We emphasize the importance of the path vector extension in two
       aspects:
@@ -2394,6 +2402,14 @@ Authors' Addresses
    Kai Gao
    China
    610000
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 43]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
+
    Chengdu
    No.24 South Section 1, Yihuan Road
    Sichuan University
@@ -2402,12 +2418,6 @@ Authors' Addresses
 
 
    Young Lee
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 43]
-
-Internet-Draft                   ALTO-PV                       July 2020
 
 
    Sabine Randriamasy
@@ -2436,16 +2446,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    Tongji University
 
    Email: jingxuan.n.zhang@gmail.com
-
-
-
-
-
-
-
-
-
-
 
 
 

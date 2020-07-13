@@ -85,9 +85,6 @@ informative:
   I-D.contreras-alto-service-edge:
   I-D.yang-alto-deliver-functions-over-networks:
   I-D.huang-alto-mowie-for-network-aware-app:
-    title: TBD
-    author:
-    date: 2020
 
   TON2019:
     title: "An objective-driven on-demand network abstraction for adaptive applications"
@@ -181,6 +178,7 @@ the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
 --- middle
 
+
 {::include introduction.md}
 
 {::include overview.md}
@@ -195,16 +193,6 @@ the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
 --- back
 
-# Changes since -11
-
-Revision -12
-
-- renames `persistent-entities` to `persistent-entity-id`;
-- makes `application/alto-propmap+json` as the media type of defining resources
-  for the `ane` domain;
-- updates the examples;
-- adds the discussion on ephemeral and persistent ANEs.
-
 # Changes since -10
 
 Revision -11
@@ -216,7 +204,13 @@ Revision -11
 - fixes the inconsistent use of "start" parameter in multipart responses;
 - specifies explicitly how to handle "cost-constraints";
 - uses the latest IANA registration mechanism defined in
-  {{I-D.ietf-alto-unified-props-new}}.
+  {{I-D.ietf-alto-unified-props-new}};
+- renames `persistent-entities` to `persistent-entity-id`;
+- makes `application/alto-propmap+json` as the media type of defining resources
+  for the `ane` domain;
+- updates the examples;
+- adds the discussion on ephemeral and persistent ANEs.
+
 
 # Changes since -09
 

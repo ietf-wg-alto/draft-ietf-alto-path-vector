@@ -202,6 +202,21 @@ is as shown below in {{tbl-entity-domain}}.
 | ane | See {{entity-address}} | None |
 {: #tbl-entity-domain title="ALTO Entity Domain"}
 
+Identifier:
+: See {{domain-type}}.
+
+Entity Identifier Encoding:
+: See {{entity-address}}.
+
+Hierarchy:
+: None
+
+Inheritance:
+: None
+
+Media Type of Defining Resource:
+: See {{domain-defining}}.
+
 Security Considerations:
 : In some usage scenarios, ANE addresses carried in ALTO Protocol messages may
   reveal information about an ALTO client or an ALTO service provider.
