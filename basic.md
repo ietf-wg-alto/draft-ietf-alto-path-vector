@@ -10,26 +10,16 @@ format.
 
 ## ANE Domain {#ane-domain-spec}
 
-The ANE domain associates property values with the Abstract Network Elements
-contained in a Path Vector response, which can either be a Cost Map
-({{pvcm-spec}}) or an Endpoint Cost Service ({{pvecs-spec}}). Thus, the ANE
-domain always depends on a Cost Map or an Endpoint Cost Map.
+The ANE domain associates property values with the Abstract Network Elements in
+a Property Map. Accordingly, the ANE domain always depends on a Property Map.
 
 ### Entity Domain Type ##
 
 ane
 
-### Entity Identifier ## {#entity-address}
+### Domain-Specific Entity Identifier ## {#entity-address}
 
-An ANE Name is encoded as a JSON string with the same format as that of the type
-EntityIdentifer (Section 3.1.3 of [I-D.ietf-alto-unified-props-new]) where the
-EntityDomainName MUST be "ane", indicating that this entity belongs to the "ane"
-Entity Domain.
-
-The type ANEName is used in this document to indicate a string of this
-format.
-
-The entity identifiers are the ANE names contained in a Path Vector response.
+The entity identifiers are the ANE Names in the associated Property Map.
 
 ### Hierarchy and Inheritance
 
@@ -37,31 +27,21 @@ There is no hierarchy or inheritance for properties associated with ANEs.
 
 ### Media Type of Defining Resource
 
-The media type of defining resources for the `ane` domain is
-`application/alto-propmap+json`.
+When resource specific domains are defined with entities of domain type `ane`,
+the defining resource for entity domain type `pid` MUST be a Property Map. The
+media type of defining resources for the `ane` domain is:
 
-The defining resource of ephemeral ANEs is the Property Map part of the
-multipart response. The defining resource of persistent ANEs is the Property Map
-on which standalone queries for properties of persistent ANEs are made.
+    application/alto-propmap+json
 
-Similarly to entities of the PID domain, ANE domains are intrinsically resource
-specific. The reason is that, just like PIDs, ANEs Identifiers are arbitrarily
-defined and do not have a standardized format, unlike routable IPv4 or IPv6
-addresses. A name such as examples `Link10`, `DataCenterEU33.ServerFarm.AppNN`
-can be defined in several property maps, with different meanings.
-
-### Security Considerations
-
-In some usage scenarios, ANE addresses carried in ALTO Protocol messages may
-reveal information about an ALTO client or an ALTO service provider.
-Applications and ALTO service providers using addresses of ANEs will be made
-aware of how (or if) the addressing scheme relates to private information and
-network proximity, in further iterations of this document.
+Specifically, the defining resource of ephemeral ANEs is the Property Map part
+of the multipart response. The defining resource of persistent ANEs is the
+Property Map on which standalone queries for properties of persistent ANEs are
+made.
 
 ## ANE Property Name {#ane-prop-name-spec}
 
 An ANE Property Name is encoded as a JSON string with the same format as that of
-Entity Property Name (Section TBD of {{I-D.ietf-alto-unified-props-new}}).
+Entity Property Name (Section 5.2.2 of {{I-D.ietf-alto-unified-props-new}}).
 
 ## Initial ANE Property Types
 
@@ -76,17 +56,17 @@ information resource, so their ResourceID part must be empty.
                                    /
        PID1   +---------------+ 10 Gbps +----------+    PID3
 1.2.3.0/24+---+ +-----------+ +---------+          +---+3.4.5.0/24
-              | | WebCache1 | |         |          |
+              | |   MEC1    | |         |          |
               | +-----------+ |   +-----+          |
        PID2   |               |   |     +----------+
-2.3.4.0/24+---+ +-----------+ |   |         NET3
-              | | WebCache2 | |   | 15 Gbps
-              | +-----------+ |   |        \
+2.3.4.0/24+---+               |   |         NET3
+              |               |   | 15 Gbps
+              |               |   |        \
               +---------------+   |         -------- L2
                     NET1          |
                            +---------------+
                            | +-----------+ |   PID4
-                           | | WebCache3 | +---+4.5.6.0/24
+                           | |   MEC2    | +---+4.5.6.0/24
                            | +-----------+ |
                            +---------------+
                                  NET2
@@ -100,59 +80,59 @@ sufficiently large bandwidth to be reserved.
 
 ### New ANE Property Type: Maximum Reservable Bandwidth {#maxresbw}
 
-The `maximum reservable bandwidth` property stands for the maximum bandwidth that
-can be reserved for all the traffic that traverses an ANE. The Entity Property
-Type of the maximum reservable bandwidth is "max-reservable-bandwidth", and the
-value MUST be encoded as a non-negative numerical cost value as defined in
-Section 6.1.2.1 of {{RFC7285}} and the unit is bit per second.
+Identifier:
+: `max-reservable-bandwidth`
+
+Intended Semantics:
+: The maximum reservable bandwidth property stands for the maximum bandwidth
+  that can be reserved for all the traffic that traverses an ANE. The value MUST
+  be encoded as a non-negative numerical cost value as defined in Section
+  6.1.2.1 of {{RFC7285}} and the unit is bit per second. If this property is
+  requested but not present in an ANE, it MUST be interpreted as that the ANE
+  does not support bandwidth reservation.
+
+Security Considerations:
+: ALTO entity properties expose information to ALTO clients. ALTO service
+  providers should be made aware of the security ramifications related to the
+  exposure of an entity property.
 
 To illustrate the use of `max-reservable-bandwidth`, consider the network in
 {{fig-pe}}. An ALTO server can create an ANE for each interconnection link,
 where the initial value for `max-reservable-bandwidth` is the link capacity.
 
-If this property is requested but not present in an ANE, it MUST be interpreted
-as that the ANE does not support bandwidth reservation.
+### New ANE Property Type: Persistent Entity ID {#persistent-entity-id}
 
-The aggregated value of a Path Vector is the minimum value of all the ANEs in
-the Path Vector. For example, assume a Path Vector response contains three ANEs
-with the following maxresbw values:
+Identifier:
+: `persistent-entity-id`
 
-| ANEName | max-reservabe-bandwidth |
-|---------|----------|
-| ane:1   | 100 Gbps |
-| ane:2   |  10 Gbps |
-| ane:3   |  20 Gbps |
+Intended Semantics:
+: The persistent entity ID property is the entity identifier of the persistent
+  ANE associated with an ephemeral ANE. The value of this property is encoded
+  with the format defined in Section 5.1.3 of
+  {{I-D.ietf-alto-unified-props-new}}.
 
-The aggregated `max-reservable-bandwidth` (abbreviated as MRB) for ["ane:1", "ane:2", "ane:3"] is
-calculated as follows:
+  In this format, the entity ID combines:
 
-~~~
-  MRB(["ane:1", "ane:2", "ane:3"])
-= min(MRB("ane:1"), MRB("ane:2"), MRB("ane:3"))
-= min(100 Gbps, 10 Gbps, 20 Gbps) = 10 Gbps
-~~~
+  - a defining information resource for the ANE on which a
+    "persistent-entity-id" is queried, which is the property map defining the
+    ANE as a persistent entity, together with the properties
 
-### New ANE Property Type: Persistent Entities {#persistent-entity-id}
+  - the persistent name of the ANE in this property map
 
-Property `persistent-entity-id` can be queried by a client together with the
-“path-vector” metric. It defines the persistent entity ID for those ANEs in the
-path vector response for which the server defines one.
+  With this format, the client has all the needed information for further
+  standalone query properties on the persistent ANE.
 
-The value of this property is encoded with the format defined in the UP draft
-for an entity ID. (Section nb TBC, once UP dartf becomes an RFC)
+Security Considerations:
+: ALTO entity properties expose information to ALTO clients. ALTO service
+  providers should be made aware of the security ramifications related to the
+  exposure of an entity property.
 
-In this format, the entity ID combines:
-
-- a defining information resource for the ANE on which a "persistent-entity-id"
-  is queried, which is the property map defining the ANE as a persistent entity,
-  together with the properties
-
-- the persistent name of the ANE in this property map
-
-With this format, the client has all the needed information for further
-standalone query properties on the ANE, without the need to query a path vector
-for it.
-
+To illustrate the use of `persistent-entity-id`, consider the network in
+{{fig-pe}}. Assume the ALTO server has a Property Map resource called
+"mec-props" that defines persistent ANEs "MEC1" and "MEC2" that represent the
+corresponding mobile edge computing (MEC) clusters. The `persistent-entity-id`
+of the ephemeral ANE that is associated with MEC1 has the value
+`mec-props.ane:MEC1`.
 
 ## Path Vector Cost Type {#cost-type-spec}
 

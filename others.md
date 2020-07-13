@@ -196,14 +196,18 @@ instructed by Section 12.2 of {{I-D.ietf-alto-unified-props-new}}. The new entry
 is as shown below in {{tbl-entity-domain}}.
 
 
-| Registry | Value |
-|----------|-------|
-| Identifier | ane |
-| Entity Address Encoding | See {{entity-address}} |
-| Hierarchy \&amp; Inheritance | None |
-| Media Type of Defining Resource | application/alto-propmap+json |
+
+| Identifier | Entity Address Encoding | Hierarchy & Inheritance |
+|------------|-------------------------|-------------------------|
+| ane | See {{entity-address}} | None |
 {: #tbl-entity-domain title="ALTO Entity Domain"}
 
+Security Considerations:
+: In some usage scenarios, ANE addresses carried in ALTO Protocol messages may
+  reveal information about an ALTO client or an ALTO service provider.
+  Applications and ALTO service providers using addresses of ANEs will be made
+  aware of how (or if) the addressing scheme relates to private information and
+  network proximity, in further iterations of this document.
 
 ## ALTO Entity Property Type Registry ##
 

@@ -195,6 +195,15 @@ the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
 
 --- back
 
+# Changes since -11
+
+Revision -12
+
+- renames `persistent-entities` to `persistent-entity-id`;
+- makes `application/alto-propmap+json` as the media type of defining resources
+  for the `ane` domain;
+- updates the examples;
+- adds the discussion on ephemeral and persistent ANEs.
 
 # Changes since -10
 

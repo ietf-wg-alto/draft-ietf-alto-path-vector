@@ -102,7 +102,7 @@ ane-property-names:
 
 This member MUST include the resource ID of the network map based on which the
 PIDs are defined. If this resource supports `persistent-entity-id`, it MUST also
-include the originating resources of entities that appear in the response.
+include the defining resources of persistent ANEs that may appear in the response.
 
 ### Response ## {#pvcm-resp}
 
@@ -150,8 +150,10 @@ The body of the response consists of two parts:
   be included in the `dependent-vtags`. If `persistent-entity-id` is requested, the
   version tags of the dependent resources that MAY expose the entities in the
   response MUST also be included. The PropertyMapData has one member for each
-  ANEName that appears in the Path Vector part, where the EntityProps has one
-  member for each property requested by an ALTO client if applicable.
+  ANEName that appears in the Path Vector part, which is an entity
+  identifier belonging to the self-defined entity domain as defined in Section
+  5.1.2.3 of {{I-D.ietf-alto-unified-props-new}}. The EntityProps has one member
+  for each property requested by an ALTO client if applicable.
 
 If the `start` parameter is not present, the Path Vector part MUST be the first
 part in the multipart response.
@@ -277,8 +279,8 @@ PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
 
 ### Uses
 
-If this resource supports `persistent-entity-id`, it MUST include the originating
-resources of entities that appear in the response.
+If this resource supports `persistent-entity-id`, it MUST also include the
+defining resources of persistent ANEs that may appear in the response.
 
 ### Response
 
@@ -322,7 +324,9 @@ The body consists of two parts:
   be included in the `dependent-vtags`. If `persistent-entity-id` is requested, the
   version tags of the dependent resources that MAY expose the entities in the
   response MUST also be included. The PropertyMapData has one member for each
-  ANEName that appears in the Path Vector part, where the EntityProps has one
+  ANEName that appears in the Path Vector part, which is an entity identifier belonging to the
+  self-defined entity domain as defined in Section 5.1.2.3 of
+  {{I-D.ietf-alto-unified-props-new}}. The EntityProps has one
   member for each property requested by the ALTO client if applicable.
 
 If the `start` parameter is not present, the Path Vector part MUST be the first

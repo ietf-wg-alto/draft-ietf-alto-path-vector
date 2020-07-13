@@ -117,27 +117,26 @@ Internet-Draft                   ALTO-PV                       July 2020
      6.1.  ANE Name  . . . . . . . . . . . . . . . . . . . . . . . .  15
      6.2.  ANE Domain  . . . . . . . . . . . . . . . . . . . . . . .  15
        6.2.1.  Entity Domain Type  . . . . . . . . . . . . . . . . .  16
-       6.2.2.  Entity Identifier . . . . . . . . . . . . . . . . . .  16
+       6.2.2.  Domain-Specific Entity Identifier . . . . . . . . . .  16
        6.2.3.  Hierarchy and Inheritance . . . . . . . . . . . . . .  16
        6.2.4.  Media Type of Defining Resource . . . . . . . . . . .  16
-       6.2.5.  Security Considerations . . . . . . . . . . . . . . .  16
-     6.3.  ANE Property Name . . . . . . . . . . . . . . . . . . . .  17
-     6.4.  Initial ANE Property Types  . . . . . . . . . . . . . . .  17
+     6.3.  ANE Property Name . . . . . . . . . . . . . . . . . . . .  16
+     6.4.  Initial ANE Property Types  . . . . . . . . . . . . . . .  16
        6.4.1.  New ANE Property Type: Maximum Reservable
-               Bandwidth . . . . . . . . . . . . . . . . . . . . . .  18
-       6.4.2.  New ANE Property Type: Persistent Entities  . . . . .  18
-     6.5.  Path Vector Cost Type . . . . . . . . . . . . . . . . . .  19
-       6.5.1.  Cost Metric: ane-path . . . . . . . . . . . . . . . .  19
+               Bandwidth . . . . . . . . . . . . . . . . . . . . . .  17
+       6.4.2.  New ANE Property Type: Persistent Entity ID . . . . .  18
+     6.5.  Path Vector Cost Type . . . . . . . . . . . . . . . . . .  18
+       6.5.1.  Cost Metric: ane-path . . . . . . . . . . . . . . . .  18
        6.5.2.  Cost Mode: array  . . . . . . . . . . . . . . . . . .  19
      6.6.  Part Resource ID  . . . . . . . . . . . . . . . . . . . .  19
-   7.  Specification: Service Extensions . . . . . . . . . . . . . .  20
-     7.1.  Multipart Filtered Cost Map for Path Vector . . . . . . .  20
-       7.1.1.  Media Type  . . . . . . . . . . . . . . . . . . . . .  20
-       7.1.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  20
+   7.  Specification: Service Extensions . . . . . . . . . . . . . .  19
+     7.1.  Multipart Filtered Cost Map for Path Vector . . . . . . .  19
+       7.1.1.  Media Type  . . . . . . . . . . . . . . . . . . . . .  19
+       7.1.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  19
        7.1.3.  Accept Input Parameters . . . . . . . . . . . . . . .  20
        7.1.4.  Capabilities  . . . . . . . . . . . . . . . . . . . .  21
-       7.1.5.  Uses  . . . . . . . . . . . . . . . . . . . . . . . .  22
-       7.1.6.  Response  . . . . . . . . . . . . . . . . . . . . . .  22
+       7.1.5.  Uses  . . . . . . . . . . . . . . . . . . . . . . . .  21
+       7.1.6.  Response  . . . . . . . . . . . . . . . . . . . . . .  21
      7.2.  Multipart Endpoint Cost Service for Path Vector . . . . .  25
        7.2.1.  Media Type  . . . . . . . . . . . . . . . . . . . . .  25
        7.2.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  25
@@ -162,6 +161,7 @@ Internet-Draft                   ALTO-PV                       July 2020
    12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
      12.1.  ALTO Entity Domain Registry  . . . . . . . . . . . . . .  38
      12.2.  ALTO Entity Property Type Registry . . . . . . . . . . .  39
+   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  39
 
 
 
@@ -170,14 +170,14 @@ Gao, et al.              Expires 15 January 2021                [Page 3]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  39
    14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  39
      14.1.  Normative References . . . . . . . . . . . . . . . . . .  39
-     14.2.  Informative References . . . . . . . . . . . . . . . . .  41
-   Appendix A.  Changes since -10  . . . . . . . . . . . . . . . . .  42
-   Appendix B.  Changes since -09  . . . . . . . . . . . . . . . . .  42
-   Appendix C.  Changes since -08  . . . . . . . . . . . . . . . . .  42
-   Appendix D.  Changes Since Version -06  . . . . . . . . . . . . .  43
+     14.2.  Informative References . . . . . . . . . . . . . . . . .  40
+   Appendix A.  Changes since -11  . . . . . . . . . . . . . . . . .  42
+   Appendix B.  Changes since -10  . . . . . . . . . . . . . . . . .  42
+   Appendix C.  Changes since -09  . . . . . . . . . . . . . . . . .  42
+   Appendix D.  Changes since -08  . . . . . . . . . . . . . . . . .  43
+   Appendix E.  Changes Since Version -06  . . . . . . . . . . . . .  43
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  43
 
 1.  Introduction
@@ -829,10 +829,10 @@ Internet-Draft                   ALTO-PV                       July 2020
 6.2.  ANE Domain
 
    The ANE domain associates property values with the Abstract Network
-   Elements contained in a Path Vector response, which can either be a
-   Cost Map (Section 7.1) or an Endpoint Cost Service (Section 7.2).
-   Thus, the ANE domain always depends on a Cost Map or an Endpoint Cost
-   Map.
+   Elements in a Property Map. Accordingly, the ANE domain always
+   depends on a Property Map.
+
+
 
 
 
@@ -846,19 +846,10 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    ane
 
-6.2.2.  Entity Identifier
+6.2.2.  Domain-Specific Entity Identifier
 
-   An ANE Name is encoded as a JSON string with the same format as that
-   of the type EntityIdentifer (Section 3.1.3 of
-   [I-D.ietf-alto-unified-props-new]) where the EntityDomainName MUST be
-   "ane", indicating that this entity belongs to the "ane" Entity
-   Domain.
-
-   The type ANEName is used in this document to indicate a string of
-   this format.
-
-   The entity identifiers are the ANE names contained in a Path Vector
-   response.
+   The entity identifiers are the ANE Names in the associated Property
+   Map.
 
 6.2.3.  Hierarchy and Inheritance
 
@@ -867,41 +858,22 @@ Internet-Draft                   ALTO-PV                       July 2020
 
 6.2.4.  Media Type of Defining Resource
 
-   The media type of defining resources for the "ane" domain is
-   "application/alto-propmap+json".
+   When resource specific domains are defined with entities of domain
+   type "ane", the defining resource for entity domain type "pid" MUST
+   be a Property Map. The media type of defining resources for the "ane"
+   domain is:
 
-   The defining resource of ephemeral ANEs is the Property Map part of
-   the multipart response.  The defining resource of persistent ANEs is
-   the Property Map on which standalone queries for properties of
-   persistent ANEs are made.
+   application/alto-propmap+json
 
-   Similarly to entities of the PID domain, ANE domains are
-   intrinsically resource specific.  The reason is that, just like PIDs,
-   ANEs Identifiers are arbitrarily defined and do not have a
-   standardized format, unlike routable IPv4 or IPv6 addresses.  A name
-   such as examples "Link10", "DataCenterEU33.ServerFarm.AppNN" can be
-   defined in several property maps, with different meanings.
-
-6.2.5.  Security Considerations
-
-   In some usage scenarios, ANE addresses carried in ALTO Protocol
-   messages may reveal information about an ALTO client or an ALTO
-   service provider.  Applications and ALTO service providers using
-   addresses of ANEs will be made aware of how (or if) the addressing
-   scheme relates to private information and network proximity, in
-   further iterations of this document.
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 16]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
+   Specifically, the defining resource of ephemeral ANEs is the Property
+   Map part of the multipart response.  The defining resource of
+   persistent ANEs is the Property Map on which standalone queries for
+   properties of persistent ANEs are made.
 
 6.3.  ANE Property Name
 
    An ANE Property Name is encoded as a JSON string with the same format
-   as that of Entity Property Name (Section TBD of
+   as that of Entity Property Name (Section 5.2.2 of
    [I-D.ietf-alto-unified-props-new]).
 
 6.4.  Initial ANE Property Types
@@ -913,21 +885,34 @@ Internet-Draft                   ALTO-PV                       July 2020
    depend on any information resource, so their ResourceID part must be
    empty.
 
+
+
+
+
+
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 16]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
+
                                         ----- L1
                                        /
            PID1   +---------------+ 10 Gbps +----------+    PID3
     1.2.3.0/24+---+ +-----------+ +---------+          +---+3.4.5.0/24
-                  | | WebCache1 | |         |          |
+                  | |   MEC1    | |         |          |
                   | +-----------+ |   +-----+          |
            PID2   |               |   |     +----------+
-    2.3.4.0/24+---+ +-----------+ |   |         NET3
-                  | | WebCache2 | |   | 15 Gbps
-                  | +-----------+ |   |        \
+    2.3.4.0/24+---+               |   |         NET3
+                  |               |   | 15 Gbps
+                  |               |   |        \
                   +---------------+   |         -------- L2
                         NET1          |
                                +---------------+
                                | +-----------+ |   PID4
-                               | | WebCache3 | +---+4.5.6.0/24
+                               | |   MEC2    | +---+4.5.6.0/24
                                | +-----------+ |
                                +---------------+
                                      NET2
@@ -939,12 +924,27 @@ Internet-Draft                   ALTO-PV                       July 2020
    NET3) and two interconnection links (L1 and L2).  It is assumed that
    each sub-network has sufficiently large bandwidth to be reserved.
 
+6.4.1.  New ANE Property Type: Maximum Reservable Bandwidth
 
+   Identifier:  "max-reservable-bandwidth"
 
+   Intended Semantics:  The maximum reservable bandwidth property stands
+      for the maximum bandwidth that can be reserved for all the traffic
+      that traverses an ANE.  The value MUST be encoded as a non-
+      negative numerical cost value as defined in Section 6.1.2.1 of
+      [RFC7285] and the unit is bit per second.  If this property is
+      requested but not present in an ANE, it MUST be interpreted as
+      that the ANE does not support bandwidth reservation.
 
+   Security Considerations:  ALTO entity properties expose information
+      to ALTO clients.  ALTO service providers should be made aware of
+      the security ramifications related to the exposure of an entity
+      property.
 
-
-
+   To illustrate the use of "max-reservable-bandwidth", consider the
+   network in Figure 5.  An ALTO server can create an ANE for each
+   interconnection link, where the initial value for "max-reservable-
+   bandwidth" is the link capacity.
 
 
 
@@ -954,78 +954,37 @@ Gao, et al.              Expires 15 January 2021               [Page 17]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-6.4.1.  New ANE Property Type: Maximum Reservable Bandwidth
+6.4.2.  New ANE Property Type: Persistent Entity ID
 
-   The "maximum reservable bandwidth" property stands for the maximum
-   bandwidth that can be reserved for all the traffic that traverses an
-   ANE.  The Entity Property Type of the maximum reservable bandwidth is
-   "max-reservable-bandwidth", and the value MUST be encoded as a non-
-   negative numerical cost value as defined in Section 6.1.2.1 of
-   [RFC7285] and the unit is bit per second.
+   Identifier:  "persistent-entity-id"
 
-   To illustrate the use of "max-reservable-bandwidth", consider the
-   network in Figure 5.  An ALTO server can create an ANE for each
-   interconnection link, where the initial value for "max-reservable-
-   bandwidth" is the link capacity.
+   Intended Semantics:  The persistent entity ID property is the entity
+      identifier of the persistent ANE associated with an ephemeral ANE.
+      The value of this property is encoded with the format defined in
+      Section 5.1.3 of [I-D.ietf-alto-unified-props-new].  In this
+      format, the entity ID combines:
 
-   If this property is requested but not present in an ANE, it MUST be
-   interpreted as that the ANE does not support bandwidth reservation.
+      *  a defining information resource for the ANE on which a
+         "persistent-entity-id" is queried, which is the property map
+         defining the ANE as a persistent entity, together with the
+         properties
 
-   The aggregated value of a Path Vector is the minimum value of all the
-   ANEs in the Path Vector.  For example, assume a Path Vector response
-   contains three ANEs with the following maxresbw values:
+      *  the persistent name of the ANE in this property map
 
-                   +---------+-------------------------+
-                   | ANEName | max-reservabe-bandwidth |
-                   +=========+=========================+
-                   | ane:1   | 100 Gbps                |
-                   +---------+-------------------------+
-                   | ane:2   | 10 Gbps                 |
-                   +---------+-------------------------+
-                   | ane:3   | 20 Gbps                 |
-                   +---------+-------------------------+
+      With this format, the client has all the needed information for
+      further standalone query properties on the persistent ANE.
 
-                                  Table 1
+   Security Considerations:  ALTO entity properties expose information
+      to ALTO clients.  ALTO service providers should be made aware of
+      the security ramifications related to the exposure of an entity
+      property.
 
-   The aggregated "max-reservable-bandwidth" (abbreviated as MRB) for
-   ["ane:1", "ane:2", "ane:3"] is calculated as follows:
-
-     MRB(["ane:1", "ane:2", "ane:3"])
-   = min(MRB("ane:1"), MRB("ane:2"), MRB("ane:3"))
-   = min(100 Gbps, 10 Gbps, 20 Gbps) = 10 Gbps
-
-6.4.2.  New ANE Property Type: Persistent Entities
-
-   Property "persistent-entity-id" can be queried by a client together
-   with the "path-vector" metric.  It defines the persistent entity ID
-   for those ANEs in the path vector response for which the server
-   defines one.
-
-
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 18]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
-   The value of this property is encoded with the format defined in the
-   UP draft for an entity ID.  (Section nb TBC, once UP dartf becomes an
-   RFC)
-
-   In this format, the entity ID combines:
-
-   *  a defining information resource for the ANE on which a
-      "persistent-entity-id" is queried, which is the property map
-      defining the ANE as a persistent entity, together with the
-      properties
-
-   *  the persistent name of the ANE in this property map
-
-   With this format, the client has all the needed information for
-   further standalone query properties on the ANE, without the need to
-   query a path vector for it.
+   To illustrate the use of "persistent-entity-id", consider the network
+   in Figure 5.  Assume the ALTO server has a Property Map resource
+   called "mec-props" that defines persistent ANEs "MEC1" and "MEC2"
+   that represent the corresponding mobile edge computing (MEC)
+   clusters.  The "persistent-entity-id" of the ephemeral ANE that is
+   associated with MEC1 has the value "mec-props.ane:MEC1".
 
 6.5.  Path Vector Cost Type
 
@@ -1039,6 +998,17 @@ Internet-Draft                   ALTO-PV                       July 2020
    conveys an array of ANE names, where each ANE name uniquely
    represents an ANE traversed by traffic from a source to a
    destination.
+
+
+
+
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 18]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
 
 6.5.2.  Cost Mode: array
 
@@ -1058,14 +1028,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    NOTE: Even though the client-id assigned to a Path Vector request and
    the Part Resource ID MAY contain up to 64 characters by their own
    definition, their concatenation (see Section 5.3.2) MUST also conform
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 19]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
    to the same length constraint.  The same requirement applies to the
    resource ID of the Path Vector resource, too.  Thus, it is
    RECOMMENDED to limit the length of resource ID and client ID related
@@ -1089,6 +1051,20 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    The multipart filtered cost map is requested using the HTTP POST
    method.
+
+
+
+
+
+
+
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 19]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
 
 7.1.3.  Accept Input Parameters
 
@@ -1115,13 +1091,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    to query the "max-reservable-bandwidth" between PID1 and PID2, it can
    submit the following request.
 
-
-
-Gao, et al.              Expires 15 January 2021               [Page 20]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
       POST /costmap/pv HTTP/1.1
       Host: alto.example.com
       Accept: multipart/related;type=application/alto-costmap+json,
@@ -1140,6 +1109,18 @@ Internet-Draft                   ALTO-PV                       July 2020
         },
         "ane-property-names": [ "max-reservable-bandwidth" ]
       }
+
+
+
+
+
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 20]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
 
 7.1.4.  Capabilities
 
@@ -1170,14 +1151,6 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    ane-property-names:  Defines a list of ANE properties that can be
       returned.  If the field is NOT present, it MUST be interpreted as
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 21]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
       an empty list, indicating the ALTO server CANNOT provide any ANE
       property.
 
@@ -1185,8 +1158,8 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    This member MUST include the resource ID of the network map based on
    which the PIDs are defined.  If this resource supports "persistent-
-   entity-id", it MUST also include the originating resources of
-   entities that appear in the response.
+   entity-id", it MUST also include the defining resources of persistent
+   ANEs that may appear in the response.
 
 7.1.6.  Response
 
@@ -1196,6 +1169,14 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    The "Content-Type" header of the response MUST be "multipart/related"
    as defined by [RFC2387] with the following parameters:
+
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 21]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
 
    type:  The type parameter MUST be "application/alto-costmap+json".
       Note that [RFC2387] permits both parameters with and without the
@@ -1225,15 +1206,6 @@ Internet-Draft                   ALTO-PV                       July 2020
       "uses" attribute of the multipart filtered cost map resource in
       IRD.
 
-
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 22]
-
-Internet-Draft                   ALTO-PV                       July 2020
-
-
    *  The Unified Property Map part MUST also include "Resource-Id" and
       "Content-Type" in its header.  The value of "Resource-Id" has the
       format of a Part Resource ID.  The "Content-Type" MUST be
@@ -1249,9 +1221,18 @@ Internet-Draft                   ALTO-PV                       July 2020
       "persistent-entity-id" is requested, the version tags of the
       dependent resources that MAY expose the entities in the response
       MUST also be included.  The PropertyMapData has one member for
-      each ANEName that appears in the Path Vector part, where the
-      EntityProps has one member for each property requested by an ALTO
-      client if applicable.
+      each ANEName that appears in the Path Vector part, which is an
+      entity identifier belonging to the self-defined entity domain as
+      defined in Section 5.1.2.3 of [I-D.ietf-alto-unified-props-new].
+      The EntityProps has one member for each property requested by an
+      ALTO client if applicable.
+
+
+
+Gao, et al.              Expires 15 January 2021               [Page 22]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
 
    If the "start" parameter is not present, the Path Vector part MUST be
    the first part in the multipart response.
@@ -1259,6 +1240,25 @@ Internet-Draft                   ALTO-PV                       July 2020
    Example: Consider the network in Figure 1.  The response of the
    example request in Section 7.1.3 is as follows, where "ANE1"
    represents the aggregation of all the switches in the network.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1429,8 +1429,9 @@ Internet-Draft                   ALTO-PV                       July 2020
 
 7.2.5.  Uses
 
-   If this resource supports "persistent-entity-id", it MUST include the
-   originating resources of entities that appear in the response.
+   If this resource supports "persistent-entity-id", it MUST also
+   include the defining resources of persistent ANEs that may appear in
+   the response.
 
 7.2.6.  Response
 
@@ -1449,7 +1450,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    boundary:  The boundary parameter is as defined in [RFC2387].
 
    The body consists of two parts:
-
 
 
 
@@ -1485,17 +1485,17 @@ Internet-Draft                   ALTO-PV                       July 2020
       "persistent-entity-id" is requested, the version tags of the
       dependent resources that MAY expose the entities in the response
       MUST also be included.  The PropertyMapData has one member for
-      each ANEName that appears in the Path Vector part, where the
-      EntityProps has one member for each property requested by the ALTO
-      client if applicable.
+      each ANEName that appears in the Path Vector part, which is an
+      entity identifier belonging to the self-defined entity domain as
+      defined in Section 5.1.2.3 of [I-D.ietf-alto-unified-props-new].
+      The EntityProps has one member for each property requested by the
+      ALTO client if applicable.
 
    If the "start" parameter is not present, the Path Vector part MUST be
    the first part in the multipart response.
 
    Example: Consider the network in Figure 1.  The response of the
    example request in Section 7.2.3 is as follows.
-
-
 
 
 
@@ -2113,15 +2113,15 @@ Internet-Draft                   ALTO-PV                       July 2020
    This document registers a new entry to the ALTO Domain Entity
    Registry, as instructed by Section 12.2 of
    [I-D.ietf-alto-unified-props-new].  The new entry is as shown below
-   in Table 2.
+   in Table 1.
 
+    +------------+-------------------------+-------------------------+
+    | Identifier | Entity Address Encoding | Hierarchy & Inheritance |
+    +============+=========================+=========================+
+    | ane        | See Section 6.2.2       | None                    |
+    +------------+-------------------------+-------------------------+
 
-
-
-
-
-
-
+                       Table 1: ALTO Entity Domain
 
 
 
@@ -2130,26 +2130,19 @@ Gao, et al.              Expires 15 January 2021               [Page 38]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-    +---------------------------------+-------------------------------+
-    | Registry                        | Value                         |
-    +=================================+===============================+
-    | Identifier                      | ane                           |
-    +---------------------------------+-------------------------------+
-    | Entity Address Encoding         | See Section 6.2.2             |
-    +---------------------------------+-------------------------------+
-    | Hierarchy \& Inheritance        | None                          |
-    +---------------------------------+-------------------------------+
-    | Media Type of Defining Resource | application/alto-propmap+json |
-    +---------------------------------+-------------------------------+
-
-                        Table 2: ALTO Entity Domain
+   Security Considerations:  In some usage scenarios, ANE addresses
+      carried in ALTO Protocol messages may reveal information about an
+      ALTO client or an ALTO service provider.  Applications and ALTO
+      service providers using addresses of ANEs will be made aware of
+      how (or if) the addressing scheme relates to private information
+      and network proximity, in further iterations of this document.
 
 12.2.  ALTO Entity Property Type Registry
 
    Two initial entries are registered to the ALTO Domain "ane" in the
    "ALTO Entity Property Type Registry", as instructed by Section 12.3
    of [I-D.ietf-alto-unified-props-new].  The two new entries are shown
-   below in Table 3.
+   below in Table 2.
 
              +--------------------------+--------------------+
              | Identifier               | Intended Semantics |
@@ -2159,7 +2152,7 @@ Internet-Draft                   ALTO-PV                       July 2020
              | persistent-entity-id     | See Section 6.4.2  |
              +--------------------------+--------------------+
 
-                 Table 3: Initial Entries for ane Domain in
+                 Table 2: Initial Entries for ane Domain in
                   the ALTO Entity Property Types Registry
 
 13.  Acknowledgments
@@ -2178,6 +2171,13 @@ Internet-Draft                   ALTO-PV                       July 2020
               Randriamasy, S., Yang, Y., WU, Q., Lingli, D., and N.
               Schwan, "Application-Layer Traffic Optimization (ALTO)
               Cost Calendar", Work in Progress, Internet-Draft, draft-
+              ietf-alto-cost-calendar-21, 17 March 2020,
+              <http://www.ietf.org/internet-drafts/draft-ietf-alto-cost-
+              calendar-21.txt>.
+
+   [I-D.ietf-alto-incr-update-sse]
+              Roome, W. and Y. Yang, "ALTO Incremental Updates Using
+              Server-Sent Events (SSE)", Work in Progress, Internet-
 
 
 
@@ -2186,13 +2186,6 @@ Gao, et al.              Expires 15 January 2021               [Page 39]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-              ietf-alto-cost-calendar-21, 17 March 2020,
-              <http://www.ietf.org/internet-drafts/draft-ietf-alto-cost-
-              calendar-21.txt>.
-
-   [I-D.ietf-alto-incr-update-sse]
-              Roome, W. and Y. Yang, "ALTO Incremental Updates Using
-              Server-Sent Events (SSE)", Work in Progress, Internet-
               Draft, draft-ietf-alto-incr-update-sse-22, 20 March 2020,
               <http://www.ietf.org/internet-drafts/draft-ietf-alto-incr-
               update-sse-22.txt>.
@@ -2235,6 +2228,13 @@ Internet-Draft                   ALTO-PV                       July 2020
               DOI 10.17487/RFC8189, October 2017,
               <https://www.rfc-editor.org/info/rfc8189>.
 
+14.2.  Informative References
+
+   [AAAI2019] Xiang, Q., Yu, H., Aspnes, J., Le, F., Kong, L., and Y.R.
+              Yang, "Optimizing in the dark: Learning an optimal
+              solution through a simple request interface", Proceedings
+
+
 
 
 Gao, et al.              Expires 15 January 2021               [Page 40]
@@ -2242,11 +2242,6 @@ Gao, et al.              Expires 15 January 2021               [Page 40]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-14.2.  Informative References
-
-   [AAAI2019] Xiang, Q., Yu, H., Aspnes, J., Le, F., Kong, L., and Y.R.
-              Yang, "Optimizing in the dark: Learning an optimal
-              solution through a simple request interface", Proceedings
               of the AAAI Conference on Artificial Intelligence 33,
               1674-1681 , 2019.
 
@@ -2276,13 +2271,13 @@ Internet-Draft                   ALTO-PV                       July 2020
               uplane-analysis-03.txt>.
 
    [I-D.yang-alto-deliver-functions-over-networks]
-              Yang, S., Cui, L., Xu, M., Shen, H., and L. Chen,
+              Yang, S., Cui, L., Xu, M., Yang, Y., and R. Huang,
               "Delivering Functions over Networks: Traffic and
               Performance Optimization for Edge Computing using ALTO",
               Work in Progress, Internet-Draft, draft-yang-alto-deliver-
-              functions-over-networks-00, 29 November 2019,
+              functions-over-networks-01, 13 July 2020,
               <http://www.ietf.org/internet-drafts/draft-yang-alto-
-              deliver-functions-over-networks-00.txt>.
+              deliver-functions-over-networks-01.txt>.
 
    [LHC]      "CERN - LHC", 2019, <https://atlas.cern/tags/lhc>.
 
@@ -2290,6 +2285,11 @@ Internet-Draft                   ALTO-PV                       July 2020
 
    [TON2019]  Gao, K., Xiang, Q., Wang, X., Yang, Y.R., and J. Bi, "An
               objective-driven on-demand network abstraction for
+              adaptive applications", IEEE/ACM Transactions on
+              Networking (TON) Vol 27, no. 2 (2019): 805-818., 2019.
+
+
+
 
 
 
@@ -2298,10 +2298,20 @@ Gao, et al.              Expires 15 January 2021               [Page 41]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-              adaptive applications", IEEE/ACM Transactions on
-              Networking (TON) Vol 27, no. 2 (2019): 805-818., 2019.
+Appendix A.  Changes since -11
 
-Appendix A.  Changes since -10
+   Revision -12
+
+   *  renames "persistent-entities" to "persistent-entity-id";
+
+   *  makes "application/alto-propmap+json" as the media type of
+      defining resources for the "ane" domain;
+
+   *  updates the examples;
+
+   *  adds the discussion on ephemeral and persistent ANEs.
+
+Appendix B.  Changes since -10
 
    Revision -11
 
@@ -2319,7 +2329,7 @@ Appendix A.  Changes since -10
    *  uses the latest IANA registration mechanism defined in
       [I-D.ietf-alto-unified-props-new].
 
-Appendix B.  Changes since -09
+Appendix C.  Changes since -09
 
    Revision -10
 
@@ -2336,16 +2346,6 @@ Appendix B.  Changes since -09
 
    *  fixes inconsistent terms, typos
 
-Appendix C.  Changes since -08
-
-   This revision
-
-   *  fixes a few spelling errors
-
-   *  emphasizes that abstract network elements can be generated on
-      demand in both introduction and motivating use cases
-
-
 
 
 
@@ -2354,7 +2354,16 @@ Gao, et al.              Expires 15 January 2021               [Page 42]
 Internet-Draft                   ALTO-PV                       July 2020
 
 
-Appendix D.  Changes Since Version -06
+Appendix D.  Changes since -08
+
+   This revision
+
+   *  fixes a few spelling errors
+
+   *  emphasizes that abstract network elements can be generated on
+      demand in both introduction and motivating use cases
+
+Appendix E.  Changes Since Version -06
 
    *  We emphasize the importance of the path vector extension in two
       aspects:
@@ -2395,6 +2404,12 @@ Authors' Addresses
    Young Lee
 
 
+
+Gao, et al.              Expires 15 January 2021               [Page 43]
+
+Internet-Draft                   ALTO-PV                       July 2020
+
+
    Sabine Randriamasy
    Nokia Bell Labs
    Route de Villejust
@@ -2402,12 +2417,6 @@ Authors' Addresses
    France
 
    Email: sabine.randriamasy@nokia-bell-labs.com
-
-
-
-Gao, et al.              Expires 15 January 2021               [Page 43]
-
-Internet-Draft                   ALTO-PV                       July 2020
 
 
    Yang Richard Yang
@@ -2427,15 +2436,6 @@ Internet-Draft                   ALTO-PV                       July 2020
    Tongji University
 
    Email: jingxuan.n.zhang@gmail.com
-
-
-
-
-
-
-
-
-
 
 
 
