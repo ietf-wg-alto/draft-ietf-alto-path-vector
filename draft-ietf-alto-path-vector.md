@@ -70,6 +70,7 @@ author:
 
 normative:
   RFC2119:
+  RFC2216:
   RFC7285:
   RFC2387:
   RFC8174:
@@ -80,11 +81,52 @@ normative:
   I-D.ietf-alto-performance-metrics:
 
 informative:
-  I-D.bernstein-alto-topo:
   I-D.ietf-dmm-5g-uplane-analysis:
   I-D.contreras-alto-service-edge:
   I-D.yang-alto-deliver-functions-over-networks:
   I-D.huang-alto-mowie-for-network-aware-app:
+  JSAC2019:
+    title: "Toward Fine-Grained, Privacy-Preserving, Efficient Multi-Domain Network Resource Discovery"
+    author:
+      -
+        ins: Q. Xiang
+        name: Qiao Xiang
+        org: Yale University
+      -
+        ins: J. Zhang
+        name: Jingxuan Zhang
+        org: Tongji University
+      -
+        ins: X. Wang
+        name: Xin Wang
+        org: Tongji University
+      -
+        ins: Y. Liu
+        name: Yang Liu
+        org: Tongji University
+      -
+        ins: C. Guok
+        name: Chin Guok
+        org: ESNet
+      -
+        ins: F. Le
+        name: Franck Le
+        org: IBM T.J. Watson Research Center
+      -
+        ins: J. MacAuley
+        name: John MacAuley
+        org: ESNet
+      -
+        ins: H. Newman
+        name: Harvey Newman
+        org: Caltech
+      -
+        ins: Y. R. Yang
+        name: Yang Richard Yang
+        org: Yale University
+    date: 2019
+    seriesinfo:
+      IEEE/ACM: "IEEE Journal on Selected Areas of Communication 37(8): 1924-1940"
 
   TON2019:
     title: "An objective-driven on-demand network abstraction for adaptive applications"
@@ -112,6 +154,49 @@ informative:
     date: 2019
     seriesinfo:
       IEEE/ACM: "Transactions on Networking (TON) Vol 27, no. 2 (2019): 805-818."
+
+  SC2018:
+    title: "Fine-grained, multi-domain network resource abstraction as a fundamental primitive to enable high-performance, collaborative data sciences"
+    author:
+      -
+        ins: Q. Xiang
+        name: Qiao Xiang
+        org: Yale University
+      -
+        ins: J. Zhang
+        name: Jingxuan Zhang
+        org: Tongji University
+      -
+        ins: X. Wang
+        name: Xin Wang
+        org: Tongji University
+      -
+        ins: Y. Liu
+        name: Yang Liu
+        org: Tongji University
+      -
+        ins: C. Guok
+        name: Chin Guok
+        org: ESNet
+      -
+        ins: F. Le
+        name: Franck Le
+        org: IBM T.J. Watson Research Center
+      -
+        ins: J. MacAuley
+        name: John MacAuley
+        org: ESNet
+      -
+        ins: H. Newman
+        name: Harvey Newman
+        org: Caltech
+      -
+        ins: Y. R. Yang
+        name: Yang Richard Yang
+        org: Yale University
+    date: 2019
+    seriesinfo:
+      "Proceedings of the Super Computing 2018, 5:1-5:13"
 
   AAAI2019:
     title: "Optimizing in the dark: Learning an optimal solution through a simple request interface"
@@ -141,7 +226,8 @@ informative:
         name: Yang Richard Yang
         org: Yale University
     date: 2019
-    seriesinfo: "Proceedings of the AAAI Conference on Artificial Intelligence 33, 1674-1681"
+    seriesinfo:
+      "Proceedings of the AAAI Conference on Artificial Intelligence 33, 1674-1681"
 
   SENSE:
     title: "Services - SENSE"
@@ -156,25 +242,29 @@ informative:
 --- abstract
 
 This document is an extension to the base Application-Layer Traffic Optimization
-protocol {{RFC7285}}. The current ALTO Cost Services only allow applications to
-obtain cost values on an end-to-end path defined by its source and destination.
-The present extension provides abstracted information on particular network
-components or elements traversed by a path between its source and destination.
-Examples of such abstracted components are networks, data centers or links. This
-is useful for applications whose performance is impacted by particular network
-components they traverse or by their properties. Applications having the choice
-among several connection paths may use this information to select paths
+protocol {{RFC7285}}. While the current ALTO Cost Services only allow
+applications to obtain numerical/ordinal cost values on an end-to-end path
+defined by its source and destination, the present extension enables the
+provision of abstracted information on particular Abstract Network Elements on
+the path. These Abstract Network Elements, or simply Elements, are components of
+the network which handle data packets, and their properties may have an impact
+on the end-to-end performance of the applications' traffic. Examples of such
+Elements include physical devices such as routers, cables and interfaces, and
+aggregations of devices such as subnetworks and data centers. Such information
+is useful for applications whose performance is impacted by particular Abstract
+Network Elements they traverse or by their properties. Applications having the
+choice among several connection paths may use this information to select paths
 accordingly and improve their performance. In particular, they may infer that
 several paths share common links and prevent traffic bottlenecks by avoiding
 such paths. This document introduces a new cost type called Path Vector. A Path
-Vector is an array of entities that each identifies an abstracted representation
-of a network part and that are called Abstract Network Element (ANE). Each ANE
-is defined by a set of properties. ANE properties are conveyed by an ALTO
-information resource called "Property Map", that can be packed together with the
-Path Vectors in a multipart response. They can also be obtained via a separate
-ALTO request to a Property Map. An ALTO Property Map is an extension to the ALTO
-protocol, that is specified in another document entitled "Unified Properties for
-the ALTO Protocol" {{I-D.ietf-alto-unified-props-new}}.
+Vector is an array of entities that each identifies an Abstract Network Element
+(ANE). Each ANE is associated with a set of properties. ANE properties are conveyed
+by an ALTO information resource called "Property Map", that can be packed
+together with the Path Vectors in a multipart response. They can also be
+obtained via a separate ALTO request to a Property Map. An ALTO Property Map is
+an extension to the ALTO protocol, that is specified in another document
+entitled "Unified Properties for the ALTO Protocol"
+{{I-D.ietf-alto-unified-props-new}}.
 
 --- middle
 

@@ -30,7 +30,7 @@ backward compatible with the base ALTO protocol:
 This document does not specify how to integrate the Path Vector cost type with
 the multi-cost extension {{RFC8189}}. While it is not RECOMMENDED to put the
 Path Vector cost type with other cost types in a single query, there is no
-compatible issue.
+compatibility issue.
 
 <!--
 As [](#fcm-cap) mentions, the syntax and semantics of whether `constraints` or
@@ -65,7 +65,7 @@ client CANNOT recognize the compound client-id, and a legacy ALTO server MAY
 use the same client-id for updates of both parts.
 
 ALTO clients and servers MUST follow the specifications given in this document
-to ensure compatibility with the incremental update extension.
+to support incremental updates for a Path Vector resource.
 
 ## Compatibility with Cost Calendar
 
@@ -77,13 +77,20 @@ paths traversed in the k-th time interval by traffic from the source to the
 destination.
 
 When used with time-varying properties, e.g., maximum reservable bandwidth
-(maxresbw), a property of a single entity may also have different values in
-different time intervals. In this case, an ANE with different property values
-MUST be considered as different ANEs.
+(maxresbw), a property of a single ANE may also have different values in
+different time intervals. In this case, if such an ANE has different property
+values in two time intervals, it MUST be treated as two different ANEs, i.e.,
+with different entity identifiers. However, if it has the same property values
+in two time intervals, it MAY use the same identifier.
 
-The two extensions combined together CAN provide the historical network
+This rule allows the Path Vector extension to represent both changes of ANEs and
+changes of the ANEs' properties in a uniform way. The Path Vector part is
+calendared in a compatible way, and the Property Map part is not affected by the
+calendar extension.
+
+The two extensions combined together can provide the historical network
 correlation information for a set of source and destination pairs. A network
-broker or client MAY use this information to derive other resource requirements
+broker or client may use this information to derive other resource requirements
 such as Time-Block-Maximum Bandwidth, Bandwidth-Sliding-Window, and
 Time-Bandwidth-Product (TBP) (See {{SENSE}} for details).
 
@@ -169,7 +176,8 @@ reduce information exposure or obfuscate the real information, in particular,
 in settings where the network and the application do not belong to the same
 trust domain. But the implementation of Path Vector extension involving
 reduction or obfuscation should guarantee the requested properties are still
-accurate.
+accurate, for example, by using minimal feasible region compression algorithms
+{{TON2019}} or obfuscation protocols {{SC2018}}{{JSAC2019}}.
 
 <!--
 On the other hand, in a setting of the same trust domain, a key benefit
@@ -178,14 +186,15 @@ to the application.
 -->
 
 For availability of ALTO service, an ALTO server should be cognizant that using
-Path Vector extension might have a new risk: frequent requesting for path
-vectors might conduct intolerable increment of the server-side storage and
-break the ALTO server. It is known that the computation of Path Vectors is
-unlikely to be cacheable, in that the results will depend on the particular
-requests (e.g., where the flows are distributed). Hence, the service providing
-Path Vectors may become an entry point for denial-of-service attacks on the
+Path Vector extension might have a new risk: frequent requesting for Path
+Vectors might conduct intolerable increment of the server-side storage and break
+the ALTO server, for example, if an ALTO server implementation dynamically
+computes the Path Vectors for each requests. Hence, the service providing Path
+Vectors may become an entry point for denial-of-service attacks on the
 availability of an ALTO server. To avoid this risk, authenticity and
-authorization of this ALTO service may need to be better protected.
+authorization of this ALTO service may need to be better protected. Also, an
+ALTO server may consider using optimizations such as
+precomputation-and-projection mechanisms {{JSAC2019}}.
 
 # IANA Considerations # {#IANA}
 

@@ -18,13 +18,14 @@ capability of these services, e.g., to express other performance metrics
 {{RFC8189}}, and to obtain the time-varying values
 {{I-D.ietf-alto-cost-calendar}}.
 
-<!-- However, the QoE also depends on intermediate components. -->
+<!-- However, the QoE also depends on ANEs. -->
 While the existing extensions are sufficient for many overlay applications,
 however, the QoE of some overlay applications depends not only on the cost
-information of end-to-end paths, but also on some intermediate network
-components and their properties. For example, job completion time, which is an
+information of end-to-end paths, but also on particular components of a network
+on the paths and their properties. For example, job completion time, which is an
 important QoE metric for a large-scale data analytics application, is impacted
-by shared bottlenecks inside the carrier network.
+by shared bottleneck links inside the carrier network. We refer to such
+components of a network as Abstract Network Elements (ANE).
 
 Predicting such information can be very complex without the help of the ISP
 {{AAAI2019}}. With proper guidance from the ISP, an overlay application may be
@@ -39,39 +40,37 @@ to figure out what information and what details an application needs. Likewise,
 applications do not necessarily need all the network path details and are likely
 not able to understand them.
 
-Therefore, it is
-beneficial for both parties if an ALTO server provides ALTO clients with an
-"abstract network state" that provides the necessary details to applications,
-while hiding the network complexity and confidential information. An "abstract
-network state" is a selected set of abstract representations of intermediate
-network components traversed by the paths between <source, destination> pairs
-combined with properties of these components that are relevant to the overlay
-applications' QoE. Both an application via its ALTO client and the ISP via the
-ALTO server can achieve better confidentiality and resource utilization by
-appropriately abstracting relevant path components. The pressure on the server
-scalability can also be reduced by abstracting components and their properties
-and combining them in a single response.
+Therefore, it is beneficial for both parties if an ALTO server provides ALTO
+clients with an "abstract network state" that provides the necessary details to
+applications, while hiding the network complexity and confidential information.
+An "abstract network state" is a selected set of abstract representations of
+Abstract Network Elements traversed by the paths between <source, destination>
+pairs combined with properties of these Abstract Network Elements that are
+relevant to the overlay applications' QoE. Both an application via its ALTO
+client and the ISP via the ALTO server can achieve better confidentiality and
+resource utilization by appropriately abstracting relevant Abstract Network
+Elements. The pressure on the server scalability can also be reduced by
+combining Abstract Network Elements and their properties in a single response.
 
 This document extends {{RFC7285}} to allow an ALTO server convey "abstract
 network state", for paths defined by their <source, destination> pairs. To this
 end, it introduces a new cost type called "Path Vector". A Path Vector is an
-array of identifiers of so-called Abstract Network Element (ANE). An ANE
-represents an abstract intermediate component traversed by a path. It can be
-associated with various properties. The associations between ANEs and their
+array of identifiers that each identifies an Abstract Network Element, which can
+be associated with various properties. The associations between ANEs and their
 properties are encoded in an ALTO information resource called Unified Property
 Map, which is specified in {{I-D.ietf-alto-unified-props-new}}.
 
 For better confidentiality, this document aims to minimize information exposure.
 In particular, this document enables and recommends that first ANEs are
 constructed on demand, and second an ANE is only associated with properties that
-are requested by an ALTO client. A Path Vector response involved two ALTO Maps:
+are requested by an ALTO client. A Path Vector response involves two ALTO Maps:
 the Cost Map that contains the Path Vector results and the up-to-date Unified
 Property Map that contains the properties requested for these ANEs. To enforce
 consistency and improve server scalability, this document uses the
 `multipart/related` message defined in {{RFC2387}} to return the two maps in a
 single response.
 
-The rest of the document are organized as follows. {{term}} introduces the extra
+The rest of the document is organized as follows. {{term}} introduces the extra
 terminologies that are used in this document. {{probstat}} uses an illustrative
 example to introduce the additional requirements of the ALTO framework, and
 discusses potential use cases. {{Overview}} gives an overview of the protocol
@@ -94,23 +93,42 @@ natural language meanings.
 
 # Terminology {#term}
 
+NOTE: This document depends on the Unified Property Map extension
+{{I-D.ietf-alto-unified-props-new}} and should be processed after the Unified
+Property Map document.
+
 This document extends the ALTO base protocol {{RFC7285}} and the Unified
 Property Map extension {{I-D.ietf-alto-unified-props-new}}. In addition to
 the terms defined in these documents, this document also uses the following
 additional terms:
 
-- Abstract Network Element (ANE): An Abstract Network Element is a
-  representation of network components. It can be a link, a middlebox, a
-  virtualized network function (VNF), etc., or their aggregations. An ANE can be
-  constructed either statically in advance or on demand based on the requested
-  information. In a response, each ANE is represented by a unique ANE
-  Name. Note that an ALTO client must not assume ANEs in different responses but
-  with the same ANE Name refer to the same network component(s).
+- Abstract Network Element (ANE): An Abstract Network Element is an abstract
+  representation for a component in a network that handle data packets and whose
+  properties can potentially have an impact on the end-to-end performance of
+  traffic. An ANE can be a physical device such as a router, a link or an
+  interface, or an aggregation of devices such as a subnetwork, or a data
+  center.
+
+  The definition of Abstract Network Element is similar to Network Element
+  defined in {{RFC2216}} in the sense that they both provide an abstract
+  representation of particular components of a network. However, they have
+  different criteria on how these particular components are selected.
+  Specifically, Network Element requires the components to be potentially
+  capable of exercising QoS control, while Abstract Network Element only
+  requires the components to have an impact on the end-to-end performance.
+
+- ANE Name: An ANE can be constructed either statically in advance or on demand
+  based on the requested information. Thus, different ANEs may only be valid
+  within a particular scope, either ephemeral or persistent. Within each scope,
+  an ANE is uniquely identified by an ANE Name, as defined in {{ane-name-spec}}.
+  Note that an ALTO client must not assume ANEs in different scopes but with
+  the same ANE Name refer to the same component(s) of the network.
 
 - Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
-  Names. It conveys the information that the path between a source and a
-  destination traverses the ANEs in the same order as they appear in the Path
-  Vector.
+  Names. It is defined either for a source PID and a destination PID as in a
+  cost map or for a source endpoint and a destination endpoint as in an endpoint
+  cost map. Specifically, each ANE Name in a Path Vector indicates that the ANE
+  is on the path between the source and the destination.
 
 - Path Vector resource: A Path Vector resource refers to an ALTO resource which
   supports the extension defined in this document.
@@ -209,42 +227,40 @@ the network needs to provide more details.  In particular:
   the overlay application to distinguish between Case 1 and Case 2 and to
   compute the optimal total throughput accordingly.
 
-- The ALTO server must allow the client to distinguish the common network
-  components shared by eh1 -> eh2 and eh1 -> eh4, e.g., eh1 - sw1 and sw1 - sw5
-  in Case 1.
+- The ALTO server must allow the client to distinguish the common ANE shared by
+  eh1 -> eh2 and eh1 -> eh4, e.g., eh1 - sw1 and sw1 - sw5 in Case 1.
 
-- The ALTO server must give details on the properties of the network components
-  used by eh1 -> eh2 and eh1 -> eh4, e.g., the available bandwidth between eh1 -
-  sw1, sw1 - sw5, sw5 - sw7, sw5 - sw6, sw6 - sw7, sw7 - sw2, sw7 - sw4, sw2 -
-  eh2, sw4 - eh4 in Case 1.
+- The ALTO server must give details on the properties of the ANEs used by eh1 ->
+  eh2 and eh1 -> eh4, e.g., the available bandwidth between eh1 - sw1, sw1 -
+  sw5, sw5 - sw7, sw5 - sw6, sw6 - sw7, sw7 - sw2, sw7 - sw4, sw2 - eh2, sw4 -
+  eh4 in Case 1.
 
 In general, we can conclude that to support the multiple flow scheduling
 use case, the ALTO framework must be extended to satisfy the following
 additional requirements:
 
 AR1:
-: An ALTO server must provide essential information on intermediate network
-  components on the path of a <source, destination> pair that are critical to
-  the QoE of the overlay application.
+: An ALTO server must provide essential information on ANEs on the
+  path of a <source, destination> pair that are critical to the QoE of the
+  overlay application.
 
 AR2:
 : An ALTO server must provide essential information on how the paths of
-  different <source, destination> pairs share a common network component.
+  different <source, destination> pairs share a common ANE.
 
 AR3:
 : An ALTO server must provide essential information on the properties associated
-  to the network components.
+  to the ANEs.
 
 The Path Vector extension defined in this document propose a solution to provide
 these details.
 
-## Recent Use Cases
+## Use Cases
 
 While the multiple flow scheduling problem is used to help identify the
 additional requirements, the Path Vector extension can be applied to a wide
 range of applications. This section highlights some real use cases that are
-recently reported. See {{I-D.bernstein-alto-topo}} for a more comprehensive
-survey of use cases where extended network topology information is needed.
+reported.
 
 ### Large-scale Data Analytics
 
@@ -260,20 +276,19 @@ network resource utilization.
 
 ### Context-aware Data Transfer
 
-It is sometimes important to know how the capabilities of various network
-components between two end hosts, especially in the mobile environment. With the
-Path Vector extension, an ALTO client may query the "network context"
-information, i.e., whether the two hosts are connected to the access network
-through a wireless link or a wire, and the capabilities of the access network.
-Thus, the client may use different data transfer mechanisms, or even deploy
-different 5G User Plane Functions (UPF) {{I-D.ietf-dmm-5g-uplane-analysis}} to
-optimize the data transfer.
+It is getting important to know the capabilities of various ANEs between two end
+hosts, especially in the mobile environment. With the Path Vector extension, an
+ALTO client may query the "network context" information, i.e., whether the two
+hosts are connected to the access network through a wireless link or a wire, and
+the capabilities of the access network. Thus, the client may use different data
+transfer mechanisms, or even deploy different 5G User Plane Functions (UPF)
+{{I-D.ietf-dmm-5g-uplane-analysis}} to optimize the data transfer.
 
 ### CDN and Service Edge
 
 A growing trend in today's applications is to bring storage and computation
 closer to the end user for better QoE, such as Content Delivery Network (CDN),
-AR/VR, and cloud gaming, as reported in various recent documents
+AR/VR, and cloud gaming, as reported in various documents
 ({{I-D.contreras-alto-service-edge}},
 {{I-D.huang-alto-mowie-for-network-aware-app}}, and
 {{I-D.yang-alto-deliver-functions-over-networks}}).

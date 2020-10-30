@@ -33,10 +33,17 @@ media type of defining resources for the `ane` domain is:
 
     application/alto-propmap+json
 
-Specifically, the defining resource of ephemeral ANEs is the Property Map part
-of the multipart response. The defining resource of persistent ANEs is the
-Property Map on which standalone queries for properties of persistent ANEs are
-made.
+Specifically, for ephemeral ANEs that appear in a Path Vector response, their
+entity domain names MUST be ".ane" and the defining resource of these ANEs is
+the Property Map part of the multipart response. Meanwhile, for persistent ANEs
+whose entity domain name has the format of "PROPMAP.ane" where PROPMAP is the
+name of a Property Map resource, PROPMAP is the defining resource of these ANEs.
+
+For example, the defining resource of ".ane:NET1" is the Property Map part that
+contains this identifier, i.e., the ANE entity ".ane:NET1" is self-defined. The
+defining resource of "dc-props.ane:DC1" is the Property Map with the resource ID
+"dc-props".
+
 
 ## ANE Property Name {#ane-prop-name-spec}
 
@@ -107,8 +114,8 @@ Identifier:
 
 Intended Semantics:
 : The persistent entity ID property is the entity identifier of the persistent
-  ANE associated with an ephemeral ANE. The value of this property is encoded
-  with the format defined in Section 5.1.3 of
+  ANE which an ephemeral ANE presents (See {{assoc}} for details). The value of
+  this property is encoded with the format defined in Section 5.1.3 of
   {{I-D.ietf-alto-unified-props-new}}.
 
   In this format, the entity ID combines:
@@ -130,9 +137,9 @@ Security Considerations:
 To illustrate the use of `persistent-entity-id`, consider the network in
 {{fig-pe}}. Assume the ALTO server has a Property Map resource called
 "mec-props" that defines persistent ANEs "MEC1" and "MEC2" that represent the
-corresponding mobile edge computing (MEC) clusters. The `persistent-entity-id`
-of the ephemeral ANE that is associated with MEC1 has the value
-`mec-props.ane:MEC1`.
+corresponding mobile edge computing (MEC) clusters. Since MEC1 is associated
+with NET1, the `persistent-entity-id` of the ephemeral ANE `.ane:NET1` is the
+persistent entity id `mec-props.ane:MEC1`.
 
 ## Path Vector Cost Type {#cost-type-spec}
 
@@ -161,8 +168,8 @@ JSON array of ANEName ({{ane-name-spec}}) when the cost metric is
 A Part Resource ID is encoded as a JSON string with the same format as that of the
 type ResourceID (Section 10.2 of {{RFC7285}}).
 
-NOTE: Even though the client-id assigned to a Path Vector request and the
-Part Resource ID MAY contain up to 64 characters by their own definition, their
+Even though the client-id assigned to a Path Vector request and the Part
+Resource ID MAY contain up to 64 characters by their own definition, their
 concatenation (see {{ref-partmsg-design}}) MUST also conform to the same length
 constraint. The same requirement applies to the resource ID of the Path Vector
 resource, too. Thus, it is RECOMMENDED to limit the length of resource ID and

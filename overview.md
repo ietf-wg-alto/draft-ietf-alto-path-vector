@@ -6,30 +6,32 @@ the Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
 
 To satisfies the additional requirements, this extension:
 
-1. introduces Abstract Network Element (ANE) as the abstraction of intermediate
-   network components,
+1. introduces Abstract Network Element (ANE) as the abstraction of components in
+   a network whose properties may have an impact on the end-to-end performance
+   of the traffic handled by those component,
 
-2. extends the Cost Map and Endpoint Cost Service to convey the intermediate
-   network components traversed by the path of a <source, destination> pair as
-   Path Vectors,
+2. extends the Cost Map and Endpoint Cost Service to convey the ANEs traversed
+   by the path of a <source, destination> pair as Path Vectors,
 
 3. uses the Unified Property Map to convey the association between the
-   intermediate network components and their properties.
+   ANEs and their properties.
 
-Thus, an ALTO client can learn about the intermediate network components that
-are critical to the QoE of a <source, destination> pair by investigating the
-corresponding Path Vector value (AR1), identify common network components if an
-ANE appears in the Path Vectors of multiple <source, destination> pairs (AR2),
-and retrieve the properties of the network components by searching the Unified
-Property Map (AR3).
+Thus, an ALTO client can learn about the ANEs that are critical to the QoE of a
+<source, destination> pair by investigating the corresponding Path Vector value
+(AR1), identify common ANEs if an ANE appears in the Path Vectors of multiple
+<source, destination> pairs (AR2), and retrieve the properties of the ANEs by
+searching the Unified Property Map (AR3).
 
 ## Abstract Network Element {#ane-design}
 
 This extension introduces Abstract Network Element (ANE) as an indirect and
-network-agnostic way to specify an aggregation of intermediate network
-components between a source and a destination. Specifically, an ANE is a string
-of type ANEName as specified in {{ane-name-spec}} and its associated set of
-properties.
+network-agnostic way to specify a component or an aggregation of components of a
+network whose properties have an impact on the end-to-end performance for
+traffic between a source and a destination.
+
+When an ANE is defined by the ALTO server, it MUST be assigned an identifier,
+i.e., string of type ANEName as specified in {{ane-name-spec}}, and a set of
+associated properties.
 
 ### ANE Domain
 
@@ -38,13 +40,13 @@ in a Unified Property Map. Thus, they must follow the mechanisms specified in
 the {{I-D.ietf-alto-unified-props-new}}.
 
 Specifically, this document defines a new entity domain called `ane` as
-specified in {{ane-domain}} and defines two initial properties for the `ane`
+specified in {{ane-domain-spec}} and defines two initial properties for the `ane`
 domain.
 
-### Ephemeral ANE and Persistent ANE
+### Ephemeral ANE and Persistent ANE {#assoc}
 
-For different requests, there can be different ways of grouping network
-components and assigning ANEs. For example, an ALTO server may define an ANE for
+For different requests, there can be different ways of grouping components of a
+network and assigning ANEs. For example, an ALTO server may define an ANE for
 each aggregated bottleneck link between the sources and destinations specified
 in the request. As the aggregated bottleneck links vary for different
 combinations of sources and destinations, the ANEs are ephemeral and are no
@@ -67,8 +69,8 @@ the available properties.
 Specifically, the available properties for a given resource are announced in the
 Information Resource Directory as a new capability called `ane-property-names`.
 The selected properties are specified in a filter called `ane-property-names` in
-the request body, and the response must return and only return the selected
-properties for the ANEs in the response.
+the request body, and the response MUST only return the selected properties for
+the ANEs in the response.
 
 The `ane-property-names` capability for Cost Map and for Endpoint Cost Service
 are specified in {{pvcm-cap}} and {{pvecs-cap}} respectively. The
@@ -80,7 +82,7 @@ in {{pvcm-accept}} and {{pvecs-accept}} accordingly.
 For an ALTO client to correctly interpret the Path Vector, this extension
 specifies a new cost type called the Path Vector cost type, which must be
 included both in the Information Resource Directory and the ALTO Cost Map or
-Endpoint Cost Map so that an ALTO client can correct interpret the cost values.
+Endpoint Cost Map so that an ALTO client can correctly interpret the cost values.
 
 The Path Vector cost type must convey both the interpretation and semantics in
 the "cost-mode" and "cost-metric" respectively. Unfortunately, a single
@@ -115,10 +117,12 @@ The Path Vector extension, on the other hand, involves two types of information
 resources: Path Vectors conveyed in a Cost Map or an Endpoint Cost Map, and ANE
 properties conveyed in a Unified Property Map. Instead of two consecutive
 message exchanges, the Path Vector extension enforces one round of
-communication. Specifically, the Path Vector extension requires the ALTO client
-to include the source and destination pairs and the requested ANE properties in
-a single request, and encapsulates both Path Vectors and properties associated
-with the ANEs in a single response, as shown in {{fig-pv}}.
+communication. Specifically, the ALTO client must include the source and
+destination pairs and the requested ANE properties in a single request, and the
+ALTO server must encapsulate both Path Vectors and properties associated with
+the ANEs in a single response, as shown in {{fig-pv}}. Since the two parts are
+bundled together in one response message, their orders are interchangeable. See
+{{pvcm-resp}} and {{pvecs-resp}} for details.
 
 
 ~~~~~~~~~~ drawing

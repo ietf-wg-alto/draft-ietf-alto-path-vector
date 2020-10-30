@@ -107,7 +107,7 @@ include the defining resources of persistent ANEs that may appear in the respons
 ### Response ## {#pvcm-resp}
 
 The response MUST indicate an error, using ALTO protocol error handling, as
-defined in Section 8.5 of {{RFC7285}}, if the request does no.
+defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
 
 The "Content-Type" header of the response MUST be `multipart/related` as defined
 by {{RFC2387}} with the following parameters:
@@ -123,7 +123,7 @@ start:
 boundary:
 : The boundary parameter is as defined in {{RFC2387}}.
 
-The body of the response consists of two parts:
+The body of the response MUST consist of two parts:
 
 - The Path Vector part MUST include `Resource-Id` and `Content-Type` in its
   header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
@@ -156,7 +156,8 @@ The body of the response consists of two parts:
   for each property requested by an ALTO client if applicable.
 
 If the `start` parameter is not present, the Path Vector part MUST be the first
-part in the multipart response.
+part in the multipart response. If any part is NOT present, the client MUST
+discard the received information and send another request if necessary.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
 request in {{pvcm-accept}} is as follows, where `ANE1` represents the
@@ -282,7 +283,7 @@ PVFilteredCostMapCapabilities. See {{pvcm-cap}}.
 If this resource supports `persistent-entity-id`, it MUST also include the
 defining resources of persistent ANEs that may appear in the response.
 
-### Response
+### Response {#pvecs-resp}
 
 The response MUST indicate an error, using ALTO protocol error handling, as
 defined in Section 8.5 of {{RFC7285}}, if the request is invalid.
@@ -299,7 +300,7 @@ start:
 boundary:
 : The boundary parameter is as defined in {{RFC2387}}.
 
-The body consists of two parts:
+The body MUST consist of two parts:
 
 - The Path Vector part MUST include `Resource-Id` and `Content-Type` in its
   header. The value of `Resource-Id` MUST has the format of a Part Resource ID.
@@ -324,13 +325,14 @@ The body consists of two parts:
   be included in the `dependent-vtags`. If `persistent-entity-id` is requested, the
   version tags of the dependent resources that MAY expose the entities in the
   response MUST also be included. The PropertyMapData has one member for each
-  ANEName that appears in the Path Vector part, which is an entity identifier belonging to the
-  self-defined entity domain as defined in Section 5.1.2.3 of
-  {{I-D.ietf-alto-unified-props-new}}. The EntityProps has one
-  member for each property requested by the ALTO client if applicable.
+  ANEName that appears in the Path Vector part, which is an entity identifier
+  belonging to the self-defined entity domain as defined in Section 5.1.2.3 of
+  {{I-D.ietf-alto-unified-props-new}}. The EntityProps has one member for each
+  property requested by the ALTO client if applicable.
 
 If the `start` parameter is not present, the Path Vector part MUST be the first
-part in the multipart response.
+part in the multipart response. If any part is NOT present, the client MUST
+discard the received information and send another request if necessary.
 
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
