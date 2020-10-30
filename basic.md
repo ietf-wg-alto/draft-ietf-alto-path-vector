@@ -153,6 +153,16 @@ The cost metric "ane-path" indicates the value of such a cost type conveys an
 array of ANE names, where each ANE name uniquely represents an ANE traversed by
 traffic from a source to a destination.
 
+An ALTO client MUST interpret the Path Vector as if the traffic between a source
+and a destination logically traverses the ANEs in the same order as they appear
+in the Path Vector. However, under certain scenarios where the traversal order
+is not crucial, an ALTO server implementation may choose to not follow strictly
+the physical traversal order and may even obfuscate the order intentionally, for
+security and performance considerations. For example, in the multi-flow
+bandwidth reservation use case as introduced in {{probstat}}, only the available
+bandwidth of the shared bottleneck link is crucial, and the ALTO server may
+change the order of links appearing in the Path Vector response.
+
 ### Cost Mode: array {#mode-spec}
 
 The cost mode "array" indicates that every cost value in a Cost Map or an

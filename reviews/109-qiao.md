@@ -45,12 +45,14 @@ traversal order of ANEs? Would enforcing such an order increase the
 implementation complexity of the PV extension? In a response email from Jensen
 in the same thread, he said we may add strong use cases to motivate the
 necessity of "array" semantics, but it does not seem to be added in this draft.
+DONE
 
   7. Handle multipath (and potentially multicast). In my previous email, I give
 a proposal to address this issue in PV, which is motivated by RFC7911
 ("Advertisement of Multiple Paths in BGP"). Jensen replied that it may be better
 to consider handling multipath in a separate document, but I want to use this
 review opportunity to ask the opinion of all WG members about this issue.
+DONE
 
 Next, in Section 11 (security consideration), I have two more comments.
 
