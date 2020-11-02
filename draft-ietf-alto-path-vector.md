@@ -293,6 +293,7 @@ Revision -12
 - clarifies the definition of ANEs in a similar way as how Network Elements is
   defined in {{RFC2216}}
 - restructures several paragraphs that are not clear (Sec 3, Path Vector bullet, Sec 4.2, Sec 5.1.3, Sec 6.2.4, Sec 6.4.2, Sec 9.3)
+- uses `ALTO Entity Domain Type Registry`
 
 # Changes since -10
 

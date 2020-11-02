@@ -16,7 +16,7 @@ Expires: 7 May 2021                                              Samsung
 
 
                       ALTO Extension: Path Vector
-                   draft-ietf-alto-path-vector-latest
+                   draft-ietf-alto-path-vector-12
 
 Abstract
 

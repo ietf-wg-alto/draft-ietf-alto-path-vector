@@ -198,9 +198,9 @@ precomputation-and-projection mechanisms {{JSAC2019}}.
 
 # IANA Considerations # {#IANA}
 
-## ALTO Entity Domain Registry ##
+## ALTO Entity Domain Type Registry ##
 
-This document registers a new entry to the ALTO Domain Entity Registry, as
+This document registers a new entry to the ALTO Domain Entity Type Registry, as
 instructed by Section 12.2 of {{I-D.ietf-alto-unified-props-new}}. The new entry
 is as shown below in {{tbl-entity-domain}}.
 
@@ -209,7 +209,7 @@ is as shown below in {{tbl-entity-domain}}.
 | Identifier | Entity Address Encoding | Hierarchy & Inheritance |
 |------------|-------------------------|-------------------------|
 | ane | See {{entity-address}} | None |
-{: #tbl-entity-domain title="ALTO Entity Domain"}
+{: #tbl-entity-domain title="ALTO Entity Domain Type Registry"}
 
 Identifier:
 : See {{domain-type}}.
