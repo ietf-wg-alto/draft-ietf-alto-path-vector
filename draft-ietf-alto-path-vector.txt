@@ -5,14 +5,14 @@
 ALTO                                                              K. Gao
 Internet-Draft                                        Sichuan University
 Intended status: Standards Track                                  Y. Lee
-Expires: 3 May 2021                                                     
+Expires: 6 May 2021                                              Samsung
                                                           S. Randriamasy
                                                          Nokia Bell Labs
                                                                Y.R. Yang
                                                          Yale University
                                                                 J. Zhang
                                                        Tongji University
-                                                         30 October 2020
+                                                         2 November 2020
 
 
                       ALTO Extension: Path Vector
@@ -53,9 +53,9 @@ Abstract
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 1]
+Gao, et al.                Expires 6 May 2021                   [Page 1]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 Status of This Memo
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 May 2021.
+   This Internet-Draft will expire on 6 May 2021.
 
 Copyright Notice
 
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 2]
+Gao, et al.                Expires 6 May 2021                   [Page 2]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
      5.3.  Multipart Path Vector Response  . . . . . . . . . . . . .  13
@@ -137,7 +137,7 @@ Internet-Draft                   ALTO-PV                    October 2020
    7.  Specification: Service Extensions . . . . . . . . . . . . . .  20
      7.1.  Multipart Filtered Cost Map for Path Vector . . . . . . .  20
        7.1.1.  Media Type  . . . . . . . . . . . . . . . . . . . . .  20
-       7.1.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  20
+       7.1.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  21
        7.1.3.  Accept Input Parameters . . . . . . . . . . . . . . .  21
        7.1.4.  Capabilities  . . . . . . . . . . . . . . . . . . . .  22
        7.1.5.  Uses  . . . . . . . . . . . . . . . . . . . . . . . .  22
@@ -165,9 +165,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 3]
+Gao, et al.                Expires 6 May 2021                   [Page 3]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    11. Security Considerations . . . . . . . . . . . . . . . . . . .  39
@@ -178,10 +178,11 @@ Internet-Draft                   ALTO-PV                    October 2020
    14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  41
      14.1.  Normative References . . . . . . . . . . . . . . . . . .  41
      14.2.  Informative References . . . . . . . . . . . . . . . . .  42
-   Appendix A.  Changes since -10  . . . . . . . . . . . . . . . . .  43
-   Appendix B.  Changes since -09  . . . . . . . . . . . . . . . . .  44
-   Appendix C.  Changes since -08  . . . . . . . . . . . . . . . . .  44
-   Appendix D.  Changes Since Version -06  . . . . . . . . . . . . .  44
+   Appendix A.  Changes since -11  . . . . . . . . . . . . . . . . .  43
+   Appendix B.  Changes since -10  . . . . . . . . . . . . . . . . .  44
+   Appendix C.  Changes since -09  . . . . . . . . . . . . . . . . .  44
+   Appendix D.  Changes since -08  . . . . . . . . . . . . . . . . .  44
+   Appendix E.  Changes Since Version -06  . . . . . . . . . . . . .  45
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
 
 1.  Introduction
@@ -220,10 +221,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-
-Gao, et al.                Expires 3 May 2021                   [Page 4]
+Gao, et al.                Expires 6 May 2021                   [Page 4]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    could avoid using bottlenecks or challenging the network with poorly
@@ -277,9 +277,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 5]
+Gao, et al.                Expires 6 May 2021                   [Page 5]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    Section 4 uses an illustrative example to introduce the additional
@@ -333,9 +333,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 6]
+Gao, et al.                Expires 6 May 2021                   [Page 6]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    *  ANE Name: An ANE can be constructed either statically in advance
@@ -389,9 +389,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 7]
+Gao, et al.                Expires 6 May 2021                   [Page 7]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    other side, and sw5-sw7 form the backbone.  Endhosts eh1 to eh4 are
@@ -445,9 +445,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 8]
+Gao, et al.                Expires 6 May 2021                   [Page 8]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    is not enough to determine the optimal total throughput.  Consider
@@ -501,9 +501,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                   [Page 9]
+Gao, et al.                Expires 6 May 2021                   [Page 9]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 4.2.  Use Cases
@@ -557,9 +557,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 10]
+Gao, et al.                Expires 6 May 2021                  [Page 10]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    information, making multiple queries introduces larger delay and more
@@ -613,9 +613,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 11]
+Gao, et al.                Expires 6 May 2021                  [Page 11]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    Specifically, this document defines a new entity domain called "ane"
@@ -669,9 +669,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 12]
+Gao, et al.                Expires 6 May 2021                  [Page 12]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 5.2.  Path Vector Cost Type
@@ -725,9 +725,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 13]
+Gao, et al.                Expires 6 May 2021                  [Page 13]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    are bundled together in one response message, their orders are
@@ -781,9 +781,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 14]
+Gao, et al.                Expires 6 May 2021                  [Page 14]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    To address this issue, this document uses the "type" parameter to
@@ -837,9 +837,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 15]
+Gao, et al.                Expires 6 May 2021                  [Page 15]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 5.3.3.  Order of Part Messages
@@ -893,9 +893,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 16]
+Gao, et al.                Expires 6 May 2021                  [Page 16]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 6.2.4.  Media Type of Defining Resource
@@ -949,9 +949,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 17]
+Gao, et al.                Expires 6 May 2021                  [Page 17]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
                                         ----- L1
@@ -1005,9 +1005,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 18]
+Gao, et al.                Expires 6 May 2021                  [Page 18]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 6.4.2.  New ANE Property Type: Persistent Entity ID
@@ -1061,10 +1061,22 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 19]
+Gao, et al.                Expires 6 May 2021                  [Page 19]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
+
+   An ALTO client MUST interpret the Path Vector as if the traffic
+   between a source and a destination logically traverses the ANEs in
+   the same order as they appear in the Path Vector.  However, under
+   certain scenarios where the traversal order is not crucial, an ALTO
+   server implementation may choose to not follow strictly the physical
+   traversal order and may even obfuscate the order intentionally, for
+   security and performance considerations.  For example, in the multi-
+   flow bandwidth reservation use case as introduced in Section 4, only
+   the available bandwidth of the shared bottleneck link is crucial, and
+   the ALTO server may change the order of links appearing in the Path
+   Vector response.
 
 6.5.2.  Cost Mode: array
 
@@ -1103,24 +1115,17 @@ Internet-Draft                   ALTO-PV                    October 2020
    The media type of the multipart filtered cost map resource is
    "multipart/related;type=application/alto-costmap+json".
 
+
+
+Gao, et al.                Expires 6 May 2021                  [Page 20]
+
+Internet-Draft                   ALTO-PV                   November 2020
+
+
 7.1.2.  HTTP Method
 
    The multipart filtered cost map is requested using the HTTP POST
    method.
-
-
-
-
-
-
-
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 20]
-
-Internet-Draft                   ALTO-PV                    October 2020
-
 
 7.1.3.  Accept Input Parameters
 
@@ -1168,14 +1173,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-
-
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 21]
+Gao, et al.                Expires 6 May 2021                  [Page 21]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 7.1.4.  Capabilities
@@ -1229,9 +1229,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 22]
+Gao, et al.                Expires 6 May 2021                  [Page 22]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    type:  The type parameter MUST be "application/alto-costmap+json".
@@ -1285,9 +1285,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 23]
+Gao, et al.                Expires 6 May 2021                  [Page 23]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    If the "start" parameter is not present, the Path Vector part MUST be
@@ -1341,9 +1341,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 24]
+Gao, et al.                Expires 6 May 2021                  [Page 24]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    HTTP/1.1 200 OK
@@ -1397,9 +1397,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 25]
+Gao, et al.                Expires 6 May 2021                  [Page 25]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 7.2.  Multipart Endpoint Cost Service for Path Vector
@@ -1453,9 +1453,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 26]
+Gao, et al.                Expires 6 May 2021                  [Page 26]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    POST /ecs/pv HTTP/1.1
@@ -1509,9 +1509,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 27]
+Gao, et al.                Expires 6 May 2021                  [Page 27]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    *  The Path Vector part MUST include "Resource-Id" and "Content-Type"
@@ -1565,9 +1565,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 28]
+Gao, et al.                Expires 6 May 2021                  [Page 28]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    HTTP/1.1 200 OK
@@ -1621,9 +1621,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 29]
+Gao, et al.                Expires 6 May 2021                  [Page 29]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 8.  Examples
@@ -1677,9 +1677,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 30]
+Gao, et al.                Expires 6 May 2021                  [Page 30]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
        },
@@ -1733,9 +1733,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 31]
+Gao, et al.                Expires 6 May 2021                  [Page 31]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 8.2.  Example: Multipart Filtered Cost Map
@@ -1789,9 +1789,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 32]
+Gao, et al.                Expires 6 May 2021                  [Page 32]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
        "vtag": {
@@ -1845,9 +1845,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 33]
+Gao, et al.                Expires 6 May 2021                  [Page 33]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    The response consists of two parts.  The first part returns the array
@@ -1901,9 +1901,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 34]
+Gao, et al.                Expires 6 May 2021                  [Page 34]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
        "vtags": {
@@ -1957,9 +1957,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 35]
+Gao, et al.                Expires 6 May 2021                  [Page 35]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 8.4.  Example: Incremental Updates
@@ -2013,9 +2013,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 36]
+Gao, et al.                Expires 6 May 2021                  [Page 36]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    event: application/merge-patch+json, ecspvsub1.ecsmap
@@ -2069,9 +2069,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 37]
+Gao, et al.                Expires 6 May 2021                  [Page 37]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    different values in different time intervals.  In this case, if such
@@ -2125,9 +2125,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 38]
+Gao, et al.                Expires 6 May 2021                  [Page 38]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 11.  Security Considerations
@@ -2181,9 +2181,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 39]
+Gao, et al.                Expires 6 May 2021                  [Page 39]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
     +------------+-------------------------+-------------------------+
@@ -2237,9 +2237,9 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 40]
+Gao, et al.                Expires 6 May 2021                  [Page 40]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
 13.  Acknowledgments
@@ -2269,13 +2269,6 @@ Internet-Draft                   ALTO-PV                    October 2020
               <http://www.ietf.org/internet-drafts/draft-ietf-alto-incr-
               update-sse-22.txt>.
 
-   [I-D.ietf-alto-performance-metrics]
-              WU, Q., Yang, Y., Lee, Y., Dhody, D., Randriamasy, S., and
-              L. Contreras, "ALTO Performance Cost Metrics", Work in
-              Progress, Internet-Draft, draft-ietf-alto-performance-
-              metrics-12, 13 July 2020, <http://www.ietf.org/internet-
-              drafts/draft-ietf-alto-performance-metrics-12.txt>.
-
    [I-D.ietf-alto-unified-props-new]
               Roome, W., Randriamasy, S., Yang, Y., Zhang, J., and K.
               Gao, "Unified properties for the ALTO protocol", Work in
@@ -2289,21 +2282,21 @@ Internet-Draft                   ALTO-PV                    October 2020
               <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC2216]  Shenker, S. and J. Wroclawski, "Network Element Service
-
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 41]
-
-Internet-Draft                   ALTO-PV                    October 2020
-
-
               Specification Template", RFC 2216, DOI 10.17487/RFC2216,
               September 1997, <https://www.rfc-editor.org/info/rfc2216>.
 
    [RFC2387]  Levinson, E., "The MIME Multipart/Related Content-type",
               RFC 2387, DOI 10.17487/RFC2387, August 1998,
               <https://www.rfc-editor.org/info/rfc2387>.
+
+
+
+
+
+Gao, et al.                Expires 6 May 2021                  [Page 41]
+
+Internet-Draft                   ALTO-PV                   November 2020
+
 
    [RFC7285]  Alimi, R., Ed., Penno, R., Ed., Yang, Y., Ed., Kiesel, S.,
               Previdi, S., Roome, W., Shalunov, S., and R. Woundy,
@@ -2343,15 +2336,22 @@ Internet-Draft                   ALTO-PV                    October 2020
               internet-drafts/draft-huang-alto-mowie-for-network-aware-
               app-01.txt>.
 
+   [I-D.ietf-alto-performance-metrics]
+              WU, Q., Yang, Y., Lee, Y., Dhody, D., Randriamasy, S., and
+              L. Contreras, "ALTO Performance Cost Metrics", Work in
+              Progress, Internet-Draft, draft-ietf-alto-performance-
+              metrics-12, 13 July 2020, <http://www.ietf.org/internet-
+              drafts/draft-ietf-alto-performance-metrics-12.txt>.
+
    [I-D.ietf-dmm-5g-uplane-analysis]
               Homma, S., Miyasaka, T., Matsushima, S., and D. Voyer,
               "User Plane Protocol and Architectural Analysis on 3GPP 5G
 
 
 
-Gao, et al.                Expires 3 May 2021                  [Page 42]
+Gao, et al.                Expires 6 May 2021                  [Page 42]
 
-Internet-Draft                   ALTO-PV                    October 2020
+Internet-Draft                   ALTO-PV                   November 2020
 
 
               System", Work in Progress, Internet-Draft, draft-ietf-dmm-
@@ -2390,7 +2390,27 @@ Internet-Draft                   ALTO-PV                    October 2020
               adaptive applications", IEEE/ACM Transactions on
               Networking (TON) Vol 27, no. 2 (2019): 805-818., 2019.
 
-Appendix A.  Changes since -10
+Appendix A.  Changes since -11
+
+   Revision -12
+
+   *  clarifies the definition of ANEs in a similar way as how Network
+      Elements is defined in [RFC2216]
+
+   *  restructures several paragraphs that are not clear (Sec 3, Path
+      Vector bullet, Sec 4.2, Sec 5.1.3, Sec 6.2.4, Sec 6.4.2, Sec 9.3)
+
+
+
+
+
+
+Gao, et al.                Expires 6 May 2021                  [Page 43]
+
+Internet-Draft                   ALTO-PV                   November 2020
+
+
+Appendix B.  Changes since -10
 
    Revision -11
 
@@ -2402,13 +2422,6 @@ Appendix A.  Changes since -10
 
    *  fixes the inconsistent use of "start" parameter in multipart
       responses;
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 43]
-
-Internet-Draft                   ALTO-PV                    October 2020
-
 
    *  specifies explicitly how to handle "cost-constraints";
 
@@ -2424,7 +2437,7 @@ Internet-Draft                   ALTO-PV                    October 2020
 
    *  adds the discussion on ephemeral and persistent ANEs.
 
-Appendix B.  Changes since -09
+Appendix C.  Changes since -09
 
    Revision -10
 
@@ -2441,30 +2454,30 @@ Appendix B.  Changes since -09
 
    *  fixes inconsistent terms, typos
 
-Appendix C.  Changes since -08
+Appendix D.  Changes since -08
 
    This revision
+
+
+
+
+Gao, et al.                Expires 6 May 2021                  [Page 44]
+
+Internet-Draft                   ALTO-PV                   November 2020
+
 
    *  fixes a few spelling errors
 
    *  emphasizes that abstract network elements can be generated on
       demand in both introduction and motivating use cases
 
-Appendix D.  Changes Since Version -06
+Appendix E.  Changes Since Version -06
 
    *  We emphasize the importance of the path vector extension in two
       aspects:
 
       1.  It expands the problem space that can be solved by ALTO, from
           preferences of network paths to correlations of network paths.
-
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 44]
-
-Internet-Draft                   ALTO-PV                    October 2020
-
 
       2.  It is motivated by new usage scenarios from both application's
           and network's perspectives.
@@ -2497,6 +2510,16 @@ Authors' Addresses
 
 
    Young Lee
+   South Korea
+   Samsung
+
+   Email: younglee.tx@gmail.com
+
+
+
+Gao, et al.                Expires 6 May 2021                  [Page 45]
+
+Internet-Draft                   ALTO-PV                   November 2020
 
 
    Sabine Randriamasy
@@ -2513,14 +2536,6 @@ Authors' Addresses
    51 Prospect Street
    New Haven,  CT
    United States of America
-
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 45]
-
-Internet-Draft                   ALTO-PV                    October 2020
-
 
    Email: yry@cs.yale.edu
 
@@ -2558,19 +2573,4 @@ Internet-Draft                   ALTO-PV                    October 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Gao, et al.                Expires 3 May 2021                  [Page 46]
+Gao, et al.                Expires 6 May 2021                  [Page 46]
