@@ -218,8 +218,8 @@ Content-Type: application/alto-endpointcostparams+json
     "cost-metric": "ane-path"
   },
   "endpoints": {
-    "srcs": [ "ipv4:1.2.3.4", "ipv4:2.3.4.5" ],
-    "dsts": [ "ipv4:3.4.5.6" ]
+    "srcs": [ "ipv4:192.0.2.2", "ipv4:198.51.100.2" ],
+    "dsts": [ "ipv4:203.0.113.2" ]
   },
   "ane-property-names": [
     "max-reservable-bandwidth",
@@ -250,11 +250,11 @@ Content-Type: application/alto-endpointcost+json
     }
   },
   "endpoint-cost-map": {
-    "ipv4:1.2.3.4": {
-      "ipv4:3.4.5.6":   [ "NET1", "AGGR" ]
+    "ipv4:192.0.2.2": {
+      "ipv4:203.0.113.2":   [ "NET1", "AGGR" ]
     },
-    "ipv4:2.3.4.5": {
-      "ipv4:3.4.5.6":   [ "NET1", "AGGR" ]
+    "ipv4:198.51.100.2": {
+      "ipv4:203.0.113.2":   [ "NET1", "AGGR" ]
     }
   }
 }
@@ -312,9 +312,9 @@ Content-Length: [TBD]
 }
 ~~~
 
-Based on the server-side process defined in {{I-D.ietf-alto-incr-update-sse}},
-the ALTO server will send the `control-uri` first using Server-Sent Event (SSE),
-followed by the full response of the multipart message.
+Based on the server-side process defined in {{RFC8895}}, the ALTO server will
+send the `control-uri` first using Server-Sent Event (SSE), followed by the full
+response of the multipart message.
 
 ~~~
 HTTP/1.1 200 OK

@@ -16,7 +16,7 @@ end-to-end paths, while various extensions have been proposed to extend the
 capability of these services, e.g., to express other performance metrics
 {{I-D.ietf-alto-performance-metrics}}, to query multiple costs simultaneously
 {{RFC8189}}, and to obtain the time-varying values
-{{I-D.ietf-alto-cost-calendar}}.
+{{RFC8896}}.
 
 <!-- However, the QoE also depends on ANEs. -->
 While the existing extensions are sufficient for many overlay applications,
@@ -125,10 +125,11 @@ additional terms:
   the same ANE Name refer to the same component(s) of the network.
 
 - Path Vector: A Path Vector, or an ANE Path Vector, is a JSON array of ANE
-  Names. It is defined either for a source PID and a destination PID as in a
-  cost map or for a source endpoint and a destination endpoint as in an endpoint
-  cost map. Specifically, each ANE Name in a Path Vector indicates that the ANE
-  is on the path between the source and the destination.
+  Names. It is a generalization of BGP path vector. While standard BGP path
+  vector specifies a sequence of autonomous systems for a destination IP prefix,
+  the Path Vector defined in this extension specifies a sequence of ANEs either
+  for a source PID and a destination PID as in a cost map or for a source
+  endpoint and a destination endpoint as in an endpoint cost map.
 
 - Path Vector resource: A Path Vector resource refers to an ALTO resource which
   supports the extension defined in this document.
@@ -166,19 +167,19 @@ respectively. Assume that the bandwidth of link eh1 -> sw1 and link sw1 -> sw5
 are 150 Mbps, and the bandwidth of the rest links are 100 Mbps.
 
 ~~~~ drawing
-                              +------+
-                              |      |
-                            --+ sw6  +--
-                          /   |      |  \
-    PID1 +-----+         /    +------+   \          +-----+  PID2
-    eh1__|     |_       /                 \     ____|     |__eh2
-1.2.3.4  | sw1 | \   +--|---+         +---|--+ /    | sw2 |  2.3.4.5
-         +-----+  \  |      |         |      |/     +-----+
-                   \_| sw5  +---------+ sw7  |
-    PID3 +-----+   / |      |         |      |\     +-----+  PID4
-    eh3__|     |__/  +------+         +------+ \____|     |__eh4
-3.4.5.6  | sw3 |                                    | sw4 |  4.5.6.7
-         +-----+                                    +-----+
+                              +-----+
+                              |     |
+                            --+ sw6 +--
+                           /  |     |  \
+     PID1 +-----+         /   +-----+   \          +-----+  PID2
+     eh1__|     |_       /               \     ____|     |__eh2
+192.0.2.2 | sw1 | \   +--|--+         +--|--+ /    | sw2 | 192.0.2.3
+          +-----+  \  |     |         |     |/     +-----+
+                    \_| sw5 +---------+ sw7 |
+     PID3 +-----+   / |     |         |     |\     +-----+  PID4
+     eh3__|     |__/  +-----+         +-----+ \____|     |__eh4
+192.0.2.4 | sw3 |                                  | sw4 | 192.0.2.5
+          +-----+                                  +-----+
 ~~~~~
 {: #fig-dumbbell title="Raw Network Topology"}
 

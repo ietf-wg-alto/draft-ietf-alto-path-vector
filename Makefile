@@ -14,8 +14,8 @@ to-snlab:
 	cp *.md ../alto/ietf-drafts-and-slides/draft-pv
 	cp *.txt ../alto/ietf-drafts-and-slides/draft-pv
 
-draft-ietf-alto-path-vector-12.xml: draft-ietf-alto-path-vector.xml
-	sed -e 's/draft-ietf-alto-path-vector-latest/draft-ietf-alto-path-vector-12/g' draft-ietf-alto-path-vector.xml > draft-ietf-alto-path-vector-12.xml
+draft-ietf-alto-path-vector-13.xml: draft-ietf-alto-path-vector.xml
+	sed -e 's/draft-ietf-alto-path-vector-latest/draft-ietf-alto-path-vector-13/g' draft-ietf-alto-path-vector.xml > draft-ietf-alto-path-vector-13.xml
 
 draft-gao-alto-new-transport-00.xml: draft-gao-alto-new-transport.xml
 	sed -e 's/draft-gao-alto-new-transport-latest/draft-gao-alto-new-transport-00/g' draft-gao-alto-new-transport.xml > draft-gao-alto-new-transport-00.xml

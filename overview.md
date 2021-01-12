@@ -69,8 +69,8 @@ the available properties.
 Specifically, the available properties for a given resource are announced in the
 Information Resource Directory as a new capability called `ane-property-names`.
 The selected properties are specified in a filter called `ane-property-names` in
-the request body, and the response MUST only return the selected properties for
-the ANEs in the response.
+the request body, and the response MUST include and only include the selected
+properties for the ANEs in the response.
 
 The `ane-property-names` capability for Cost Map and for Endpoint Cost Service
 are specified in {{pvcm-cap}} and {{pvecs-cap}} respectively. The
@@ -88,7 +88,7 @@ The Path Vector cost type must convey both the interpretation and semantics in
 the "cost-mode" and "cost-metric" respectively. Unfortunately, a single
 "cost-mode" value cannot fully specify the interpretation of a Path Vector,
 which is a compound data type. For example, in programming languages such as
-Java, a Path Vector will have the type of JSONArray[ANEName].
+C++, a Path Vector will have the type of `JSONArray<ANEName>`.
 
 Instead of extending the "type system" of ALTO, this document takes a simple
 and backward compatible approach. Specifically, the "cost-mode" of the Path
@@ -106,6 +106,8 @@ ALTO resources, e.g., Network Map, Cost Map, or Property Map. Thus, only one
 round of communication is required: An ALTO client sends a request to an ALTO
 server, and the ALTO server returns a response, as shown in {{fig-alto}}.
 
+
+
 ~~~~~~~~~~ drawing
   ALTO client                              ALTO server
        |-------------- Request ---------------->|
@@ -117,12 +119,12 @@ The Path Vector extension, on the other hand, involves two types of information
 resources: Path Vectors conveyed in a Cost Map or an Endpoint Cost Map, and ANE
 properties conveyed in a Unified Property Map. Instead of two consecutive
 message exchanges, the Path Vector extension enforces one round of
-communication. Specifically, the ALTO client must include the source and
+communication. Specifically, the ALTO client MUST include the source and
 destination pairs and the requested ANE properties in a single request, and the
-ALTO server must encapsulate both Path Vectors and properties associated with
-the ANEs in a single response, as shown in {{fig-pv}}. Since the two parts are
-bundled together in one response message, their orders are interchangeable. See
-{{pvcm-resp}} and {{pvecs-resp}} for details.
+ALTO server MUST return a single response containing both the Path Vectors and
+properties associated with the ANEs in the Path Vectors, as shown in {{fig-pv}}.
+Since the two parts are bundled together in one response message, their orders
+are interchangeable. See {{pvcm-resp}} and {{pvecs-resp}} for details.
 
 
 ~~~~~~~~~~ drawing
@@ -175,7 +177,7 @@ parameter must be `type=application/alto-endpointcost+json`.
 
 ### References to Part Messages {#ref-partmsg-design}
 
-The ALTO SSE extension (see {{I-D.ietf-alto-incr-update-sse}}) uses
+The ALTO SSE extension (see {{RFC8895}}) uses
 `client-id` to demultiplex push updates. However, `client-id` is provided
 for each request, which introduces ambiguity when applying SSE to a Path Vector
 resource.
@@ -212,7 +214,7 @@ where pv-resource-id is the resource ID of the Path Vector resource in the IRD
 entry, and the part-resource-id has the same value as the `Resource-Id` header
 of the part.
 
-### Order of Part Messages
+### Order and Completeness of Part Messages
 
 According to {{RFC2387}}, the Path Vector part, whose media type is
 the same as the `type` parameter of the multipart response message, is the root
@@ -222,3 +224,6 @@ RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
 the Path Vector part is always put as the first part, followed by the property
 map part. It is also RECOMMENDED that when doing so, an ALTO server SHOULD NOT
 set the `start` parameter, which implies the first part is the root object.
+
+A complete and valid response MUST include both the Path Vector part and the
+Property Map part in the multipart message.

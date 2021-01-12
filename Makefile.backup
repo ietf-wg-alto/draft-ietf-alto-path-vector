@@ -1,30 +1,15 @@
-PANDOC_VERSION:=$(shell pandoc --version | head -c 8 | tail -c 1)
-ifeq ($(PANDOC_VERSION), 1)
-PANDOC_OPT=-st docbook+header_attributes+multiline_tables
+LIBDIR := lib
+include $(LIBDIR)/main.mk
+
+$(LIBDIR)/main.mk:
+ifneq (,$(shell grep "path *= *$(LIBDIR)" .gitmodules 2>/dev/null))
+	git submodule sync
+	git submodule update $(CLONE_ARGS) --init
 else
-PANDOC_OPT=-st docbook4+header_attributes+multiline_tables
+	git clone -q --depth 10 $(CLONE_ARGS) \
+	    -b main https://github.com/martinthomson/i-d-template $(LIBDIR)
 endif
 
-stylefile=style/transform.xsl
-
-refxmlfiles=$(wildcard references/reference.*.xml)
-genxmlfiles=$(patsubst %.md, %.xml.gen, $(wildcard *.md))
-rawxmlfiles=$(shell find . -type f -name  '*.xml')
-
-target=$(wildcard draft-*.xml)
-output=$(patsubst %.xml, %.txt, $(target))
-
-all: $(output)
-
-$(output): $(target) $(genxmlfiles) $(rawxmlfiles) $(refxmlfiles)
-	xml2rfc $(target) -o $(output) --text -D $(shell date -u +%Y-%m-%d)
-
-%.xml.gen: %.md
-	pandoc $(PANDOC_OPT) $< | xsltproc --nonet $(stylefile) - > $@
-
-view: all
-	vim $(output)
-
-clean:
-	@rm -rf $(output)
-	@rm -rf $(genxmlfiles)
+to-snlab:
+	cp *.md ../alto/ietf-drafts-and-slides/draft-pv
+	cp *.txt ../alto/ietf-drafts-and-slides/draft-pv

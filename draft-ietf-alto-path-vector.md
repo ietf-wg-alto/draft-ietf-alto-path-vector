@@ -73,16 +73,16 @@ author:
 
 normative:
   RFC2119:
-  RFC2216:
   RFC7285:
   RFC2387:
   RFC8174:
   RFC8189:
-  I-D.ietf-alto-cost-calendar:
+  RFC8895:
+  RFC8896:
   I-D.ietf-alto-unified-props-new:
-  I-D.ietf-alto-incr-update-sse:
 
 informative:
+  RFC2216:
   I-D.ietf-alto-performance-metrics:
   I-D.ietf-dmm-5g-uplane-analysis:
   I-D.contreras-alto-service-edge:
@@ -245,32 +245,18 @@ informative:
 --- abstract
 
 This document is an extension to the base Application-Layer Traffic Optimization
-protocol {{RFC7285}}. While the current ALTO Cost Services only allow
-applications to obtain numerical/ordinal cost values on an end-to-end path
-defined by its source and destination, the present extension enables the
-provision of abstracted information on particular Abstract Network Elements on
-the path. These Abstract Network Elements, or simply Elements, are components of
-the network which handle data packets, and their properties may have an impact
-on the end-to-end performance of the applications' traffic. Examples of such
-Elements include physical devices such as routers, cables and interfaces, and
-aggregations of devices such as subnetworks and data centers. Such information
-is useful for applications whose performance is impacted by particular Abstract
-Network Elements they traverse or by their properties. Applications having the
-choice among several connection paths may use this information to select paths
-accordingly and improve their performance. In particular, they may infer that
-several paths share common links and prevent traffic bottlenecks by avoiding
-such paths. This document introduces a new cost type called Path Vector. A Path
-Vector is an array of entities that each identifies an Abstract Network Element
-(ANE). Each ANE is associated with a set of properties. ANE properties are conveyed
-by an ALTO information resource called "Property Map", that can be packed
-together with the Path Vectors in a multipart response. They can also be
-obtained via a separate ALTO request to a Property Map. An ALTO Property Map is
-an extension to the ALTO protocol, that is specified in another document
-entitled "Unified Properties for the ALTO Protocol"
-{{I-D.ietf-alto-unified-props-new}}.
+(ALTO) protocol. It extends the ALTO Cost Map service and ALTO Property Map
+service so that the application can decide which endpoint(s) to connect based on
+not only numerical/ordinal cost values but also details of the paths. This is
+useful for applications whose performance is impacted by specified components of
+a network on the end-to-end paths, e.g., they may infer that several paths share
+common links and prevent traffic bottlenecks by avoiding such paths. This
+extension introduces a new abstraction called Abstract Network Element (ANE) to
+represent these components and encodes a network path as a vector of ANEs. Thus,
+it provides a more complete but still abstract graph representation of the
+underlying network(s) for informed traffic optimization among endpoints.
 
 --- middle
-
 
 {::include introduction.md}
 
@@ -285,6 +271,13 @@ entitled "Unified Properties for the ALTO Protocol"
 {::include others.md}
 
 --- back
+
+# Changes since -12
+
+Revision -13
+
+- changes the abstract based on the chairs' reviews
+- integrates Richard's responds to WGLC reviews
 
 # Changes since -11
 

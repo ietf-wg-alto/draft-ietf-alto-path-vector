@@ -38,6 +38,9 @@ entity domain names MUST be ".ane" and the defining resource of these ANEs is
 the Property Map part of the multipart response. Meanwhile, for persistent ANEs
 whose entity domain name has the format of "PROPMAP.ane" where PROPMAP is the
 name of a Property Map resource, PROPMAP is the defining resource of these ANEs.
+Persistent entities are `persistent` because standalone queries can be made by
+an ALTO client to their defining resources when the connection to the Path
+Vector service is closed.
 
 For example, the defining resource of ".ane:NET1" is the Property Map part that
 contains this identifier, i.e., the ANE entity ".ane:NET1" is self-defined. The
@@ -59,24 +62,24 @@ Note that the two property types defined in this document do not depend on any
 information resource, so their ResourceID part must be empty.
 
 ~~~~~~~~~~ drawing
-                                    ----- L1
-                                   /
-       PID1   +---------------+ 10 Gbps +----------+    PID3
-1.2.3.0/24+---+ +-----------+ +---------+          +---+3.4.5.0/24
-              | |   MEC1    | |         |          |
-              | +-----------+ |   +-----+          |
-       PID2   |               |   |     +----------+
-2.3.4.0/24+---+               |   |         NET3
-              |               |   | 15 Gbps
-              |               |   |        \
-              +---------------+   |         -------- L2
-                    NET1          |
-                           +---------------+
-                           | +-----------+ |   PID4
-                           | |   MEC2    | +---+4.5.6.0/24
-                           | +-----------+ |
-                           +---------------+
-                                 NET2
+                                       ----- L1
+                                      /
+          PID1   +---------------+ 10 Gbps +----------+    PID3
+   192.0.2.0/24+-+ +-----------+ +---------+          +--+203.0.113.0/24
+                 | |   MEC1    | |         |          |
+                 | +-----------+ |   +-----+          |
+          PID2   |               |   |     +----------+
+198.51.100.0/24+-+               |   |         NET3
+                 |               |   | 15 Gbps
+                 |               |   |        \
+                 +---------------+   |         -------- L2
+                       NET1          |
+                              +---------------+
+                              | +-----------+ |   PID4
+                              | |   MEC2    | +--+
+                              | +-----------+ |
+                              +---------------+
+                                    NET2
 ~~~~~~~~~~
 {: #fig-pe artwork-align="center" title="Examples of ANE Properties"}
 

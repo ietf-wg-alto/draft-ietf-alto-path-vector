@@ -28,7 +28,7 @@ backward compatible with the base ALTO protocol:
 <!-- FIXME: path-vector cannot be used in multi-cost, also no reason -->
 
 This document does not specify how to integrate the Path Vector cost type with
-the multi-cost extension {{RFC8189}}. While it is not RECOMMENDED to put the
+the multi-cost extension {{RFC8189}}. While it is NOT RECOMMENDED to put the
 Path Vector cost type with other cost types in a single query, there is no
 compatibility issue.
 
@@ -60,7 +60,7 @@ support the path-vector extension. Specifically,
 <!-- FIXME: using resource-id header in MIME part -->
 
 The extension specified in this document is NOT compatible with the original
-incremental update extension {{I-D.ietf-alto-incr-update-sse}}. A legacy ALTO
+incremental update extension {{RFC8895}}. A legacy ALTO
 client CANNOT recognize the compound client-id, and a legacy ALTO server MAY
 use the same client-id for updates of both parts.
 
@@ -70,11 +70,10 @@ to support incremental updates for a Path Vector resource.
 ## Compatibility with Cost Calendar
 
 The extension specified in this document is compatible with the Cost Calendar
-extension {{I-D.ietf-alto-cost-calendar}}. When used together with the Cost
-Calendar extension, the cost value between a source and a destination is an
-array of path vectors, where the k-th path vector refers to the abstract network
-paths traversed in the k-th time interval by traffic from the source to the
-destination.
+extension {{RFC8896}}. When used together with the Cost Calendar extension, the
+cost value between a source and a destination is an array of path vectors, where
+the k-th path vector refers to the abstract network paths traversed in the k-th
+time interval by traffic from the source to the destination.
 
 When used with time-varying properties, e.g., maximum reservable bandwidth
 (maxresbw), a property of a single ANE may also have different values in
