@@ -34,18 +34,18 @@ media type of defining resources for the `ane` domain is:
     application/alto-propmap+json
 
 Specifically, for ephemeral ANEs that appear in a Path Vector response, their
-entity domain names MUST be ".ane" and the defining resource of these ANEs is
-the Property Map part of the multipart response. Meanwhile, for persistent ANEs
-whose entity domain name has the format of "PROPMAP.ane" where PROPMAP is the
-name of a Property Map resource, PROPMAP is the defining resource of these ANEs.
-Persistent entities are `persistent` because standalone queries can be made by
-an ALTO client to their defining resources when the connection to the Path
-Vector service is closed.
+entity domain names MUST be exactly ".ane" and the defining resource of these
+ANEs is the Property Map part of the multipart response. Meanwhile, for
+persistent ANEs whose entity domain name has the format of "PROPMAP.ane" where
+PROPMAP is the name of a Property Map resource, PROPMAP is the defining resource
+of these ANEs. Persistent entities are `persistent` because standalone queries
+can be made by an ALTO client to their defining resources when the connection to
+the Path Vector service is closed.
 
-For example, the defining resource of ".ane:NET1" is the Property Map part that
-contains this identifier, i.e., the ANE entity ".ane:NET1" is self-defined. The
-defining resource of "dc-props.ane:DC1" is the Property Map with the resource ID
-"dc-props".
+For example, the defining resource of an ephemeral ANE whose entity identifier
+is ".ane:NET1" is the Property Map part that contains this identifier. The
+defining resource of a persistent ANE whose entity identifier is
+"dc-props.ane:DC1" is the Property Map with the resource ID "dc-props".
 
 
 ## ANE Property Name {#ane-prop-name-spec}
@@ -65,18 +65,18 @@ information resource, so their ResourceID part must be empty.
                                        ----- L1
                                       /
           PID1   +---------------+ 10 Gbps +----------+    PID3
-   192.0.2.0/24+-+ +-----------+ +---------+          +--+203.0.113.0/24
+   192.0.2.0/24+-+ +-----------+ +---------+          +--+192.0.4.0/24
                  | |   MEC1    | |         |          |
                  | +-----------+ |   +-----+          |
           PID2   |               |   |     +----------+
-198.51.100.0/24+-+               |   |         NET3
+   192.0.3.0/24+-+               |   |         NET3
                  |               |   | 15 Gbps
                  |               |   |        \
                  +---------------+   |         -------- L2
                        NET1          |
                               +---------------+
                               | +-----------+ |   PID4
-                              | |   MEC2    | +--+
+                              | |   MEC2    | +--+192.0.5.0/24
                               | +-----------+ |
                               +---------------+
                                     NET2
@@ -147,8 +147,8 @@ persistent entity id `mec-props.ane:MEC1`.
 ## Path Vector Cost Type {#cost-type-spec}
 
 This document defines a new cost type, which is referred to as the `Path Vector`
-cost type. An ALTO server MUST offer this cost type if it supports the Path
-Vector extension.
+cost type. An ALTO server MUST offer this cost type if it supports the extension
+defined in this document.
 
 ### Cost Metric: ane-path {#metric-spec}
 
@@ -165,6 +165,9 @@ security and performance considerations. For example, in the multi-flow
 bandwidth reservation use case as introduced in {{probstat}}, only the available
 bandwidth of the shared bottleneck link is crucial, and the ALTO server may
 change the order of links appearing in the Path Vector response.
+
+Note that obfuscation may also pose a threat to the client, which may lead to
+infeasible or suboptimal decisions for an ALTO client.
 
 ### Cost Mode: array {#mode-spec}
 

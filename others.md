@@ -1,4 +1,4 @@
-# Compatibility {#Compatibility}
+# Compatibility with Other ALTO Extensions {#Compatibility}
 
 ## Compatibility with Legacy ALTO Clients/Servers
 
@@ -8,7 +8,7 @@ servers. Although these two types of resources reuse the media types defined in
 the base ALTO protocol for the accept input parameters, they have different
 media types for responses. If the ALTO server provides these two types of
 resources, but the ALTO client does not support them, the ALTO client will
-ignore the resources without conducting any incompatibility.
+ignore the resources without incurring any incompatibility problem.
 
 <!--
 The path vector extension on Filtered Cost Map and Endpoint Cost Service is
@@ -27,10 +27,21 @@ backward compatible with the base ALTO protocol:
 
 <!-- FIXME: path-vector cannot be used in multi-cost, also no reason -->
 
-This document does not specify how to integrate the Path Vector cost type with
-the multi-cost extension {{RFC8189}}. While it is NOT RECOMMENDED to put the
-Path Vector cost type with other cost types in a single query, there is no
-compatibility issue.
+The extension defined in this document is NOT compatible with the multi-cost
+extension {{RFC8189}}. The reason is that if a resource supports both the
+extension defined in this document and the multi-cost extension, the media type
+of this resource depends on the selection of cost types: if the path vector cost
+type is selected, the media type of the response is either `multipart/related;
+type=application/alto-costmap+json` or `multipart/related;
+type=application/alto-endpointcost+json`; if the path vector cost type is not
+selected, the media type of the response is either
+`application/alto-costmap+json` or `application/alto-endpointcost+json`.
+
+Note that this problem may happen when an ALTO information resource supports
+multiple cost types, even if it does not enable the multi-cost extension. Thus,
+{{pvcm-cap}} has specified that if an ALTO information resource enables the
+extension defined in this document, the path vector cost type MUST be the only
+cost type in the `cost-type-names` capability of this resource.
 
 <!--
 As [](#fcm-cap) mentions, the syntax and semantics of whether `constraints` or
@@ -59,13 +70,8 @@ support the path-vector extension. Specifically,
 
 <!-- FIXME: using resource-id header in MIME part -->
 
-The extension specified in this document is NOT compatible with the original
-incremental update extension {{RFC8895}}. A legacy ALTO
-client CANNOT recognize the compound client-id, and a legacy ALTO server MAY
-use the same client-id for updates of both parts.
-
-ALTO clients and servers MUST follow the specifications given in this document
-to support incremental updates for a Path Vector resource.
+ALTO clients and servers MUST follow the specifications given in Section 5.2 of
+{{RFC8895} to support incremental updates for a Path Vector resource.
 
 ## Compatibility with Cost Calendar
 
@@ -131,21 +137,40 @@ However, the current syntax can only be used to test scalar cost types, and
 cannot easily express constraints on complex cost types, e.g., the Path Vector
 cost type defined in this document.
 
-In practice, developing a language for general-purpose boolean tests can be
-complex and is likely to be a duplicated work. Thus, it is worth looking into
-the direction of integrating existing well-developed query languages, e.g.,
-XQuery and JSONiq, or their subset with ALTO.
+In practice, developing a bespoke language for general-purpose boolean tests can
+be a complex undertaking, and it is conceivable that there are some existing
+implementations already (the authors have not done an exhaustive search to
+determine whether there are such implementations). One avenue to develop such a
+language may be to explore extending current query languages like XQuery
+{{XQuery}} or JSONiq {{JSONiq}} and integrating these with ALTO.
 
 Filtering the Path Vector results or developing a more sophisticated filtering
 mechanism is beyond the scope of this document.
 
-## General Multipart Resources Query ##
+## General Multi-Resource Query ##
 
-Querying multiple ALTO information resources continuously MAY be a general
-requirement. And the coming issues like inefficiency and inconsistency are also
-general. There is no standard solving these issues yet. So we need some approach
-to make the ALTO client request the compound ALTO information resources in a
-single query.
+Querying multiple ALTO information resources continuously is a general
+requirement. Enabling such a capability, however, must address the general
+issues like efficiency and consistency. The incremental update extension
+{{RFC8895}} supports submitting multiple queries in a single request, and allows
+flexible control over the queries. However, it does not cover the case
+introduced in this document where multiple resources are needed for a single
+request.
+
+This extension gives an example of using a multipart message to encode two
+specific ALTO information resources: a filtered cost map or an endpoint cost
+map, and a property map. By packing multiple resources in a single response, the
+implication is that servers may proactively push related information resources to
+clients.
+
+Thus, it is worth looking into the direction of extending the SSE mechanism as
+used in the incremental update extension {{RFC8895}}, or upgrading to HTTP/2
+{{RFC7540}} and HTTP/3 {{I-D.ietf-quic-http}}, which provides the ability to
+multiplex queries and to allow servers proactively send related information
+resources.
+
+Defining a general multi-resource query mechanism is out of the scope of this
+document.
 
 # Security Considerations {#Security}
 
@@ -157,7 +182,7 @@ extension is provided by an ALTO server.
 
 <!-- ## Privacy Concerns { #pricon } -->
 
-The Path Vector extension requires additional considerations on two security
+The Path Vector extension requires additional scrutiny on two security
 considerations discussed in the base protocol: confidentiality of ALTO
 information (Section 15.3 of {{RFC7285}}) and availability of ALTO service
 (Section 15.5 of {{RFC7285}}).
@@ -186,14 +211,17 @@ to the application.
 
 For availability of ALTO service, an ALTO server should be cognizant that using
 Path Vector extension might have a new risk: frequent requesting for Path
-Vectors might conduct intolerable increment of the server-side storage and break
-the ALTO server, for example, if an ALTO server implementation dynamically
-computes the Path Vectors for each requests. Hence, the service providing Path
-Vectors may become an entry point for denial-of-service attacks on the
-availability of an ALTO server. To avoid this risk, authenticity and
-authorization of this ALTO service may need to be better protected. Also, an
-ALTO server may consider using optimizations such as
-precomputation-and-projection mechanisms {{JSAC2019}}.
+Vectors might conduct intolerable increment of the server-side computation and
+storage, which can break the ALTO server. For example, if an ALTO server
+implementation dynamically computes the Path Vectors for each requests, the
+service providing Path Vectors may become an entry point for denial-of-service
+attacks on the availability of an ALTO server.
+
+To mitigate this risk, an ALTO server may consider using optimizations such as
+precomputation-and-projection mechanisms {{JSAC2019}} to reduce the overhead for
+processing each query. Also, an ALTO server may also protect itself from
+malicious clients by monitoring the behaviors of clients and stopping serving
+clients with suspicious behaviors (e.g., sending requests at a high frequency).
 
 # IANA Considerations # {#IANA}
 

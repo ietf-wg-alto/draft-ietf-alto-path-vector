@@ -83,11 +83,23 @@ normative:
 
 informative:
   RFC2216:
+  RFC7540:
+  I-D.ietf-quic-http:
   I-D.ietf-alto-performance-metrics:
   I-D.ietf-dmm-5g-uplane-analysis:
   I-D.contreras-alto-service-edge:
   I-D.yang-alto-deliver-functions-over-networks:
   I-D.huang-alto-mowie-for-network-aware-app:
+  XQuery:
+    title: "XQuery 3.1: An XML Query Language"
+    target: https://www.w3.org/TR/xquery-31/
+    date: 2017
+
+  JSONiq:
+    title: "The JSON Query language"
+    target: https://www.jsoniq.org/
+    date: 2020
+
   JSAC2019:
     title: "Toward Fine-Grained, Privacy-Preserving, Efficient Multi-Domain Network Resource Discovery"
     author:

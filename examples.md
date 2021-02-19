@@ -5,9 +5,9 @@ responses. Some long lines are truncated for better readability.
 
 ## Example: Information Resource Directory {#example-ird}
 
-To give a comprehensive example of the Path Vector extension, we consider the
-network in {{fig-pe}}. The example ALTO server provides the following
-information resources:
+To give a comprehensive example of the extension defined in this document, we
+consider the network in {{fig-pe}}. Assume that the ALTO server provides the
+following information resources:
 
 - `my-default-networkmap`: A Network Map resource which contains the PIDs in the
   network.
@@ -26,7 +26,7 @@ information resources:
   service for the `endpoint-cost-pv` service.
 
 Below is the Information Resource Directory of the example ALTO server. To
-enable the Path Vector extension, the `path-vector` cost type
+enable the extension defined in this document, the `path-vector` cost type
 ({{cost-type-spec}}) is defined in the `cost-types` of the `meta` field, and is
 included in the `cost-type-names` of resources `filetered-cost-map-pv` and
 `endpoint-cost-pv`.
@@ -137,7 +137,7 @@ Content-Type: multipart/related; boundary=example-1;
               type=application/alto-costmap+json
 
 --example-1
-Resource-Id: costmap
+Content-ID: costmap
 Content-Type: application/alto-costmap+json
 
 {
@@ -165,7 +165,7 @@ Content-Type: application/alto-costmap+json
   }
 }
 --example-1
-Resource-Id: propmap
+Content-ID: propmap
 Content-Type: application/alto-propmap+json
 
 {
@@ -189,19 +189,25 @@ resource and the corresponding response.
 
 The request uses the path vector cost type in the `cost-type` field, and
 queries the Maximum Reservable Bandwidth ANE property and the Persistent Entity
-property.
+property for two source and destination pairs: 192.0.4.2 -> 192.0.2.2 and
+192.0.4.2 -> 192.0.5.2.
 
 The response consists of two parts. The first part returns the array of ANEName
-for each valid source and destination pair, where `NET1` represent sub-network
-NET1, and `AGGR` is the aggregation of L1 and NET3.
+for each valid source and destination pair. As one can see in {{fig-pe}}, flow
+192.0.4.2 -> 192.0.2.2 traverses NET2, L1 and NET1, and flow 192.0.4.2 ->
+192.0.5.2 traverses NET2, L2 and NET3.
 
-The second part returns the requested properties of ANEs. Since NET1 has
-sufficient bandwidth, it sets the `max-reservable-bandwidth` to a sufficiently
-large number. It also represents a persistent ANE defined in the `ane-props`
-resource, identified by `ane-props.ane:datacenter1`. The aggregated
-`max-reservable-bandwidth` of ane:AGGR is constrained by the link capacity of
-L1. The `persistent-entity-id` property is omitted as both L1 and NET3 do not
-represent any persistent entity.
+The second part returns the requested properties of ANEs. Assume NET1, NET2 and NET3 has
+sufficient bandwidth and their `max-reservable-bandwidth` values are set to a sufficiently
+large number (50 Gbps in this case). On the other hand, assume there are no
+prior reservation on L1 and L2, and their `max-reservable-bandwidth` values are
+the corresponding link capacity (10 Gbps for L1 and 15 Gbps for L2).
+
+Both NET1 and NET2 have a mobile edge deployed, i.e., MEC1 in NET1 and MEC2 in
+NET2. Assume the ANEName for MEC1 and MEC2 are `MEC1` and `MEC2` and their
+properties can be retrieved from the property map `ane-props`. Thus, the
+`persistent-entity-id` property of NET1 and NET3 are `ane-props.ane:MEC1` and
+`ane-props.ane:MEC2` respectively.
 
 ~~~
 POST /endpointcost/pv HTTP/1.1
@@ -218,8 +224,8 @@ Content-Type: application/alto-endpointcostparams+json
     "cost-metric": "ane-path"
   },
   "endpoints": {
-    "srcs": [ "ipv4:192.0.2.2", "ipv4:198.51.100.2" ],
-    "dsts": [ "ipv4:203.0.113.2" ]
+    "srcs": [ "ipv4:192.0.4.2" ],
+    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.5.2" ]
   },
   "ane-property-names": [
     "max-reservable-bandwidth",
@@ -235,7 +241,7 @@ Content-Type: multipart/related; boundary=example-2;
               type=application/alto-endpointcost+json
 
 --example-2
-Resource-Id: ecs
+Content-ID: ecs
 Content-Type: application/alto-endpointcost+json
 
 {
@@ -250,16 +256,14 @@ Content-Type: application/alto-endpointcost+json
     }
   },
   "endpoint-cost-map": {
-    "ipv4:192.0.2.2": {
-      "ipv4:203.0.113.2":   [ "NET1", "AGGR" ]
-    },
-    "ipv4:198.51.100.2": {
-      "ipv4:203.0.113.2":   [ "NET1", "AGGR" ]
+    "ipv4:192.0.4.2": {
+      "ipv4:192.0.2.2":   [ "NET3", "L1", "NET1" ],
+      "ipv4:192.0.5.2":   [ "NET3", "L2", "NET2" ]
     }
   }
 }
 --example-2
-Resource-Id: propmap
+Content-ID: propmap
 Content-Type: application/alto-propmap+json
 
 {
@@ -278,19 +282,98 @@ Content-Type: application/alto-propmap+json
   "property-map": {
     ".ane:NET1": {
       "max-reservable-bandwidth": 50000000000,
-      "persistent-entity-id": "ane-props.ane:datacenter1",
+      "persistent-entity-id": "ane-props.ane:MEC1"
     },
-    ".ane:AGGR": {
+    ".ane:NET2": {
+      "max-reservable-bandwidth": 50000000000,
+      "persistent-entity-id": "ane-props.ane:MEC2"
+    },
+    ".ane:NET3": {
+      "max-reservable-bandwidth": 50000000000
+    },
+    ".ane:L1": {
       "max-reservable-bandwidth": 10000000000
+    },
+    ".ane:L2": {
+      "max-reservable-bandwidth": 15000000000
     }
   }
 }
 ~~~
 
-After the client obtains `ane-props.ane:datacenter1`, it can query the
-`ane-props` resource to get the properties of the persistent ANE.
+As mentioned in {{metric-spec}}, an advanced ALTO server may obfuscate the
+response in order to preserve its own privacy or conform to its own policies.
+For example, an ALTO server may choose to aggregate NET1 and L1 as a new ANE
+with ANE name `AGGR1`, and aggregate NET2 and L2 as a new ANE with ANE name
+`AGGR2`. The `max-reservable-bandwidth` of `AGGR1` takes the value of L1, which
+is smaller than that of NET1, and the `persistent-entity-id` of `AGGR1` takes
+the value of NET1. The properties of `AGGR2` are computed in a similar way and
+the obfuscated response is as shown below. Note that the obfuscation of Path
+Vector responses is implementation-specific and is out of the scope of this
+document, and developers may refer to {{Security}} for further references.
 
-## Example: Incremental Updates
+~~~
+HTTP/1.1 200 OK
+Content-Length: [TBD]
+Content-Type: multipart/related; boundary=example-2;
+              type=application/alto-endpointcost+json
+
+--example-2
+Content-ID: ecs
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "vtags": {
+      "resource-id": "endpoint-cost-pv.ecs",
+      "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+    },
+    "cost-type": {
+      "cost-mode": "array",
+      "cost-metric": "ane-path"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.4.2": {
+      "ipv4:192.0.2.2":   [ "NET3", "AGGR1" ],
+      "ipv4:192.0.5.2":   [ "NET3", "AGGR2" ]
+    }
+  }
+}
+--example-2
+Content-ID: propmap
+Content-Type: application/alto-propmap+json
+
+{
+  "meta": {
+    "dependent-vtags": [
+      {
+        "resource-id": "endpoint-cost-pv.ecs",
+        "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+      },
+      {
+        "resource-id": "ane-props",
+        "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
+      }
+    ]
+  },
+  "property-map": {
+    ".ane:AGGR1": {
+      "max-reservable-bandwidth": 10000000000,
+      "persistent-entity-id": "ane-props.ane:MEC1"
+    },
+    ".ane:AGGR2": {
+      "max-reservable-bandwidth": 15000000000,
+      "persistent-entity-id": "ane-props.ane:MEC2"
+    },
+    ".ane:NET3": {
+      "max-reservable-bandwidth": 50000000000
+    }
+  }
+}
+~~~
+
+## Example: Incremental Updates {#example-sse}
 
 In this example, an ALTO client subscribes to the incremental update for the
 multipart endpoint cost resource `endpoint-cost-pv`.
@@ -327,12 +410,12 @@ data: {"control-uri": "https://alto.example.com/updates/streams/123"}
 event: multipart/related;boundary=example-3;
        type=application/alto-endpointcost+json,ecspvsub1
 data: --example-3
-data: Resource-ID: ecsmap
+data: Content-ID: ecsmap
 data: Content-Type: application/alto-endpointcost+json
 data:
 data: <endpoint-cost-map-entry>
 data: --example-3
-data: Resource-ID: propmap
+data: Content-ID: propmap
 data: Content-Type: application/alto-propmap+json
 data:
 data: <property-map-entry>

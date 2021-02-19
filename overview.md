@@ -1,8 +1,9 @@
 # Path Vector Extension: Overview {#Overview}
 
-This section gives a non-normative overview of the Path Vector extension. It is
-assumed that readers are familiar with both the base protocol {{RFC7285}} and
-the Unified Property Map extension {{I-D.ietf-alto-unified-props-new}}.
+This section gives a non-normative overview of the extension defined in this
+document. It is assumed that readers are familiar with both the base protocol
+{{RFC7285}} and the Unified Property Map extension
+{{I-D.ietf-alto-unified-props-new}}.
 
 To satisfies the additional requirements, this extension:
 
@@ -29,15 +30,16 @@ network-agnostic way to specify a component or an aggregation of components of a
 network whose properties have an impact on the end-to-end performance for
 traffic between a source and a destination.
 
-When an ANE is defined by the ALTO server, it MUST be assigned an identifier,
-i.e., string of type ANEName as specified in {{ane-name-spec}}, and a set of
+When an ANE is defined by the ALTO server, it is assigned an identifier, i.e.,
+string of type ANEName as specified in {{ane-name-spec}}, and a set of
 associated properties.
 
 ### ANE Domain
 
 In this extension, the associations between ANE and the properties are conveyed
-in a Unified Property Map. Thus, they must follow the mechanisms specified in
-the {{I-D.ietf-alto-unified-props-new}}.
+in a Unified Property Map. Thus, ANEs must constitute an entity domain (Section
+5.1 of {{I-D.ietf-alto-unified-props-new}}), and each ANE property must be an
+entity property (Section 5.2 of {{I-D.ietf-alto-unified-props-new}}).
 
 Specifically, this document defines a new entity domain called `ane` as
 specified in {{ane-domain-spec}} and defines two initial properties for the `ane`
@@ -57,8 +59,13 @@ While ephemeral ANEs returned by a Path Vector response do not exist beyond that
 response, some of them may represent entities that are persistent and defined in
 a standalone Property Map. Indeed, it may be useful for clients to occasionally
 query properties on persistent entities, without caring about the path that
-traverses them. Persistent entities have a persistent ID that is registered in a
-Property Map, together with their properties.
+traverses them. For example, an ALTO server may define an ANE for each service
+edge cluster. Once a client chooses to use a service edge, e.g., by deploying
+some user-defined functions, it may want to stick to the service edge to avoid
+the complexity of state transition or synchronization. Persistent entities have
+a persistent ID that is registered in a Property Map, together with their
+properties. See {{domain-defining}} and {{persistent-entity-id}} for more
+detailed instructions on how to identify ephemeral ANEs and persistent ANEs.
 
 ### Property Filtering
 
@@ -69,7 +76,7 @@ the available properties.
 Specifically, the available properties for a given resource are announced in the
 Information Resource Directory as a new capability called `ane-property-names`.
 The selected properties are specified in a filter called `ane-property-names` in
-the request body, and the response MUST include and only include the selected
+the request body, and the response includes and only includes the selected
 properties for the ANEs in the response.
 
 The `ane-property-names` capability for Cost Map and for Endpoint Cost Service
@@ -94,8 +101,8 @@ Instead of extending the "type system" of ALTO, this document takes a simple
 and backward compatible approach. Specifically, the "cost-mode" of the Path
 Vector cost type is "array", which indicates the value is a JSON array. Then, an
 ALTO client must check the value of the "cost-metric". If the value is
-"ane-path", meaning the JSON array should be further interpreted as a path of
-ANENames.
+"ane-path", it means that the JSON array should be further interpreted as a path
+of ANENames.
 
 The Path Vector cost type is specified in {{cost-type-spec}}.
 
@@ -115,13 +122,13 @@ server, and the ALTO server returns a response, as shown in {{fig-alto}}.
 ~~~~~~~~~~
 {: #fig-alto artwork-align="center" title="A Typical ALTO Request and Response"}
 
-The Path Vector extension, on the other hand, involves two types of information
+The extension defined in this document, on the other hand, involves two types of information
 resources: Path Vectors conveyed in a Cost Map or an Endpoint Cost Map, and ANE
 properties conveyed in a Unified Property Map. Instead of two consecutive
-message exchanges, the Path Vector extension enforces one round of
-communication. Specifically, the ALTO client MUST include the source and
+message exchanges, the extension defined in this document enforces one round of
+communication. Specifically, the ALTO client must include the source and
 destination pairs and the requested ANE properties in a single request, and the
-ALTO server MUST return a single response containing both the Path Vectors and
+ALTO server must return a single response containing both the Path Vectors and
 properties associated with the ANEs in the Path Vectors, as shown in {{fig-pv}}.
 Since the two parts are bundled together in one response message, their orders
 are interchangeable. See {{pvcm-resp}} and {{pvecs-resp}} for details.
@@ -171,59 +178,18 @@ entries.
 
 To address this issue, this document uses the `type` parameter to indicate the
 root object of a multipart/related message. For a Cost Map resource, the
-`media-type` in the IRD entry must be `multipart/related` with the parameter
+`media-type` in the IRD entry is `multipart/related` with the parameter
 `type=application/alto-costmap+json`; for an Endpoint Cost Service, the
-parameter must be `type=application/alto-endpointcost+json`.
+parameter is `type=application/alto-endpointcost+json`.
 
 ### References to Part Messages {#ref-partmsg-design}
 
-The ALTO SSE extension (see {{RFC8895}}) uses
-`client-id` to demultiplex push updates. However, `client-id` is provided
-for each request, which introduces ambiguity when applying SSE to a Path Vector
-resource.
-
-To address this issue, an ALTO server must assign a unique identifier to each
-part of the `multipart/related` response message. This identifier, referred to
-as a Part Resource ID (See {{part-rid-spec}} for details), must be present in
-the part message's `Resource-Id` header. The MIME part header must also contain
-the `Content-Type` header, whose value is the media type of the part (e.g.,
-`application/alto-costmap+json`, `application/alto-endpointcost+json`, or
-`application/alto-propmap+json`).
-
-If an ALTO server provides incremental updates for this Path Vector resource, it
-must generate incremental updates for each part separately. The client-id must
-have the following format:
-
-~~~~~~~~~~
-   pv-client-id '.' part-resource-id
-~~~~~~~~~~
-
-where pv-client-id is the client-id assigned to the Path Vector request, and
-part-resource-id is the `Resource-Id` header value of the part. The media-type
-must match the `Content-Type` of the part.
-
-The same problem applies to the part messages as well. The two parts must
-contain a version tag, which SHOULD contain a unique Resource ID. This document
-requires the resource-id in a Version Tag to have the following format:
-
-~~~~~~~~~~
-   pv-resource-id '.' part-resource-id
-~~~~~~~~~~
-
-where pv-resource-id is the resource ID of the Path Vector resource in the IRD
-entry, and the part-resource-id has the same value as the `Resource-Id` header
-of the part.
-
-### Order and Completeness of Part Messages
-
-According to {{RFC2387}}, the Path Vector part, whose media type is
-the same as the `type` parameter of the multipart response message, is the root
-object. Thus, it is the element the application processes first. Even though the
-`start` parameter allows it to be placed anywhere in the part sequence, it is
-RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
-the Path Vector part is always put as the first part, followed by the property
-map part. It is also RECOMMENDED that when doing so, an ALTO server SHOULD NOT
-set the `start` parameter, which implies the first part is the root object.
-
-A complete and valid response MUST include both the Path Vector part and the
-Property Map part in the multipart message.
+As the response of a Path Vector resource is a multipart message with two
+different parts, it is important that each part can be uniquely identified.
+Following the designs of {{RFC8895}}, this extension requires that an ALTO
+server assigns a unique identifier to each part of the `multipart/related`
+response message. This identifier, referred to as a Part Resource ID (See
+{{part-rid-spec}} for details), is present in the part message's `Content-ID`
+header. By concatenating the Part Resource ID to the identifier of the Path
+Vector request, an ALTO server/client can uniquely identify the Path Vector Part
+or the Property Map part.

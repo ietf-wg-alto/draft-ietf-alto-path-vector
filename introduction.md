@@ -20,12 +20,13 @@ capability of these services, e.g., to express other performance metrics
 
 <!-- However, the QoE also depends on ANEs. -->
 While the existing extensions are sufficient for many overlay applications,
-however, the QoE of some overlay applications depends not only on the cost
+the QoE of some overlay applications depends not only on the cost
 information of end-to-end paths, but also on particular components of a network
 on the paths and their properties. For example, job completion time, which is an
 important QoE metric for a large-scale data analytics application, is impacted
-by shared bottleneck links inside the carrier network. We refer to such
-components of a network as Abstract Network Elements (ANE).
+by shared bottleneck links inside the carrier network as link capacity may
+impact the rate of data input/output to the job. We refer to such components of
+a network as Abstract Network Elements (ANE).
 
 Predicting such information can be very complex without the help of the ISP
 {{AAAI2019}}. With proper guidance from the ISP, an overlay application may be
@@ -35,10 +36,10 @@ the network with poorly scheduled traffic.
 
 Despite the benefits, ISPs are not likely to expose details on their
 network paths: first for the sake of confidentiality, second because it may
-result in a huge volume and overhead, and last because it is difficult for ISPs
-to figure out what information and what details an application needs. Likewise,
-applications do not necessarily need all the network path details and are likely
-not able to understand them.
+result in an increase in volume and computation overhead, and last because it is
+difficult for ISPs to figure out what information and what details an
+application needs. Likewise, applications do not necessarily need all the
+network path details and are likely not able to understand them.
 
 Therefore, it is beneficial for both parties if an ALTO server provides ALTO
 clients with an "abstract network state" that provides the necessary details to
@@ -49,13 +50,13 @@ pairs combined with properties of these Abstract Network Elements that are
 relevant to the overlay applications' QoE. Both an application via its ALTO
 client and the ISP via the ALTO server can achieve better confidentiality and
 resource utilization by appropriately abstracting relevant Abstract Network
-Elements. The pressure on the server scalability can also be reduced by
+Elements. The requirements on the server scalability can also be reduced by
 combining Abstract Network Elements and their properties in a single response.
 
-This document extends {{RFC7285}} to allow an ALTO server convey "abstract
+This document extends {{RFC7285}} to allow an ALTO server to convey "abstract
 network state", for paths defined by their <source, destination> pairs. To this
 end, it introduces a new cost type called "Path Vector". A Path Vector is an
-array of identifiers that each identifies an Abstract Network Element, which can
+array of identifiers that identifies an Abstract Network Element, which can
 be associated with various properties. The associations between ANEs and their
 properties are encoded in an ALTO information resource called Unified Property
 Map, which is specified in {{I-D.ietf-alto-unified-props-new}}.
@@ -74,11 +75,11 @@ The rest of the document is organized as follows. {{term}} introduces the extra
 terminologies that are used in this document. {{probstat}} uses an illustrative
 example to introduce the additional requirements of the ALTO framework, and
 discusses potential use cases. {{Overview}} gives an overview of the protocol
-design. {{Basic}} and {{Services}} specify the Path Vector extension to the ALTO
-IRD and the information resources, with some concrete examples presented in
-{{Examples}}. {{Compatibility}} discusses the backward compatibility with the
-base protocol and existing extensions. Security and IANA considerations are
-discussed in {{Security}} and {{IANA}} respectively.
+design. {{Basic}} and {{Services}} specify the extension to the ALTO IRD and the
+information resources, with some concrete examples presented in {{Examples}}.
+{{Compatibility}} discusses the backward compatibility with the base protocol
+and existing extensions. Security and IANA considerations are discussed in
+{{Security}} and {{IANA}} respectively.
 
 
 # Requirements Languages
@@ -128,7 +129,7 @@ additional terms:
   Names. It is a generalization of BGP path vector. While standard BGP path
   vector specifies a sequence of autonomous systems for a destination IP prefix,
   the Path Vector defined in this extension specifies a sequence of ANEs either
-  for a source PID and a destination PID as in a cost map or for a source
+  for a source PID and a destination PID as in a cost map, or for a source
   endpoint and a destination endpoint as in an endpoint cost map.
 
 - Path Vector resource: A Path Vector resource refers to an ALTO resource which
@@ -151,10 +152,10 @@ additional terms:
 ## Design Requirements
 
 This section gives an illustrative example of how an overlay application can
-benefit from the Path Vector extension.
+benefit from the extension defined in this document.
 
 Assume that an application has control over a set of flows, which may go through
-shared links or switches and share a bottleneck. The application hopes to
+shared links or switches and share bottlenecks. The application hopes to
 schedule the traffic among multiple flows to get better performance. The
 capacity region information for those flows will benefit the scheduling.
 However, existing cost maps can not reveal such information.
@@ -164,7 +165,7 @@ switches (sw1 to sw7) forming a dumb-bell topology. Switches sw1/sw3 provide
 access on one side, sw2/sw4 provide access on the other side, and sw5-sw7 form
 the backbone. Endhosts eh1 to eh4 are connected to access switches sw1 to sw4
 respectively. Assume that the bandwidth of link eh1 -> sw1 and link sw1 -> sw5
-are 150 Mbps, and the bandwidth of the rest links are 100 Mbps.
+are 150 Mbps, and the bandwidth of the other links are 100 Mbps.
 
 ~~~~ drawing
                               +-----+
@@ -180,11 +181,17 @@ are 150 Mbps, and the bandwidth of the rest links are 100 Mbps.
      eh3__|     |__/  +-----+         +-----+ \____|     |__eh4
 192.0.2.4 | sw3 |                                  | sw4 | 192.0.2.5
           +-----+                                  +-----+
+
+bw(eh1--sw1) = bw(sw1--sw5) = 150 Mbps
+bw(eh2--sw2) = bw(eh3--sw3) = bw(eh4--sw4) = 100 Mbps
+bw(sw1--sw5) = bw(sw3--sw5) = bw(sw2--sw7) = bw(sw4--sw7) = 100 Mbps
+bw(sw5--sw6) = bw(sw5--sw7) = bw(sw6--sw7) = 100 Mbps
 ~~~~~
 {: #fig-dumbbell title="Raw Network Topology"}
 
 The single-node ALTO topology abstraction of the network is shown in
-{{fig-base}}.
+{{fig-base}}. Assume the cost map returns a hypothetical cost type representing
+the available bandwidth between a source and a destination.
 
 ~~~~ drawing
                           +----------------------+
@@ -201,32 +208,58 @@ The single-node ALTO topology abstraction of the network is shown in
 ~~~~
 {: #fig-base title="Base Single-Node Topology Abstraction"}
 
-Consider an application overlay (e.g., a large-scale data analytics system)
-which wants to optimize the total throughput of the traffic among a set of end
-host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4. The application
-can request a cost map providing end-to-end available bandwidth, using "availbw"
-as cost-metric and "numerical" as cost-mode.
+Now assume the application wants to maximize the total rate of the traffic among
+a set of end host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4.
+Let x denote the transmission rate of eh1 -> eh2 and y denote the rate of eh1 ->
+eh4. The objective function is
+~~~
+    max(x + y).
+~~~
 
-The application will receive from the ALTO server that the bandwidth of eh1 ->
-eh2 and eh1 -> eh4 are both 100 Mbps. But this information is not enough to
-determine the optimal total throughput. Consider the following two cases:
+With the ALTO Cost Map, the cost between PID1 and PID2 and between PID1 and PID4 will
+be 100 Mbps. And the client can get a capacity
+region of
+~~~
+    x <= 100 Mbps,
+    y <= 100 Mbps.
+~~~
 
-- Case 1: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw6 ->
-  sw7 -> sw2 -> eh2 and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 ->
-  sw7 -> sw4 -> eh4, then the application will obtain 150 Mbps at
-  most.
+With this information, the client may mistakenly think it can achieve a maximum
+total rate of 200 Mbps. However, one can easily see that this rate is
+infeasible, as there are only two potential cases:
 
-- Case 2: If eh1 -> eh2 uses the path eh1 -> sw1 -> sw5 -> sw7 ->
-  sw2 -> eh2 and eh1 -> eh4 uses the path eh1 -> sw1 -> sw5 -> sw7
-  -> sw4 -> eh4, then the application will obtain only 100 Mbps at
-  most.
+- Case 1: eh1 -> eh2 and eh1 -> eh4 take different path segments from sw5 to sw7. For
+  example, if eh1 -> eh2 uses path eh1 -> sw1 -> sw5 -> sw6 -> sw7 -> sw2 -> eh2
+  and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the shared
+  bottleneck links are eh1 -> sw1 and sw1 -> sw5. In this case, the capacity
+  region is
+  ~~~
+      x     <= 100 Mbps
+      y     <= 100 Mbps
+      x + y <= 150 Mbps
+  ~~~
+  and the real optimal total rate is 150 Mbps.
 
-To allow applications to distinguish the two aforementioned cases,
-the network needs to provide more details.  In particular:
+- Case 2: eh1 -> eh2 and eh1 -> eh4 take the same path segment from sw5 to sw7.
+  For example, if eh1 -> eh2 uses path eh1 -> sw1 -> sw5 -> sw7 -> sw2 -> eh2
+  and eh1 -> eh4 also uses path eh1 -> sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the
+  shared bottleneck link is sw5 -> sw7. In this case, the capacity region is
+  ~~~
+      x     <= 100 Mbps
+      y     <= 100 Mbps
+      x + y <= 100 Mbps
+  ~~~
+  and the real optimal total rate is 100 Mbps.
 
-- For eh1 -> eh2, the ALTO server must give more details which is critical for
-  the overlay application to distinguish between Case 1 and Case 2 and to
-  compute the optimal total throughput accordingly.
+Clearly, with more accurate and fine-grained information, the application can
+gain a better prediction of its traffic and may orchestrate its own resources
+accordingly. However, to provide such information, the network needs to expose
+more details beyond the simple cost map abstraction. In particular:
+
+- The ALTO server must give more details about the network paths that are
+  traversed by the traffic between a source and a destination beyond a simple
+  numerical value, which allows the overlay application to distinguish between
+  Case 1 and Case 2 and to compute the optimal total rate accordingly.
 
 - The ALTO server must allow the client to distinguish the common ANE shared by
   eh1 -> eh2 and eh1 -> eh4, e.g., eh1 - sw1 and sw1 - sw5 in Case 1.
@@ -253,37 +286,39 @@ AR3:
 : An ALTO server must provide essential information on the properties associated
   to the ANEs.
 
-The Path Vector extension defined in this document propose a solution to provide
-these details.
+The extension defined in this document propose a solution to provide these
+details.
 
 ## Use Cases
 
 While the multiple flow scheduling problem is used to help identify the
-additional requirements, the Path Vector extension can be applied to a wide
-range of applications. This section highlights some real use cases that are
-reported.
+additional requirements, the extension defined in this document can be applied
+to a wide range of applications. This section highlights some real use cases
+that are reported.
 
 ### Large-scale Data Analytics
 
-One potential use case of the Path Vector extension is for large-scale data
-analytics such as {{SENSE}} and {{LHC}}, where data of Gigabytes, Terabytes and
-even Petabytes are transferred. For these applications, the QoE is usually
-measured as the job completion time, which is related to the completion time of
-the slowest data transfer. With the Path Vector extension, an ALTO client can
-identify bottlenecks inside the network. Therefore, the overlay application can
-make optimal traffic distribution or resource reservation (i.e., proportional to
-the size of the transferred data), leading to optimal job completion time and
-network resource utilization.
+One potential use case of the extension defined in this document is for
+large-scale data analytics such as {{SENSE}} and {{LHC}}, where data of
+gigabytes, terabytes and even petabytes are transferred. For these applications,
+the QoE is usually measured as the job completion time, which is related to the
+completion time of all the data transfers belonging to the job. With the
+extension defined in this document, an ALTO client can identify bottlenecks
+inside the network. Therefore, the overlay application can make optimal traffic
+distribution or resource reservation (i.e., proportional to the size of the
+transferred data), leading to optimal job completion time and network resource
+utilization.
 
 ### Context-aware Data Transfer
 
-It is getting important to know the capabilities of various ANEs between two end
-hosts, especially in the mobile environment. With the Path Vector extension, an
-ALTO client may query the "network context" information, i.e., whether the two
-hosts are connected to the access network through a wireless link or a wire, and
-the capabilities of the access network. Thus, the client may use different data
-transfer mechanisms, or even deploy different 5G User Plane Functions (UPF)
-{{I-D.ietf-dmm-5g-uplane-analysis}} to optimize the data transfer.
+It is important to know the capabilities of various ANEs between two end
+hosts, especially in the mobile environment. With the extension defined in this
+document, an ALTO client may query the "network context" information, i.e.,
+whether the two hosts are connected to the access network through a wireless
+link or a wire, and the capabilities of the access network. Thus, the client may
+use different data transfer mechanisms, or even deploy different 5G User Plane
+Functions (UPF) {{I-D.ietf-dmm-5g-uplane-analysis}} to optimize the data
+transfer.
 
 ### CDN and Service Edge
 
@@ -294,10 +329,10 @@ AR/VR, and cloud gaming, as reported in various documents
 {{I-D.huang-alto-mowie-for-network-aware-app}}, and
 {{I-D.yang-alto-deliver-functions-over-networks}}).
 
-With the Path Vector extension, an ALTO server can selectively reveal the CDNs
+With the extension defined in this document, an ALTO server can selectively reveal the CDNs
 and service edges that reside along the paths between different end hosts,
-together with their properties such as available Service Level Agreement (SLA)
-plans. Otherwise, the ALTO client may have to make multiple queries and
-potentially with the complete list of CDNs and/or service edges. While both
-approaches offer the same information, making multiple queries introduces larger
-delay and more overhead on both the ALTO server and the ALTO client.
+together with their properties such as capabilities (e.g., storage, GPU) and
+available Service Level Agreement (SLA) plans. Thus, an ALTO client may leverage
+the information to better conduct CDN request routing or offload functionalities
+from the user equipment to the service edge, with considerations on different
+resource constraints.
