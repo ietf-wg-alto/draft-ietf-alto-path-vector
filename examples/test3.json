@@ -1,0 +1,10 @@
+{
+  "cost-type": {
+    "cost-mode": "array",
+    "cost-metric": "ane-path"
+  },
+  "pids": {
+    "srcs": [ "PID1" ],
+    "dsts": [ "PID3", "PID4" ]
+  }
+}

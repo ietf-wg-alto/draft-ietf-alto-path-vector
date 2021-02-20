@@ -11,6 +11,16 @@ Major:
   Thanks for the comments. We make it clear in the new text that the metric is
   hypothetical.
 
+  OLD:
+   The single-node ALTO topology abstraction of the network is shown in
+   Figure 2.
+
+  NEW:
+   The single-node ALTO topology abstraction of the network is shown in
+   Figure 2.  Assume the cost map returns a hypothetical cost type
+   representing the available bandwidth between a source and a
+   destination.
+
 - S4.1, "Case 1": I don't see how the "application will obtain 150 Mbps at
   most." Consider that the bottleneck bandwidth is 100 Mbps, as that is the
   bandwidth of the most constrained link. Once traffic leaves sw5, it can get no
@@ -31,6 +41,16 @@ Major:
   We agree the second approach is not clearly specified. The new text follows
   the same structure of previous paragraphs and only focuses on what is
   achievable with the PV extension.
+
+  NEW:
+   With the extension defined in this document, an ALTO server can
+   selectively reveal the CDNs and service edges that reside along the
+   paths between different end hosts, together with their properties
+   such as capabilities (e.g., storage, GPU) and available Service Level
+   Agreement (SLA) plans.  Thus, an ALTO client may leverage the
+   information to better conduct CDN request routing or offload
+   functionalities from the user equipment to the service edge, with
+   considerations on different resource constraints.
 
 - S5.1.3: When Section 5 begins, it says that "This section gives a
   non-normative overview of the Path Vector extension." However, in S5.1.3,
@@ -95,6 +115,9 @@ Major:
   assumes that the server is trusted to some degree, the issue becomes (a) can
   the client, by repeated querying, figure out that it is being duped on
   occasion? (b) what does it then do?
+
+  It is true that obfuscation may not guarantee that the clients can achieve
+  optimal application-layer routing. However, it may have
 
 Minor:
 

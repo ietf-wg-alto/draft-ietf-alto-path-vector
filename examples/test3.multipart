@@ -1,0 +1,44 @@
+--example-1
+Content-ID: costmap
+Content-Type: application/alto-costmap+json
+
+{
+  "meta": {
+    "vtag": {
+      "resource-id": "filtered-cost-map-pv.costmap",
+      "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+    },
+    "dependent-vtags": [
+      {
+        "resource-id": "my-default-networkmap",
+        "tag": "75ed013b3cb58f896e839582504f6228"
+      }
+    ],
+    "cost-type": {
+      "cost-mode": "array",
+      "cost-metric": "ane-path"
+    }
+  },
+  "cost-map": {
+    "PID1": {
+      "PID3": [ "L1" ],
+      "PID4": [ "L1", "L2" ]
+    }
+  }
+}
+--example-1
+Content-ID: propmap
+Content-Type: application/alto-propmap+json
+
+{
+  "meta": {
+    "dependent-vtags": [
+      {
+        "resource-id": "filtered-cost-map-pv.costmap",
+        "tag": "d827f484cb66ce6df6b5077cb8562b0a"
+      }
+    ]
+  },
+  "property-map": {
+  }
+}

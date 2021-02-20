@@ -1,0 +1,59 @@
+--example-2
+Content-ID: ecs
+Content-Type: application/alto-endpointcost+json
+
+{
+  "meta": {
+    "vtags": {
+      "resource-id": "endpoint-cost-pv.ecs",
+      "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+    },
+    "cost-type": {
+      "cost-mode": "array",
+      "cost-metric": "ane-path"
+    }
+  },
+  "endpoint-cost-map": {
+    "ipv4:192.0.4.2": {
+      "ipv4:192.0.2.2":   [ "NET3", "L1", "NET1" ],
+      "ipv4:192.0.5.2":   [ "NET3", "L2", "NET2" ]
+    }
+  }
+}
+--example-2
+Content-ID: propmap
+Content-Type: application/alto-propmap+json
+
+{
+  "meta": {
+    "dependent-vtags": [
+      {
+        "resource-id": "endpoint-cost-pv.ecs",
+        "tag": "bb6bb72eafe8f9bdc4f335c7ed3b10822a391cef"
+      },
+      {
+        "resource-id": "ane-props",
+        "tag": "bf3c8c1819d2421c9a95a9d02af557a3"
+      }
+    ]
+  },
+  "property-map": {
+    ".ane:NET1": {
+      "max-reservable-bandwidth": 50000000000,
+      "persistent-entity-id": "ane-props.ane:MEC1"
+    },
+    ".ane:NET2": {
+      "max-reservable-bandwidth": 50000000000,
+      "persistent-entity-id": "ane-props.ane:MEC2"
+    },
+    ".ane:NET3": {
+      "max-reservable-bandwidth": 50000000000
+    },
+    ".ane:L1": {
+      "max-reservable-bandwidth": 10000000000
+    },
+    ".ane:L2": {
+      "max-reservable-bandwidth": 15000000000
+    }
+  }
+}

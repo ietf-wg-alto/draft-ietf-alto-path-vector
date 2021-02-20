@@ -1,0 +1,8 @@
+{
+  "add": {
+    "ecspvsub1": {
+      "resource-id": "endpoint-cost-pv",
+      "input": <ecs-input>
+    }
+  }
+}

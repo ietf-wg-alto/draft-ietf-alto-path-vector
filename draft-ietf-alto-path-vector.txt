@@ -5,14 +5,14 @@
 ALTO                                                              K. Gao
 Internet-Draft                                        Sichuan University
 Intended status: Standards Track                                  Y. Lee
-Expires: 23 August 2021                                          Samsung
+Expires: 24 August 2021                                          Samsung
                                                           S. Randriamasy
                                                          Nokia Bell Labs
                                                                Y.R. Yang
                                                          Yale University
                                                                 J. Zhang
                                                        Tongji University
-                                                        19 February 2021
+                                                        20 February 2021
 
 
                       ALTO Extension: Path Vector
@@ -49,11 +49,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 August 2021.
+   This Internet-Draft will expire on 24 August 2021.
 
 
 
-Gao, et al.              Expires 23 August 2021                 [Page 1]
+Gao, et al.              Expires 24 August 2021                 [Page 1]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -81,7 +81,7 @@ Table of Contents
      4.1.  Design Requirements . . . . . . . . . . . . . . . . . . .   7
      4.2.  Use Cases . . . . . . . . . . . . . . . . . . . . . . . .  10
        4.2.1.  Large-scale Data Analytics  . . . . . . . . . . . . .  10
-       4.2.2.  Context-aware Data Transfer . . . . . . . . . . . . .  10
+       4.2.2.  Context-aware Data Transfer . . . . . . . . . . . . .  11
        4.2.3.  CDN and Service Edge  . . . . . . . . . . . . . . . .  11
    5.  Path Vector Extension: Overview . . . . . . . . . . . . . . .  11
      5.1.  Abstract Network Element  . . . . . . . . . . . . . . . .  12
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Gao, et al.              Expires 23 August 2021                 [Page 2]
+Gao, et al.              Expires 24 August 2021                 [Page 2]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -125,47 +125,47 @@ Internet-Draft                   ALTO-PV                   February 2021
        7.2.4.  Capabilities  . . . . . . . . . . . . . . . . . . . .  22
        7.2.5.  Uses  . . . . . . . . . . . . . . . . . . . . . . . .  23
        7.2.6.  Response  . . . . . . . . . . . . . . . . . . . . . .  23
-     7.3.  Multipart Endpoint Cost Service for Path Vector . . . . .  27
-       7.3.1.  Media Type  . . . . . . . . . . . . . . . . . . . . .  27
-       7.3.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  27
-       7.3.3.  Accept Input Parameters . . . . . . . . . . . . . . .  27
-       7.3.4.  Capabilities  . . . . . . . . . . . . . . . . . . . .  28
-       7.3.5.  Uses  . . . . . . . . . . . . . . . . . . . . . . . .  28
-       7.3.6.  Response  . . . . . . . . . . . . . . . . . . . . . .  28
-   8.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . .  32
-     8.1.  Example: Information Resource Directory . . . . . . . . .  32
-     8.2.  Example: Multipart Filtered Cost Map  . . . . . . . . . .  34
-     8.3.  Example: Multipart Endpoint Cost Resource . . . . . . . .  35
-     8.4.  Example: Incremental Updates  . . . . . . . . . . . . . .  39
-   9.  Compatibility with Other ALTO Extensions  . . . . . . . . . .  41
-     9.1.  Compatibility with Legacy ALTO Clients/Servers  . . . . .  41
-     9.2.  Compatibility with Multi-Cost Extension . . . . . . . . .  41
-     9.3.  Compatibility with Incremental Update . . . . . . . . . .  41
-     9.4.  Compatibility with Cost Calendar  . . . . . . . . . . . .  41
-   10. General Discussions . . . . . . . . . . . . . . . . . . . . .  42
-     10.1.  Constraint Tests for General Cost Types  . . . . . . . .  42
-     10.2.  General Multi-Resource Query . . . . . . . . . . . . . .  43
-   11. Security Considerations . . . . . . . . . . . . . . . . . . .  43
-   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  44
-     12.1.  ALTO Entity Domain Type Registry . . . . . . . . . . . .  44
-     12.2.  ALTO Entity Property Type Registry . . . . . . . . . . .  45
-   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  45
-   14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  45
-     14.1.  Normative References . . . . . . . . . . . . . . . . . .  45
-     14.2.  Informative References . . . . . . . . . . . . . . . . .  46
-   Appendix A.  Changes since -12  . . . . . . . . . . . . . . . . .  48
-   Appendix B.  Changes since -11  . . . . . . . . . . . . . . . . .  48
-   Appendix C.  Changes since -10  . . . . . . . . . . . . . . . . .  49
-   Appendix D.  Changes since -09  . . . . . . . . . . . . . . . . .  49
-   Appendix E.  Changes since -08  . . . . . . . . . . . . . . . . .  49
-   Appendix F.  Changes Since Version -06  . . . . . . . . . . . . .  50
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  50
+     7.3.  Multipart Endpoint Cost Service for Path Vector . . . . .  26
+       7.3.1.  Media Type  . . . . . . . . . . . . . . . . . . . . .  26
+       7.3.2.  HTTP Method . . . . . . . . . . . . . . . . . . . . .  26
+       7.3.3.  Accept Input Parameters . . . . . . . . . . . . . . .  26
+       7.3.4.  Capabilities  . . . . . . . . . . . . . . . . . . . .  27
+       7.3.5.  Uses  . . . . . . . . . . . . . . . . . . . . . . . .  27
+       7.3.6.  Response  . . . . . . . . . . . . . . . . . . . . . .  27
+   8.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . .  31
+     8.1.  Example: Information Resource Directory . . . . . . . . .  31
+     8.2.  Example: Multipart Filtered Cost Map  . . . . . . . . . .  33
+     8.3.  Example: Multipart Endpoint Cost Resource . . . . . . . .  34
+     8.4.  Example: Incremental Updates  . . . . . . . . . . . . . .  38
+   9.  Compatibility with Other ALTO Extensions  . . . . . . . . . .  40
+     9.1.  Compatibility with Legacy ALTO Clients/Servers  . . . . .  40
+     9.2.  Compatibility with Multi-Cost Extension . . . . . . . . .  40
+     9.3.  Compatibility with Incremental Update . . . . . . . . . .  40
+     9.4.  Compatibility with Cost Calendar  . . . . . . . . . . . .  40
+   10. General Discussions . . . . . . . . . . . . . . . . . . . . .  41
+     10.1.  Constraint Tests for General Cost Types  . . . . . . . .  41
+     10.2.  General Multi-Resource Query . . . . . . . . . . . . . .  42
+   11. Security Considerations . . . . . . . . . . . . . . . . . . .  42
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  43
+     12.1.  ALTO Entity Domain Type Registry . . . . . . . . . . . .  43
+     12.2.  ALTO Entity Property Type Registry . . . . . . . . . . .  44
+   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  44
+   14. References  . . . . . . . . . . . . . . . . . . . . . . . . .  44
+     14.1.  Normative References . . . . . . . . . . . . . . . . . .  44
+     14.2.  Informative References . . . . . . . . . . . . . . . . .  45
+   Appendix A.  Changes since -13  . . . . . . . . . . . . . . . . .  47
+   Appendix B.  Changes since -12  . . . . . . . . . . . . . . . . .  47
+   Appendix C.  Changes since -11  . . . . . . . . . . . . . . . . .  47
+   Appendix D.  Changes since -10  . . . . . . . . . . . . . . . . .  48
+   Appendix E.  Changes since -09  . . . . . . . . . . . . . . . . .  48
+   Appendix F.  Changes since -08  . . . . . . . . . . . . . . . . .  48
+   Appendix G.  Changes Since Version -06  . . . . . . . . . . . . .  49
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  49
 
 
 
 
-
-Gao, et al.              Expires 23 August 2021                 [Page 3]
+Gao, et al.              Expires 24 August 2021                 [Page 3]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -221,7 +221,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                 [Page 4]
+Gao, et al.              Expires 24 August 2021                 [Page 4]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -277,7 +277,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                 [Page 5]
+Gao, et al.              Expires 24 August 2021                 [Page 5]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -333,7 +333,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                 [Page 6]
+Gao, et al.              Expires 24 August 2021                 [Page 6]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -389,7 +389,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                 [Page 7]
+Gao, et al.              Expires 24 August 2021                 [Page 7]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -438,21 +438,24 @@ Internet-Draft                   ALTO-PV                   February 2021
    traffic among a set of end host <source, destination> pairs, say eh1
    -> eh2 and eh1 -> eh4.  Let x denote the transmission rate of eh1 ->
    eh2 and y denote the rate of eh1 -> eh4.  The objective function is
-   ~~~ max(x + y). ~~~
+
+       max(x + y).
 
 
 
 
 
-
-Gao, et al.              Expires 23 August 2021                 [Page 8]
+Gao, et al.              Expires 24 August 2021                 [Page 8]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
 
    With the ALTO Cost Map, the cost between PID1 and PID2 and between
    PID1 and PID4 will be 100 Mbps.  And the client can get a capacity
-   region of ~~~ x <= 100 Mbps, y <= 100 Mbps. ~~~
+   region of
+
+       x <= 100 Mbps,
+       y <= 100 Mbps.
 
    With this information, the client may mistakenly think it can achieve
    a maximum total rate of 200 Mbps.  However, one can easily see that
@@ -463,16 +466,25 @@ Internet-Draft                   ALTO-PV                   February 2021
       -> sw5 -> sw6 -> sw7 -> sw2 -> eh2 and eh1 -> eh4 uses path eh1 ->
       sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the shared bottleneck links
       are eh1 -> sw1 and sw1 -> sw5.  In this case, the capacity region
-      is ~~~ x <= 100 Mbps y <= 100 Mbps x + y <= 150 Mbps ~~~ and the
-      real optimal total rate is 150 Mbps.
+      is
+
+          x     <= 100 Mbps
+          y     <= 100 Mbps
+          x + y <= 150 Mbps
+
+      and the real optimal total rate is 150 Mbps.
 
    *  Case 2: eh1 -> eh2 and eh1 -> eh4 take the same path segment from
       sw5 to sw7.  For example, if eh1 -> eh2 uses path eh1 -> sw1 ->
       sw5 -> sw7 -> sw2 -> eh2 and eh1 -> eh4 also uses path eh1 -> sw1
       -> sw5 -> sw7 -> sw4 -> eh4, then the shared bottleneck link is
-      sw5 -> sw7.  In this case, the capacity region is ~~~ x <= 100
-      Mbps y <= 100 Mbps x + y <= 100 Mbps ~~~ and the real optimal
-      total rate is 100 Mbps.
+      sw5 -> sw7.  In this case, the capacity region is
+
+          x     <= 100 Mbps
+          y     <= 100 Mbps
+          x + y <= 100 Mbps
+
+      and the real optimal total rate is 100 Mbps.
 
    Clearly, with more accurate and fine-grained information, the
    application can gain a better prediction of its traffic and may
@@ -486,6 +498,14 @@ Internet-Draft                   ALTO-PV                   February 2021
       overlay application to distinguish between Case 1 and Case 2 and
       to compute the optimal total rate accordingly.
 
+
+
+
+Gao, et al.              Expires 24 August 2021                 [Page 9]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
    *  The ALTO server must allow the client to distinguish the common
       ANE shared by eh1 -> eh2 and eh1 -> eh4, e.g., eh1 - sw1 and sw1 -
       sw5 in Case 1.
@@ -498,13 +518,6 @@ Internet-Draft                   ALTO-PV                   February 2021
    In general, we can conclude that to support the multiple flow
    scheduling use case, the ALTO framework must be extended to satisfy
    the following additional requirements:
-
-
-
-Gao, et al.              Expires 23 August 2021                 [Page 9]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
 
    AR1:  An ALTO server must provide essential information on ANEs on
       the path of a <source, destination> pair that are critical to the
@@ -540,6 +553,15 @@ Internet-Draft                   ALTO-PV                   February 2021
    of the transferred data), leading to optimal job completion time and
    network resource utilization.
 
+
+
+
+
+Gao, et al.              Expires 24 August 2021                [Page 10]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
 4.2.2.  Context-aware Data Transfer
 
    It is important to know the capabilities of various ANEs between two
@@ -551,16 +573,6 @@ Internet-Draft                   ALTO-PV                   February 2021
    different data transfer mechanisms, or even deploy different 5G User
    Plane Functions (UPF) [I-D.ietf-dmm-5g-uplane-analysis] to optimize
    the data transfer.
-
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 10]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
 
 4.2.3.  CDN and Service Edge
 
@@ -598,6 +610,14 @@ Internet-Draft                   ALTO-PV                   February 2021
        traversed by the path of a <source, destination> pair as Path
        Vectors,
 
+
+
+
+Gao, et al.              Expires 24 August 2021                [Page 11]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
    3.  uses the Unified Property Map to convey the association between
        the ANEs and their properties.
 
@@ -607,16 +627,6 @@ Internet-Draft                   ALTO-PV                   February 2021
    appears in the Path Vectors of multiple <source, destination> pairs
    (AR2), and retrieve the properties of the ANEs by searching the
    Unified Property Map (AR3).
-
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 11]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
 
 5.1.  Abstract Network Element
 
@@ -656,6 +666,14 @@ Internet-Draft                   ALTO-PV                   February 2021
    While ephemeral ANEs returned by a Path Vector response do not exist
    beyond that response, some of them may represent entities that are
    persistent and defined in a standalone Property Map. Indeed, it may
+
+
+
+Gao, et al.              Expires 24 August 2021                [Page 12]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
    be useful for clients to occasionally query properties on persistent
    entities, without caring about the path that traverses them.  For
    example, an ALTO server may define an ANE for each service edge
@@ -666,13 +684,6 @@ Internet-Draft                   ALTO-PV                   February 2021
    registered in a Property Map, together with their properties.  See
    Section 6.2.4 and Section 6.4.2 for more detailed instructions on how
    to identify ephemeral ANEs and persistent ANEs.
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 12]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
 
 5.1.3.  Property Filtering
 
@@ -711,24 +722,19 @@ Internet-Draft                   ALTO-PV                   February 2021
    Instead of extending the "type system" of ALTO, this document takes a
    simple and backward compatible approach.  Specifically, the "cost-
    mode" of the Path Vector cost type is "array", which indicates the
+
+
+
+Gao, et al.              Expires 24 August 2021                [Page 13]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
    value is a JSON array.  Then, an ALTO client must check the value of
    the "cost-metric".  If the value is "ane-path", it means that the
    JSON array should be further interpreted as a path of ANENames.
 
    The Path Vector cost type is specified in Section 6.5.
-
-
-
-
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 13]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
 
 5.3.  Multipart Path Vector Response
 
@@ -775,13 +781,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 14]
+Gao, et al.              Expires 24 August 2021                [Page 14]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -837,7 +837,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 15]
+Gao, et al.              Expires 24 August 2021                [Page 15]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -893,7 +893,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 16]
+Gao, et al.              Expires 24 August 2021                [Page 16]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -949,7 +949,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 17]
+Gao, et al.              Expires 24 August 2021                [Page 17]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1005,7 +1005,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 18]
+Gao, et al.              Expires 24 August 2021                [Page 18]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1061,7 +1061,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 19]
+Gao, et al.              Expires 24 August 2021                [Page 19]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1117,7 +1117,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 20]
+Gao, et al.              Expires 24 August 2021                [Page 20]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1173,7 +1173,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 21]
+Gao, et al.              Expires 24 August 2021                [Page 21]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1182,7 +1182,7 @@ Internet-Draft                   ALTO-PV                   February 2021
       Host: alto.example.com
       Accept: multipart/related;type=application/alto-costmap+json,
               application/alto-error+json
-      Content-Length: [TBD]
+      Content-Length: 201
       Content-Type: application/alto-costmapfilter+json
 
       {
@@ -1229,7 +1229,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 22]
+Gao, et al.              Expires 24 August 2021                [Page 22]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1271,37 +1271,29 @@ Internet-Draft                   ALTO-PV                   February 2021
       Part Resource ID.  The "Content-Type" MUST be "application/alto-
       costmap+json".
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 23]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
-
       The body of the Path Vector part MUST be a JSON object with the
       same format as defined in Section 11.2.3.6 of [RFC7285].  The JSON
       object MUST include the "vtag" field in the "meta" field, which
       provides the version tag of the returned cost map.  The resource
-      ID of the version tag MUST follow the format of ~~~ resource-id
-      '.' part-resource-id ~~~ where "resource-id" is the resource Id of
-      the Path Vector resource, and "part-resource-id" has the same
-      value as the "Content-ID" of the Path Vector part.  The "meta"
-      field MUST also include the "dependent-vtags" field, whose value
-      is a single-element array to indicate the version tag of the
-      network map used, where the network map is specified in the "uses"
-      attribute of the multipart filtered cost map resource in IRD.
+      ID of the version tag MUST follow the format of
+
+      resource-id '.' part-resource-id
+
+      where "resource-id" is the resource Id of the Path Vector
+      resource, and "part-resource-id" has the same value as the
+      "Content-ID" of the Path Vector part.  The "meta" field MUST also
+
+
+
+Gao, et al.              Expires 24 August 2021                [Page 23]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
+      include the "dependent-vtags" field, whose value is a single-
+      element array to indicate the version tag of the network map used,
+      where the network map is specified in the "uses" attribute of the
+      multipart filtered cost map resource in IRD.
 
    *  The Unified Property Map part MUST also include "Content-ID" and
       "Content-Type" in its header.  The value of "Content-ID" has the
@@ -1338,14 +1330,6 @@ Internet-Draft                   ALTO-PV                   February 2021
    first.  Even though the "start" parameter allows it to be placed
    anywhere in the part sequence, it is RECOMMENDED that the parts
    arrive in the same order as they are processed, i.e., the Path Vector
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 24]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
-
    part is always put as the first part, followed by the Property Map
    part.  When doing so, an ALTO server MAY NOT set the "start"
    parameter, which implies the first part is the root object.
@@ -1357,53 +1341,13 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 25]
+Gao, et al.              Expires 24 August 2021                [Page 24]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
 
    HTTP/1.1 200 OK
-   Content-Length: [TBD]
+   Content-Length: 821
    Content-Type: multipart/related; boundary=example-1;
                  type=application/alto-costmap+json
 
@@ -1453,7 +1397,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 26]
+Gao, et al.              Expires 24 August 2021                [Page 25]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1509,7 +1453,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 27]
+Gao, et al.              Expires 24 August 2021                [Page 26]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1518,7 +1462,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    Host: alto.example.com
    Accept: multipart/related;type=application/alto-endpointcost+json,
            application/alto-error+json
-   Content-Length: [TBD]
+   Content-Length: 222
    Content-Type: application/alto-endpointcostparams+json
 
    {
@@ -1565,7 +1509,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 28]
+Gao, et al.              Expires 24 August 2021                [Page 27]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1579,10 +1523,13 @@ Internet-Draft                   ALTO-PV                   February 2021
       same format as defined in Section 11.5.1.6 of [RFC7285].  The JSON
       object MUST include the "vtag" field in the "meta" field, which
       provides the version tag of the returned endpoint cost map.  The
-      resource ID of the version tag MUST follow the format of ~~~
-      resource-id '.' part-resource-id ~~~ where "resource-id" is the
-      resource Id of the Path Vector resource, and "part-resource-id"
-      has the same value as the "Content-ID" of the Path Vector part.
+      resource ID of the version tag MUST follow the format of
+
+      resource-id '.' part-resource-id
+
+      where "resource-id" is the resource Id of the Path Vector
+      resource, and "part-resource-id" has the same value as the
+      "Content-ID" of the Path Vector part.
 
    *  The Unified Property Map part MUST also include "Content-ID" and
       "Content-Type" in its header.  The value of "Content-ID" MUST has
@@ -1613,19 +1560,21 @@ Internet-Draft                   ALTO-PV                   February 2021
    NOT present, the client MUST discard the received information and
    send another request if necessary.
 
+
+
+
+
+
+Gao, et al.              Expires 24 August 2021                [Page 28]
+
+Internet-Draft                   ALTO-PV                   February 2021
+
+
    According to [RFC2387], the Path Vector part, whose media type is the
    same as the "type" parameter of the multipart response message, is
    the root object.  Thus, it is the element the application processes
    first.  Even though the "start" parameter allows it to be placed
    anywhere in the part sequence, it is RECOMMENDED that the parts
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 29]
-
-Internet-Draft                   ALTO-PV                   February 2021
-
-
    arrive in the same order as they are processed, i.e., the Path Vector
    part is always put as the first part, followed by the Property Map
    part.  When doing so, an ALTO server MAY NOT set the "start"
@@ -1672,18 +1621,13 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-
-
-
-
-
-Gao, et al.              Expires 23 August 2021                [Page 30]
+Gao, et al.              Expires 24 August 2021                [Page 29]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
 
    HTTP/1.1 200 OK
-   Content-Length: [TBD]
+   Content-Length: 810
    Content-Type: multipart/related; boundary=example-1;
                  type=application/alto-endpointcost+json
 
@@ -1733,7 +1677,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 31]
+Gao, et al.              Expires 24 August 2021                [Page 30]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1789,7 +1733,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 32]
+Gao, et al.              Expires 24 August 2021                [Page 31]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1845,7 +1789,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 33]
+Gao, et al.              Expires 24 August 2021                [Page 32]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1873,7 +1817,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    Host: alto.example.com
    Accept: multipart/related;type=application/alto-costmap+json,
            application/alto-error+json
-   Content-Length: [TBD]
+   Content-Length: 153
    Content-Type: application/alto-costmapfilter+json
 
    {
@@ -1888,7 +1832,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    }
 
    HTTP/1.1 200 OK
-   Content-Length: [TBD]
+   Content-Length: 818
    Content-Type: multipart/related; boundary=example-1;
                  type=application/alto-costmap+json
 
@@ -1901,7 +1845,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 34]
+Gao, et al.              Expires 24 August 2021                [Page 33]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1957,7 +1901,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 35]
+Gao, et al.              Expires 24 August 2021                [Page 34]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -1987,7 +1931,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    Accept: multipart/related;
            type=application/alto-endpointcost+json,
            application/alto-error+json
-   Content-Length: [TBD]
+   Content-Length: 278
    Content-Type: application/alto-endpointcostparams+json
 
    {
@@ -2013,13 +1957,13 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 36]
+Gao, et al.              Expires 24 August 2021                [Page 35]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
 
    HTTP/1.1 200 OK
-   Content-Length: [TBD]
+   Content-Length: 1305
    Content-Type: multipart/related; boundary=example-2;
                  type=application/alto-endpointcost+json
 
@@ -2069,7 +2013,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 37]
+Gao, et al.              Expires 24 August 2021                [Page 36]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2105,7 +2049,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    Section 11 for further references.
 
    HTTP/1.1 200 OK
-   Content-Length: [TBD]
+   Content-Length: 1157
    Content-Type: multipart/related; boundary=example-2;
                  type=application/alto-endpointcost+json
 
@@ -2125,7 +2069,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 38]
+Gao, et al.              Expires 24 August 2021                [Page 37]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2181,7 +2125,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 39]
+Gao, et al.              Expires 24 August 2021                [Page 38]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2190,7 +2134,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    Host: alto.example.com
    Accept: text/event-stream
    Content-Type: application/alto-updatestreamparams+json
-   Content-Length: [TBD]
+   Content-Length: 112
 
    {
      "add": {
@@ -2237,7 +2181,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 40]
+Gao, et al.              Expires 24 August 2021                [Page 39]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2293,7 +2237,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 41]
+Gao, et al.              Expires 24 August 2021                [Page 40]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2349,7 +2293,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 42]
+Gao, et al.              Expires 24 August 2021                [Page 41]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2405,7 +2349,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 43]
+Gao, et al.              Expires 24 August 2021                [Page 42]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2461,7 +2405,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 44]
+Gao, et al.              Expires 24 August 2021                [Page 43]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2517,7 +2461,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 45]
+Gao, et al.              Expires 24 August 2021                [Page 44]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2573,7 +2517,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 46]
+Gao, et al.              Expires 24 August 2021                [Page 45]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2629,7 +2573,7 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 47]
+Gao, et al.              Expires 24 August 2021                [Page 46]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2660,7 +2604,9 @@ Internet-Draft                   ALTO-PV                   February 2021
    [XQuery]   "XQuery 3.1: An XML Query Language", 2017,
               <https://www.w3.org/TR/xquery-31/>.
 
-Appendix A.  Changes since -12
+Appendix A.  Changes since -13
+
+Appendix B.  Changes since -12
 
    Revision -13
 
@@ -2668,7 +2614,7 @@ Appendix A.  Changes since -12
 
    *  integrates Richard's responds to WGLC reviews
 
-Appendix B.  Changes since -11
+Appendix C.  Changes since -11
 
    Revision -12
 
@@ -2683,14 +2629,12 @@ Appendix B.  Changes since -11
 
 
 
-
-
-Gao, et al.              Expires 23 August 2021                [Page 48]
+Gao, et al.              Expires 24 August 2021                [Page 47]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
 
-Appendix C.  Changes since -10
+Appendix D.  Changes since -10
 
    Revision -11
 
@@ -2717,7 +2661,7 @@ Appendix C.  Changes since -10
 
    *  adds the discussion on ephemeral and persistent ANEs.
 
-Appendix D.  Changes since -09
+Appendix E.  Changes since -09
 
    Revision -10
 
@@ -2734,14 +2678,14 @@ Appendix D.  Changes since -09
 
    *  fixes inconsistent terms, typos
 
-Appendix E.  Changes since -08
+Appendix F.  Changes since -08
 
    This revision
 
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 49]
+Gao, et al.              Expires 24 August 2021                [Page 48]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2751,7 +2695,7 @@ Internet-Draft                   ALTO-PV                   February 2021
    *  emphasizes that abstract network elements can be generated on
       demand in both introduction and motivating use cases
 
-Appendix F.  Changes Since Version -06
+Appendix G.  Changes Since Version -06
 
    *  We emphasize the importance of the path vector extension in two
       aspects:
@@ -2797,7 +2741,7 @@ Authors' Addresses
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 50]
+Gao, et al.              Expires 24 August 2021                [Page 49]
 
 Internet-Draft                   ALTO-PV                   February 2021
 
@@ -2853,4 +2797,4 @@ Internet-Draft                   ALTO-PV                   February 2021
 
 
 
-Gao, et al.              Expires 23 August 2021                [Page 51]
+Gao, et al.              Expires 24 August 2021                [Page 50]

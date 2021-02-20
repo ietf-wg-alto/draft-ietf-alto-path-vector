@@ -53,7 +53,7 @@ following request.
    Host: alto.example.com
    Accept: multipart/related;type=application/alto-costmap+json,
            application/alto-error+json
-   Content-Length: [TBD]
+   Content-Length: 201
    Content-Type: application/alto-costmapfilter+json
 
    {
@@ -139,9 +139,11 @@ The body of the response MUST consist of two parts:
   defined in Section 11.2.3.6 of {{RFC7285}}. The JSON object MUST include the
   `vtag` field in the `meta` field, which provides the version tag of the
   returned cost map. The resource ID of the version tag MUST follow the format of
+
   ~~~
   resource-id '.' part-resource-id
   ~~~
+
   where `resource-id` is the resource Id of the Path Vector resource, and
   `part-resource-id` has the same value as the `Content-ID` of the Path Vector
   part.
@@ -190,7 +192,7 @@ aggregation of all the switches in the network.
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: [TBD]
+Content-Length: 821
 Content-Type: multipart/related; boundary=example-1;
               type=application/alto-costmap+json
 
@@ -282,7 +284,7 @@ POST /ecs/pv HTTP/1.1
 Host: alto.example.com
 Accept: multipart/related;type=application/alto-endpointcost+json,
         application/alto-error+json
-Content-Length: [TBD]
+Content-Length: 222
 Content-Type: application/alto-endpointcostparams+json
 
 {
@@ -336,6 +338,7 @@ The body MUST consist of two parts:
   defined in Section 11.5.1.6 of {{RFC7285}}. The JSON object MUST include the
   `vtag` field in the `meta` field, which provides the version tag of the returned
   endpoint cost map. The resource ID of the version tag MUST follow the format of
+
   ~~~
   resource-id '.' part-resource-id
   ~~~
@@ -383,7 +386,7 @@ request in {{pvecs-accept}} is as follows.
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: [TBD]
+Content-Length: 810
 Content-Type: multipart/related; boundary=example-1;
               type=application/alto-endpointcost+json
 

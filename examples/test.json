@@ -1,0 +1,11 @@
+{
+  "cost-type": {
+    "cost-mode": "array",
+    "cost-metric": "ane-path"
+  },
+  "pids": {
+    "srcs": [ "PID1" ],
+    "dsts": [ "PID2" ]
+  },
+  "ane-property-names": [ "max-reservable-bandwidth" ]
+}

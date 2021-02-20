@@ -1,0 +1,11 @@
+{
+  "cost-type": {
+    "cost-mode": "array",
+    "cost-metric": "ane-path"
+  },
+  "endpoints": {
+    "srcs": [ "ipv4:1.2.3.4" ],
+    "dsts": [ "ipv4:2.3.4.5" ]
+  },
+  "ane-property-names": [ "max-reservable-bandwidth" ]
+}

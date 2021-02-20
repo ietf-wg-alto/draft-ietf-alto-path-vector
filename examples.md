@@ -115,7 +115,7 @@ POST /costmap/pv HTTP/1.1
 Host: alto.example.com
 Accept: multipart/related;type=application/alto-costmap+json,
         application/alto-error+json
-Content-Length: [TBD]
+Content-Length: 153
 Content-Type: application/alto-costmapfilter+json
 
 {
@@ -132,7 +132,7 @@ Content-Type: application/alto-costmapfilter+json
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: [TBD]
+Content-Length: 818
 Content-Type: multipart/related; boundary=example-1;
               type=application/alto-costmap+json
 
@@ -215,7 +215,7 @@ Host: alto.example.com
 Accept: multipart/related;
         type=application/alto-endpointcost+json,
         application/alto-error+json
-Content-Length: [TBD]
+Content-Length: 278
 Content-Type: application/alto-endpointcostparams+json
 
 {
@@ -236,7 +236,7 @@ Content-Type: application/alto-endpointcostparams+json
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: [TBD]
+Content-Length: 1305
 Content-Type: multipart/related; boundary=example-2;
               type=application/alto-endpointcost+json
 
@@ -314,7 +314,7 @@ document, and developers may refer to {{Security}} for further references.
 
 ~~~
 HTTP/1.1 200 OK
-Content-Length: [TBD]
+Content-Length: 1157
 Content-Type: multipart/related; boundary=example-2;
               type=application/alto-endpointcost+json
 
@@ -383,7 +383,7 @@ POST /updates/pv HTTP/1.1
 Host: alto.example.com
 Accept: text/event-stream
 Content-Type: application/alto-updatestreamparams+json
-Content-Length: [TBD]
+Content-Length: 112
 
 {
   "add": {

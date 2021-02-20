@@ -212,6 +212,7 @@ Now assume the application wants to maximize the total rate of the traffic among
 a set of end host <source, destination> pairs, say eh1 -> eh2 and eh1 -> eh4.
 Let x denote the transmission rate of eh1 -> eh2 and y denote the rate of eh1 ->
 eh4. The objective function is
+
 ~~~
     max(x + y).
 ~~~
@@ -219,6 +220,7 @@ eh4. The objective function is
 With the ALTO Cost Map, the cost between PID1 and PID2 and between PID1 and PID4 will
 be 100 Mbps. And the client can get a capacity
 region of
+
 ~~~
     x <= 100 Mbps,
     y <= 100 Mbps.
@@ -233,6 +235,7 @@ infeasible, as there are only two potential cases:
   and eh1 -> eh4 uses path eh1 -> sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the shared
   bottleneck links are eh1 -> sw1 and sw1 -> sw5. In this case, the capacity
   region is
+
   ~~~
       x     <= 100 Mbps
       y     <= 100 Mbps
@@ -244,6 +247,7 @@ infeasible, as there are only two potential cases:
   For example, if eh1 -> eh2 uses path eh1 -> sw1 -> sw5 -> sw7 -> sw2 -> eh2
   and eh1 -> eh4 also uses path eh1 -> sw1 -> sw5 -> sw7 -> sw4 -> eh4, then the
   shared bottleneck link is sw5 -> sw7. In this case, the capacity region is
+
   ~~~
       x     <= 100 Mbps
       y     <= 100 Mbps
