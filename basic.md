@@ -65,18 +65,18 @@ information resource, so their ResourceID part must be empty.
                                        ----- L1
                                       /
           PID1   +---------------+ 10 Gbps +----------+    PID3
-   192.0.2.0/24+-+ +-----------+ +---------+          +--+192.0.4.0/24
+   192.0.2.0/28+-+ +-----------+ +---------+          +--+192.0.2.32/28
                  | |   MEC1    | |         |          |
                  | +-----------+ |   +-----+          |
           PID2   |               |   |     +----------+
-   192.0.3.0/24+-+               |   |         NET3
+   192.0.2.16/28+-+               |   |         NET3
                  |               |   | 15 Gbps
                  |               |   |        \
                  +---------------+   |         -------- L2
                        NET1          |
                               +---------------+
                               | +-----------+ |   PID4
-                              | |   MEC2    | +--+192.0.5.0/24
+                              | |   MEC2    | +--+192.0.2.48/28
                               | +-----------+ |
                               +---------------+
                                     NET2
@@ -158,16 +158,7 @@ traffic from a source to a destination.
 
 An ALTO client MUST interpret the Path Vector as if the traffic between a source
 and a destination logically traverses the ANEs in the same order as they appear
-in the Path Vector. However, under certain scenarios where the traversal order
-is not crucial, an ALTO server implementation may choose to not follow strictly
-the physical traversal order and may even obfuscate the order intentionally, for
-security and performance considerations. For example, in the multi-flow
-bandwidth reservation use case as introduced in {{probstat}}, only the available
-bandwidth of the shared bottleneck link is crucial, and the ALTO server may
-change the order of links appearing in the Path Vector response.
-
-Note that obfuscation may also pose a threat to the client, which may lead to
-infeasible or suboptimal decisions for an ALTO client.
+in the Path Vector.
 
 ### Cost Mode: array {#mode-spec}
 

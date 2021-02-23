@@ -284,7 +284,18 @@ underlying network(s) for informed traffic optimization among endpoints.
 
 --- back
 
+# Changes since -14
+
+Revision -15
+
+- fixes the IDNits warnings
+
 # Changes since -13
+
+Revision -14
+
+- addresses the comments in the chair review,
+- fixes most issues raised by IDNits.
 
 # Changes since -12
 

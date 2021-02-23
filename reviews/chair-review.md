@@ -116,8 +116,23 @@ Major:
   the client, by repeated querying, figure out that it is being duped on
   occasion? (b) what does it then do?
 
-  It is true that obfuscation may not guarantee that the clients can achieve
-  optimal application-layer routing. However, it may have
+  [PV] The effects are highly implementation-specific, and it is true that
+  obfuscation may create an attack on the client by compromising the integrity
+  of ALTO information. As we discuss in Section 11, there are some obfuscation
+  methods that can preserve the integrity of the information.
+
+  Regarding the last two issues, the answer to (a) is also
+  implementation- and network-specific, if the obfuscation is idempotent, i.e.,
+  generating the same obfuscated results for the same request, a client will not
+  be able to figure out that it is being duped; even if a client sees two
+  different results, it may still be the consequences of internal network
+  changes; for the answer to (b), we feel that it does not fall out of the scope
+  of Sec 15.2 in RFC 7285.
+
+  Instead of expanding the security discussion in Sec 6.5.1, the proposed change
+  is to move the security consideration on the integrity to Sec 11 (security
+  consideration), as reduction/obfuscation are usually introduced as mechanisms
+  of protecting confidentiality.
 
 Minor:
 

@@ -182,10 +182,11 @@ extension is provided by an ALTO server.
 
 <!-- ## Privacy Concerns { #pricon } -->
 
-The Path Vector extension requires additional scrutiny on two security
+The Path Vector extension requires additional scrutiny on three security
 considerations discussed in the base protocol: confidentiality of ALTO
-information (Section 15.3 of {{RFC7285}}) and availability of ALTO service
-(Section 15.5 of {{RFC7285}}).
+information (Section 15.3 of {{RFC7285}}), potential undesirable guidance from
+authenticated ALTO information (Section 15.2 of {{RFC7285}}), and availability
+of ALTO service (Section 15.5 of {{RFC7285}}).
 
 For confidentiality of ALTO information, a network operator should be aware of
 that this extension may introduce a new risk: the Path Vector information may
@@ -198,10 +199,36 @@ in-network congestion.
 To mitigate this risk, the ALTO server should consider protection mechanisms to
 reduce information exposure or obfuscate the real information, in particular,
 in settings where the network and the application do not belong to the same
-trust domain. But the implementation of Path Vector extension involving
-reduction or obfuscation should guarantee the requested properties are still
-accurate, for example, by using minimal feasible region compression algorithms
-{{TON2019}} or obfuscation protocols {{SC2018}}{{JSAC2019}}.
+trust domain. For example, in the multi-flow bandwidth reservation use case as
+introduced in {{probstat}}, only the available bandwidth of the shared
+bottleneck link is crucial, and the ALTO server may only preserve the critical
+bottlenecks and can change the order of links appearing in the Path Vector
+response.
+
+However, arbitrary reduction and obfuscation of information exposure may
+potentially introduce a risk on the integrity of the ALTO information, leading to
+infeasible or suboptimal decisions of ALTO clients,
+
+To mitigate this risk, if an ALTO client finds that the traffic distribution
+based on the Path Vector information is not feasible (e.g., causing constant
+congestion) or not better than a distribution which does not fully conform to
+the information (e.g., by randomly choosing the source/destination for certain
+flows), it can follow the protection strategies for potential undesirable
+guidance from authenticated ALTO information, specified in Section 15.2.2 of RFC
+7285 {{RFC7285}}. While repeatedly sending the same query can potentially detect
+the integrity problem for certain obfuscation methods (e.g., those based on time
+or randomness) under certain network conditions (e.g., where the routing and ANE
+properties are stable), an ALTO client must be aware that this behavior may be
+considered as a denial-of-service attack on the server and may lead to
+the rejection of further requests from the client.
+
+On the other hand, this risk can also be mitigated from the server side. While
+the implementation of an ALTO server is beyond the scope of this document,
+implementations of ALTO servers involving reduction or obfuscation of the Path
+Vector information should consider reduction/obfuscation mechanisms that can
+preserve the integrity of ALTO information, for example, by using minimal
+feasible region compression algorithms {{TON2019}} or obfuscation protocols
+{{SC2018}}{{JSAC2019}}.
 
 <!--
 On the other hand, in a setting of the same trust domain, a key benefit

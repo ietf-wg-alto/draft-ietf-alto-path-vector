@@ -189,13 +189,13 @@ resource and the corresponding response.
 
 The request uses the path vector cost type in the `cost-type` field, and
 queries the Maximum Reservable Bandwidth ANE property and the Persistent Entity
-property for two source and destination pairs: 192.0.4.2 -> 192.0.2.2 and
-192.0.4.2 -> 192.0.5.2.
+property for two source and destination pairs: 192.0.2.34 -> 192.0.2.2 and
+192.0.2.34 -> 192.0.2.50.
 
 The response consists of two parts. The first part returns the array of ANEName
 for each valid source and destination pair. As one can see in {{fig-pe}}, flow
-192.0.4.2 -> 192.0.2.2 traverses NET2, L1 and NET1, and flow 192.0.4.2 ->
-192.0.5.2 traverses NET2, L2 and NET3.
+192.0.2.34 -> 192.0.2.2 traverses NET2, L1 and NET1, and flow 192.0.2.34 ->
+192.0.2.50 traverses NET2, L2 and NET3.
 
 The second part returns the requested properties of ANEs. Assume NET1, NET2 and NET3 has
 sufficient bandwidth and their `max-reservable-bandwidth` values are set to a sufficiently
@@ -224,8 +224,8 @@ Content-Type: application/alto-endpointcostparams+json
     "cost-metric": "ane-path"
   },
   "endpoints": {
-    "srcs": [ "ipv4:192.0.4.2" ],
-    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.5.2" ]
+    "srcs": [ "ipv4:192.0.2.34" ],
+    "dsts": [ "ipv4:192.0.2.2", "ipv4:192.0.2.50" ]
   },
   "ane-property-names": [
     "max-reservable-bandwidth",
@@ -256,9 +256,9 @@ Content-Type: application/alto-endpointcost+json
     }
   },
   "endpoint-cost-map": {
-    "ipv4:192.0.4.2": {
+    "ipv4:192.0.2.34": {
       "ipv4:192.0.2.2":   [ "NET3", "L1", "NET1" ],
-      "ipv4:192.0.5.2":   [ "NET3", "L2", "NET2" ]
+      "ipv4:192.0.2.50":   [ "NET3", "L2", "NET2" ]
     }
   }
 }
@@ -334,9 +334,9 @@ Content-Type: application/alto-endpointcost+json
     }
   },
   "endpoint-cost-map": {
-    "ipv4:192.0.4.2": {
+    "ipv4:192.0.2.34": {
       "ipv4:192.0.2.2":   [ "NET3", "AGGR1" ],
-      "ipv4:192.0.5.2":   [ "NET3", "AGGR2" ]
+      "ipv4:192.0.2.50":   [ "NET3", "AGGR2" ]
     }
   }
 }

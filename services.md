@@ -183,8 +183,8 @@ object. Thus, it is the element the application processes first. Even though the
 `start` parameter allows it to be placed anywhere in the part sequence, it is
 RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
 the Path Vector part is always put as the first part, followed by the Property
-Map part. When doing so, an ALTO server MAY NOT set the `start` parameter, which
-implies the first part is the root object.
+Map part. When doing so, an ALTO server MAY choose to NOT set the `start`
+parameter, which implies the first part is the root object.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
 request in {{pvcm-accept}} is as follows, where `ANE1` represents the
@@ -293,8 +293,8 @@ Content-Type: application/alto-endpointcostparams+json
     "cost-metric": "ane-path"
   },
   "endpoints": {
-    "srcs": [ "ipv4:1.2.3.4" ],
-    "dsts": [ "ipv4:2.3.4.5" ]
+    "srcs": [ "ipv4:192.0.2.2" ],
+    "dsts": [ "ipv4:192.0.2.18" ]
   },
   "ane-property-names": [ "max-reservable-bandwidth" ]
 }
@@ -378,8 +378,8 @@ object. Thus, it is the element the application processes first. Even though the
 `start` parameter allows it to be placed anywhere in the part sequence, it is
 RECOMMENDED that the parts arrive in the same order as they are processed, i.e.,
 the Path Vector part is always put as the first part, followed by the Property
-Map part. When doing so, an ALTO server MAY NOT set the `start` parameter, which
-implies the first part is the root object.
+Map part. When doing so, an ALTO server MAY choose to NOT set the `start`
+parameter, which implies the first part is the root object.
 
 Example: Consider the network in {{fig-dumbbell}}. The response of the example
 request in {{pvecs-accept}} is as follows.
@@ -409,7 +409,7 @@ Content-Type: application/alto-endpointcost+json
     "cost-type": { "cost-mode": "array", "cost-metric": "ane-path" }
   },
   "cost-map": {
-    "ipv4:1.2.3.4": { "ipv4:2.3.4.5": ["ANE1"] }
+    "ipv4:192.0.2.2": { "ipv4:192.0.2.18": ["ANE1"] }
   }
 }
 --example-1
