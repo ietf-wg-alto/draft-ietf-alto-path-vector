@@ -50,8 +50,8 @@ pairs combined with properties of these Abstract Network Elements that are
 relevant to the overlay applications' QoE. Both an application via its ALTO
 client and the ISP via the ALTO server can achieve better confidentiality and
 resource utilization by appropriately abstracting relevant Abstract Network
-Elements. The requirements on the server scalability can also be reduced by
-combining Abstract Network Elements and their properties in a single response.
+Elements. Server scalability can also be improved by combining Abstract Network
+Elements and their properties in a single response.
 
 This document extends {{RFC7285}} to allow an ALTO server to convey "abstract
 network state", for paths defined by their <source, destination> pairs. To this
@@ -129,8 +129,9 @@ additional terms:
   Names. It is a generalization of BGP path vector. While standard BGP path
   vector specifies a sequence of autonomous systems for a destination IP prefix,
   the Path Vector defined in this extension specifies a sequence of ANEs either
-  for a source PID and a destination PID as in a cost map, or for a source
-  endpoint and a destination endpoint as in an endpoint cost map.
+  for a source PID and a destination PID as in the CostMapData (11.2.3.6 in
+  {{RFC7285}}), or for a source endpoint and a destination endpoint as in the
+  EndpointCostMapData (11.5.1.6 in {{RFC7285}}).
 
 - Path Vector resource: A Path Vector resource refers to an ALTO resource which
   supports the extension defined in this document.
@@ -138,8 +139,9 @@ additional terms:
 - Path Vector cost type: The Path Vector cost type is a special cost type, which
   is specified in {{cost-type-spec}}. When this cost type is present in an IRD
   entry, it indicates that the information resource is a Path Vector resource.
-  When this cost type is present in a Cost Map or an Endpoint Cost Map, it
-  indicates each cost value must be interpreted as a Path Vector.
+  When this cost type is present in a Filtered Cost Map request or an Endpoint
+  Cost Service request, it indicates each cost value must be interpreted as a
+  Path Vector.
 
 - Path Vector request: A Path Vector request refers to the POST message sent to
   an ALTO Path Vector resource.

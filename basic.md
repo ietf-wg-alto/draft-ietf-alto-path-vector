@@ -162,8 +162,9 @@ in the Path Vector.
 
 ### Cost Mode: array {#mode-spec}
 
-The cost mode "array" indicates that every cost value in a Cost Map or an
-Endpoint Cost Map MUST be interpreted as a JSON array object.
+The cost mode "array" indicates that every cost value in the response body of a
+(Filtered) Cost Map or an Endpoint Cost Service MUST be interpreted as a JSON
+array object.
 
 Note that this cost mode only requires the cost value to be a JSON array of
 JSONValue. However, an ALTO server that enables this extension MUST return a

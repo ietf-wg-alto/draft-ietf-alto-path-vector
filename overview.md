@@ -47,25 +47,32 @@ domain.
 
 ### Ephemeral ANE and Persistent ANE {#assoc}
 
-For different requests, there can be different ways of grouping components of a
-network and assigning ANEs. For example, an ALTO server may define an ANE for
-each aggregated bottleneck link between the sources and destinations specified
-in the request. As the aggregated bottleneck links vary for different
-combinations of sources and destinations, the ANEs are ephemeral and are no
-longer valid after the request completes. Thus, the scope of ephemeral ANEs are
-limited to the corresponding Path Vector response.
+By design, ANEs are ephemeral and not to be used in further requests. More
+precisely, the corresponding ANE names are no longer valid beyond the scope of
+the Path Vector response or the incremental update stream for a Path Vector
+request. This has several benefits including better privacy of the ISPs and more
+flexible ANE computation.
 
-While ephemeral ANEs returned by a Path Vector response do not exist beyond that
-response, some of them may represent entities that are persistent and defined in
-a standalone Property Map. Indeed, it may be useful for clients to occasionally
-query properties on persistent entities, without caring about the path that
-traverses them. For example, an ALTO server may define an ANE for each service
-edge cluster. Once a client chooses to use a service edge, e.g., by deploying
-some user-defined functions, it may want to stick to the service edge to avoid
-the complexity of state transition or synchronization. Persistent entities have
-a persistent ID that is registered in a Property Map, together with their
-properties. See {{domain-defining}} and {{persistent-entity-id}} for more
-detailed instructions on how to identify ephemeral ANEs and persistent ANEs.
+For example, an ALTO server may define an ANE for each aggregated bottleneck
+link between the sources and destinations specified in the request. For requests
+with different sources and destinations, the bottlenecks may be different but
+can safely reuse the same ANE names. The client can still adjust its traffic
+based on the information but is difficult to infer the underlying topology with
+multiple queries.
+
+However, sometimes an ISP may intend to selectively reveal some "persistent"
+network components which, opposite to being ephemeral, have a longer life cycle.
+For example, an ALTO server may define an ANE for each service edge cluster.
+Once a client chooses to use a service edge, e.g., by deploying some
+user-defined functions, it may want to stick to the service edge to avoid the
+complexity of state transition or synchronization, and continuously query the
+properties of the edge cluster.
+
+This document provides a mechanism to expose such network components as
+persistent ANEs. A persistent ANE has a persistent ID that is registered in a
+Property Map, together with their properties. See {{domain-defining}} and
+{{persistent-entity-id}} for more detailed instructions on how to identify
+ephemeral ANEs and persistent ANEs.
 
 ### Property Filtering
 
@@ -87,9 +94,7 @@ in {{pvcm-accept}} and {{pvecs-accept}} accordingly.
 ## Path Vector Cost Type {#path-vector-design}
 
 For an ALTO client to correctly interpret the Path Vector, this extension
-specifies a new cost type called the Path Vector cost type, which must be
-included both in the Information Resource Directory and the ALTO Cost Map or
-Endpoint Cost Map so that an ALTO client can correctly interpret the cost values.
+specifies a new cost type called the Path Vector cost type.
 
 The Path Vector cost type must convey both the interpretation and semantics in
 the "cost-mode" and "cost-metric" respectively. Unfortunately, a single
@@ -122,16 +127,20 @@ server, and the ALTO server returns a response, as shown in {{fig-alto}}.
 ~~~~~~~~~~
 {: #fig-alto artwork-align="center" title="A Typical ALTO Request and Response"}
 
-The extension defined in this document, on the other hand, involves two types of information
-resources: Path Vectors conveyed in a Cost Map or an Endpoint Cost Map, and ANE
-properties conveyed in a Unified Property Map. Instead of two consecutive
-message exchanges, the extension defined in this document enforces one round of
-communication. Specifically, the ALTO client must include the source and
-destination pairs and the requested ANE properties in a single request, and the
-ALTO server must return a single response containing both the Path Vectors and
-properties associated with the ANEs in the Path Vectors, as shown in {{fig-pv}}.
-Since the two parts are bundled together in one response message, their orders
-are interchangeable. See {{pvcm-resp}} and {{pvecs-resp}} for details.
+The extension defined in this document, on the other hand, involves two types of
+information resources: Path Vectors conveyed in an InfoResourceCostMap (defined
+in Section 11.2.3.6 of {{RFC7285}}) or an InfoResourceEndpointCostMap (defined
+in Section 11.5.1.6 of {{RFC7285}}), and ANE properties conveyed in an
+InfoResourceProperties (defined in Section 7.6 of {{I-D.ietf-alto-unified-props-new}}).
+
+Instead of two consecutive message exchanges, the extension defined in this
+document enforces one round of communication. Specifically, the ALTO client must
+include the source and destination pairs and the requested ANE properties in a
+single request, and the ALTO server must return a single response containing
+both the Path Vectors and properties associated with the ANEs in the Path
+Vectors, as shown in {{fig-pv}}. Since the two parts are bundled together in one
+response message, their orders are interchangeable. See {{pvcm-resp}} and
+{{pvecs-resp}} for details.
 
 
 ~~~~~~~~~~ drawing
@@ -160,18 +169,18 @@ This design is based on the following considerations:
 One approach to realize the one-round communication is to define a new media
 type to contain both objects, but this violates modular design. This document
 follows the standard-conforming usage of `multipart/related` media type defined
-in {{RFC2387}} to elegantly combine the objects. Path Vectors are encoded as a
-Cost Map or an Endpoint Cost Map, and the Property Map is encoded as a Unified
-Propert Map. They are encapsulated as parts of a multipart message. The modular
-composition allows ALTO servers and clients to reuse the data models of the
-existing information resources. Specifically, this document addresses the
-following practical issues using `multipart/related`.
+in {{RFC2387}} to elegantly combine the objects. Path Vectors are encoded in an
+InfoResourceCostMap or an InfoResourceEndpointCostMap, and the Property Map is
+encoded in an InfoResourceProperties. They are encapsulated as parts of a
+multipart message. The modular composition allows ALTO servers and clients to
+reuse the data models of the existing information resources. Specifically, this
+document addresses the following practical issues using `multipart/related`.
 
 ### Identifying the Media Type of the Root Object
 
 ALTO uses media type to indicate the type of an entry in the Information
 Resource Directory (IRD) (e.g., `application/alto-costmap+json` for Cost Map
-and `application/alto-endpointcost+json` for Endpoint Cost Map). Simply
+and `application/alto-endpointcost+json` for Endpoint Cost Service). Simply
 putting `multipart/related` as the media type, however, makes it impossible
 for an ALTO client to identify the type of service provided by related
 entries.

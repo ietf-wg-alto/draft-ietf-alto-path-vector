@@ -288,7 +288,8 @@ underlying network(s) for informed traffic optimization among endpoints.
 
 Revision -15
 
-- fixes the IDNits warnings
+- fixes the IDNits warnings,
+- addresses the comments in the AD review.
 
 # Changes since -13
 

@@ -35,7 +35,9 @@ type is selected, the media type of the response is either `multipart/related;
 type=application/alto-costmap+json` or `multipart/related;
 type=application/alto-endpointcost+json`; if the path vector cost type is not
 selected, the media type of the response is either
-`application/alto-costmap+json` or `application/alto-endpointcost+json`.
+`application/alto-costmap+json` or `application/alto-endpointcost+json`. Thus,
+there can be multiple media types associated with the information resource,
+which is not compatible with {{RFC7285}} (Section 9.1.2).
 
 Note that this problem may happen when an ALTO information resource supports
 multiple cost types, even if it does not enable the multi-cost extension. Thus,
@@ -71,7 +73,7 @@ support the path-vector extension. Specifically,
 <!-- FIXME: using resource-id header in MIME part -->
 
 ALTO clients and servers MUST follow the specifications given in Section 5.2 of
-{{RFC8895} to support incremental updates for a Path Vector resource.
+{{RFC8895}} to support incremental updates for a Path Vector resource.
 
 ## Compatibility with Cost Calendar
 
@@ -238,7 +240,7 @@ to the application.
 
 For availability of ALTO service, an ALTO server should be cognizant that using
 Path Vector extension might have a new risk: frequent requesting for Path
-Vectors might conduct intolerable increment of the server-side computation and
+Vectors might consume intolerable amounts of the server-side computation and
 storage, which can break the ALTO server. For example, if an ALTO server
 implementation dynamically computes the Path Vectors for each requests, the
 service providing Path Vectors may become an entry point for denial-of-service
